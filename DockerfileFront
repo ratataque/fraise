@@ -1,0 +1,10 @@
+FROM node:19
+
+RUN mkdir /fraise
+RUN mkdir /fraise/frontend
+WORKDIR /fraise/frontend
+COPY frontend /fraise/frontend
+RUN rm -rf /fraise/fronted/node_modules
+RUN npm ci
+
+CMD [ "npm", "start" ]
