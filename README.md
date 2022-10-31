@@ -43,20 +43,17 @@ Si vous voulez accedez à l'invite de commande sur l'un des contenaires, rentrez
 
 <pre>
     <code>#pour le backend
-    docker exec -it fraise-backend-1 bash 
-    </code>
+    docker exec -it fraise-backend-1 bash</code>
 </pre>
 
 <pre>
     <code>#pour le frontend
-    docker exec -it fraise-frontend-1 bash 
-    </code>
+    docker exec -it fraise-frontend-1 bash</code>
 </pre>
 
 <pre>
     <code>#pour la database
-    docker exec -it fraise-db-1 bash 
-    </code>
+    docker exec -it fraise-db-1 bash</code>
 </pre>
 
 ***
