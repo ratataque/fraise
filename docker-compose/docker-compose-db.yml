@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+   
+   db:
+    image: postgres:13
+    volumes:
+        - ../backend/postgres_data:/var/lib/postgresql/data/
+    environment:
+        - "POSTGRES_USER=fraise"
+        - "POSTGRES_PASSWORD=fraise"
+    ports:
+        - 5432:5432

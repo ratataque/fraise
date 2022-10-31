@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          du saleoklmazerzere
+          ta mere la pute
         </a>
       </header>
     </div>
