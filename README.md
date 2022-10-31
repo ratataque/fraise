@@ -12,7 +12,10 @@ truc bidule
 # Comment lancer le projet
 
 <br>
-Allez dans le dossier ou vous voulez mettre votre projet.<br><br>
+Allez dans le dossier ou vous voulez mettre votre projet.
+
+<br>
+
 Lancer une cmd depuis ce dossier puis rentrez cette commande:
 
 <pre>
