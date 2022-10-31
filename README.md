@@ -29,7 +29,6 @@ Et ensuite:
 
 ***
 
-<br>
 
 ### une fois que tout est terminé voici l'état du projet: ###
 <br>
