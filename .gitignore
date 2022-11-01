@@ -1,1 +1,3 @@
-* ./backend/postgres_data/
+.backend/postgres_data/*
+
+!backend/postgres_data/postgresql.conf
