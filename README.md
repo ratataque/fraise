@@ -12,10 +12,9 @@ truc bidule
 # Comment lancer le projet
 
 Avant de lancer le projet, il faut installer Docket et Git : https://www.docker.com/ | https://git-scm.com/
-<br>
+<br><br>
 Allez dans le dossier ou vous voulez mettre votre projet.
 
-<br>
 <br>
 
 Lancer une cmd depuis ce dossier puis rentrez cette commande:
