@@ -18,6 +18,7 @@ services:
     image: fraise
     depends_on:
         - db
+    restart: on-failure:10
     build:
         context: ..
         dockerfile: Dockerfile
@@ -25,6 +26,7 @@ services:
         - '../backend:/fraise/backend'
     ports:
         - 8000:8000
+    command: sh migration.sh
         
   db:
     image: postgres:13

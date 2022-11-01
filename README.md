@@ -38,9 +38,9 @@ Et ensuite:
 ### une fois que tout est terminé voici l'état du projet: ###
 <br>
 
-1. le backend run sur [https://localhost:8000](https://localhost:8000)
+1. le backend run sur [http://localhost:8000](http://localhost:8000)
 
-2. Le frontend run sur [https://localhost:3000](https://localhost:3000)
+2. Le frontend run sur [http://localhost:3000](http://localhost:3000)
 
 3. et la bdd sur le port **5432**
 
