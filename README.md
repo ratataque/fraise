@@ -26,7 +26,7 @@ Lancer une cmd depuis ce dossier puis rentrez cette commande:
 Et ensuite:
 
 <pre>
-    <code>docker-compose -p fraise -f docker-compose/ docker-compose.yml up</code>
+    <code>docker-compose -p fraise -f docker-compose/docker-compose.yml up</code>
 </pre>
 
 ***
