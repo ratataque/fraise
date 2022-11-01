@@ -20,7 +20,7 @@ https://git-scm.com/
 Allez dans le dossier ou vous voulez mettre votre projet.
 
 
-Lancer une cmd depuis ce dossier puis rentrez cette commande:
+Lancer un cmd depuis ce dossier puis rentrez cette commande:
 
 <pre>
     <code>git clone https://github.com/ORTSIOBTS/fraise.git</code>
