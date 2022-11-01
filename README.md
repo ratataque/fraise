@@ -11,7 +11,7 @@ truc bidule
 
 # Comment lancer le projet
 
-Avant de lancer le projet, il faut installer Docket et Git : 
+Avant de lancer le projet, il faut installer Docker et Git : 
 <br>
 https://www.docker.com/
 <br>
