@@ -16,6 +16,8 @@ services:
       
   backend:
     image: fraise
+    depends_on:
+        - db
     build:
         context: ..
         dockerfile: Dockerfile
@@ -23,8 +25,6 @@ services:
         - '../backend:/fraise/backend'
     ports:
         - 8000:8000
-    depends_on:
-        - db
         
   db:
     image: postgres:13
