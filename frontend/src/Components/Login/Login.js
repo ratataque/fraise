@@ -65,7 +65,7 @@ function Login() {
             <Components.Paragraph>
               To keep connected with us please login with your personal info {response_api}
             </Components.Paragraph>
-            <Components.GhostButton onClick={() => {toggle(true); callApi()}}>
+            <Components.GhostButton onClick={() => {toggle(true)}}>
               Sign In
             </Components.GhostButton>
           </Components.LeftOverlayPanel>
