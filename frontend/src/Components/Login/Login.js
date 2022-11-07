@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 //import ReactDOM from "react-dom";
 import * as Components from "./LoginCSS";
 import "./LoginCSS";
@@ -22,16 +22,9 @@ function Login() {
     }
   }
   
-  const [response_api, setReponse_api] = useState("");
-  const callApi = async () => {
-    const result = await fetch("/api/truc/trucs/")
-    setReponse_api(await result.text())
-  }
-
   const [signIn, toggle] = React.useState(true);
   return (
-    
-    <Components.Container>  
+    <Components.Container>
       <Components.SignUpContainer signingIn={signIn}>
         <Components.Form onSubmit={handleClick}>
           <Components.Title>Create Account</Components.Title>
@@ -63,9 +56,9 @@ function Login() {
               Welcome Back!
             </Components.Title>
             <Components.Paragraph>
-              To keep connected with us please login with your personal info {response_api}
+              To keep connected with us please login with your personal info
             </Components.Paragraph>
-            <Components.GhostButton onClick={() => {toggle(true); callApi()}}>
+            <Components.GhostButton onClick={() => toggle(true)}>
               Sign In
             </Components.GhostButton>
           </Components.LeftOverlayPanel>
