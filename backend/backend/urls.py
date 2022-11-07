@@ -10,5 +10,5 @@ router.register(r'trucs', TrucViewSet, basename="truc")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/truc', include(router.urls)),
+    path('api/truc/', include(router.urls)),
 ]
