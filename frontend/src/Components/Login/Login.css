@@ -5,27 +5,4 @@
   box-sizing: border-box;
 }
 
-body {
-  /* background-color: aliceblue; */
-  background-image: url("../../assets/fraise.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  /* animation: gradient 15s ease infinite; */
-  /* transition: background-image 1s; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  font-family: "Montserrat", sans-serif;
-  height: 100vh;
-  margin: -20px 0 50px;
-}
 
-input {
-  background-color: #eee;
-  border: none;
-  padding: 12px 15px;
-  margin: 8px 0;
-  width: 100%;
-}

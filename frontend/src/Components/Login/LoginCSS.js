@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import image from "../../assets/fraise.jpg";
 // const show = keyframes`
 //   0%, 49.99% {
 // 		opacity: 0;
@@ -22,6 +23,19 @@ import styled from "styled-components";
 //     z-index: 1;
 //   }
 // `
+export const Body = styled.body`
+  background-image: url(${image});
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+  height: 103vh;
+  margin: -20px 0 0px;
+`;
 
 export const Container = styled.div`
   background-color: #fff;

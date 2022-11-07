@@ -1,8 +1,7 @@
 import './Accueil.css';
-import Helmet from 'react-helmet'
 
 //On récupère les compenents de index.js
-import {Navbar, Header, AboutUs, Features, Footer} from "../../components";
+import {Navbar, Header, AboutUs, Features, Footer} from "../../Components";
 
 
 

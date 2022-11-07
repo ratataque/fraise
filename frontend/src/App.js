@@ -1,6 +1,5 @@
 import './App.css';
-import Helmet from 'react-helmet'
-//import Accueil from "./components/accueil/Accueil";
+import Accueil from "./Components/accueil/Accueil";
 import Login from "./Components/login/Login";
 
 
@@ -13,9 +12,14 @@ import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <Login/>
-    </div>  
+    <Router>
+      <Routes>
+        <Route path="/" element={<Accueil/>}>
+        </Route>
+        <Route path="/login" element={<Login/>}>
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
