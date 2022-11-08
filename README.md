@@ -1,4 +1,4 @@
-<h1align="center">🍓 Fraise 🍓</h1>
+<h1 align="center">🍓 Fraise 🍓</h1>
 
 
 Fraise le gestionnaire de mot de passe
