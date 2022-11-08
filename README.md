@@ -1,14 +1,6 @@
-# fraise
+### 🍓 Fraise 🍓
 
-
-zebi<br> 
-zebi<br>
-<br><br><br><br>
-truc bidule<br>
-Gestionnaire de mot de passe Fraise Fraise Fraise
-
-
-
+Fraise le gestionnaire de mot de passe
 
 # Comment lancer le projet
 
