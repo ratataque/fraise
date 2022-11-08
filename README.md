@@ -9,6 +9,7 @@ Gestionnaire de mot de passe Fraise Fraise Fraise
 
 
 
+
 # Comment lancer le projet
 
 Avant de lancer le projet, il faut installer Docker et Git : 
@@ -33,6 +34,8 @@ Et ensuite:
 </pre>
 
 ***
+
+### /!\FAIRE UN GIT PULL AVANT DE TRAVAILLER DANS LE DOSIER/!>
 
 
 ### une fois que tout est terminé voici l'état du projet: ###
