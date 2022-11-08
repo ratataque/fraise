@@ -1,5 +1,7 @@
-
-#                                                                              🍓 Fraise 🍓
+<p align="center">
+    #🍓 Fraise 🍓
+</p>
+<br>
 
 Fraise le gestionnaire de mot de passe
 
