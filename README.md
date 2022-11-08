@@ -1,5 +1,5 @@
 <p align="center">
-    #🍓 Fraise 🍓
+    <h1>🍓 Fraise 🍓</h1>
 </p>
 <br>
 
