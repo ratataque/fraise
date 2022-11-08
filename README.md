@@ -1,7 +1,5 @@
-<p align="center">
-    <h1>🍓 Fraise 🍓</h1>
-</p>
-<br>
+<h1align="center">🍓 Fraise 🍓</h1>
+
 
 Fraise le gestionnaire de mot de passe
 
