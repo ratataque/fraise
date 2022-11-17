@@ -23,7 +23,7 @@ import image from "../../assets/fraise.jpg";
 //     z-index: 1;
 //   }
 // `
-export const Body = styled.body`
+export const Body = styled.div`
   background-image: url(${image});
   background-size: cover;
   background-repeat: no-repeat;

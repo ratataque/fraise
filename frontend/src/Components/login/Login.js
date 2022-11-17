@@ -5,6 +5,26 @@ import "./LoginCSS";
 import "./Login.css"
 // import { BackgroundImage } from 'react-image-and-background-image-fade'
 
+function AppelDjango() {
+  const [response_api, setReponse_api] = useState("");
+  const callApi = async () => {
+    const result = await fetch("/api/truc/trucs/")
+    
+    setReponse_api(await result.json())
+  }
+  return (
+    <div>
+    <button onClick={callApi}>
+    Faire l'appel
+    </button>
+    <div>
+    {response_api['truc']}
+    {console.log(response_api['truc'])}
+    </div>
+    </div>
+  )
+}
+
 function Login() {
   const email = useRef(null)
   const pswd = useRef(null)
@@ -22,15 +42,11 @@ function Login() {
     }
   }
   
-  const [response_api, setReponse_api] = useState("");
-  const callApi = async () => {
-    const result = await fetch("/api/truc/trucs/")
-    setReponse_api(await result.text())
-  }
 
   const [signIn, toggle] = React.useState(true);
   return (
     <Components.Body>
+      <AppelDjango />
       <Components.Container>  
         <Components.SignUpContainer signingIn={signIn}>
           <Components.Form onSubmit={handleClick}>
@@ -48,7 +64,7 @@ function Login() {
             <Components.Title>Sign in</Components.Title>
             <Components.Input type="email" placeholder="Email" ref={email} />
             <Components.Input type="password" placeholder="Password" ref={pswd} />
-            <Components.Anchor href="" onClick={() => alert("Password Forgoten")}>
+            <Components.Anchor href="" onClick={() => {alert("Password Forgoten")}}>
               Forgot your password?
             </Components.Anchor>
             <Components.Button type="submit">
@@ -63,9 +79,9 @@ function Login() {
                 Welcome Back!
               </Components.Title>
               <Components.Paragraph>
-                To keep connected with us please login with your personal info {response_api}
+                To keep connected with us please login with your personal info
               </Components.Paragraph>
-              <Components.GhostButton onClick={() => {toggle(true)}}>
+              <Components.GhostButton onClick={() => {toggle(true);}}>
                 Sign In
               </Components.GhostButton>
             </Components.LeftOverlayPanel>
