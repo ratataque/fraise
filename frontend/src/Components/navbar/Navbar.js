@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <nav className="navbar container">
       <div className="logo">
-        <GiStrawberry color="#fff" size={36}/>
+        <GiStrawberry color="#ff4b2b" size={36}/>
         <p className="logo-text">
 		   <span>F</span>raise
         </p>
@@ -29,7 +29,7 @@ const Navbar = () => {
           id={showMenu ? "nav-links-mobile" : "nav-links-mobile-hide"}
         >
           <li>
-            <a href="##">Accueil</a>
+            <a href="/">Accueil</a>
           </li>
           <li>
             <a href="##">Fonctionnalités</a>

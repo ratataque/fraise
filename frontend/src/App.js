@@ -1,8 +1,6 @@
 import './App.css';
 import Accueil from "./Components/accueil/Accueil";
 import Login from "./Components/login/Login";
-
-
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 //On récupère les compenents de index.js

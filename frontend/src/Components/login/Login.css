@@ -5,4 +5,31 @@
   box-sizing: border-box;
 }
 
+.whole {
+  background-image: url("../../assets/fraise.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100vh;
+  transition: transform 400ms ease-in-out;
+}
+
+.whole .nav-links a {
+  color: black;
+}
+
+.whole a.btn-dark {
+  border: 2px solid black;
+}
+
+.whole .logo-text {
+  color: black;
+  font-weight: 550;
+}
+
+.whole .container {
+  margin-left: 60vh;
+}
+
+
 

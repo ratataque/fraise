@@ -22,19 +22,17 @@ import image from "../../assets/fraise.jpg";
 //     opacity: 0;
 //     z-index: 1;
 //   }
-// `
+//
+
+export const whole = styled.div`
+  `;
+
 export const Body = styled.div`
-  background-image: url(${image});
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  align-items: center;
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
   font-family: "Montserrat", sans-serif;
-  height: 103vh;
-  margin: -20px 0 0px;
 `;
 
 export const Container = styled.div`
@@ -46,7 +44,9 @@ export const Container = styled.div`
   width: 678px;
   max-width: 100%;
   min-height: 400px;
-  left: 250px;
+  font-size: 16px;
+  left: 28vh;
+  top: 11vh;
 `;
 
 export const SignUpContainer = styled.div`
