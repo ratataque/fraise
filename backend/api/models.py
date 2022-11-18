@@ -14,6 +14,8 @@ class Users(models.Model):
     codePostal = models.IntegerField()
     pays = models.TextField()
     
+    def __str__(self):
+        return self.nom
 
 
 
@@ -24,3 +26,6 @@ class Password(models.Model):
     siteOrigine = models.TextField()
     description = models.TextField()
     dateCreation = models.DateField()
+
+    def __str__(self):
+        return self.users
