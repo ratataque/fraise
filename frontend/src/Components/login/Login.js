@@ -1,30 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
-//import ReactDOM from "react-dom";
+import React, { useRef, useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import * as Components from "./LoginCSS";
 import "./LoginCSS";
 import "./Login.css"
 import {Navbar} from "../";
+import { Link } from 'react-router-dom';
 // import { BackgroundImage } from 'react-image-and-background-image-fade'
-
-function AppelDjango() {
-  const [response_api, setReponse_api] = useState("");
-  const callApi = async () => {
-    const result = await fetch("/api/truc/trucs/")
-    
-    setReponse_api(await result.json())
-  }
-  return (
-    <div>
-    <button onClick={callApi}>
-    Faire l'appel
-    </button>
-    <div>
-    {response_api['truc']}
-    {console.log(response_api['truc'])}
-    </div>
-    </div>
-  )
-}
 
 
 function Login() {
@@ -34,27 +15,67 @@ function Login() {
   const name = useRef(null)
   const emailUp = useRef(null)
   const pswdUp = useRef(null)
+
+  const navigate = useNavigate();
  
- 
-  function handleClick() {
+  const [response_api, setReponse_api] = useState("");
+  const callApi = async () => {
+    const result = await fetch("/api/")  
+    setReponse_api(await result.json()) 
+
+    // console.log(Array.isArray(response_api))
+    // console.log(response_api[0].nom)
+
+    // response_api.map((response_api, index) => {
+    //   console.log(response_api["nom"])
+    // })
+  }
+
+  useEffect(() => {
+    callApi();
+  }, [])
+
+  const handleClick = event => {
     if (signIn) {
-      alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value)
+
+      let index = 0;
+      let match = false;
+      for (let i = 0; i < response_api.length; i++) {
+        const user = response_api[i];
+
+        console.log(user["email"])
+        console.log(user["MotherPwd"])
+
+        if (email.current.value == user["email"] && pswd.current.value == user["MotherPwd"]) {
+          match = true;
+          index = i;
+          break;
+        }
+      }
+
+      if (match) {
+        alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
+        event.preventDefault();
+        navigate("/postLogin",{state: response_api[index]});
+      } else {
+        alert("mot de passe ou identifiant éronée");
+        event.preventDefault();
+      }
+
     } else {
       alert("Signin: " + signIn + "\nName: " + name.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
     }
   }
-  
 
   const [signIn, toggle] = React.useState(true);
-  const loaded = useState();
+  // const loaded = useState();
   return (
     <div className={"whole"}>
       <Navbar/>
       <Components.Body>
-        <AppelDjango />
         <Components.Container>  
           <Components.SignUpContainer signingIn={signIn}>
-            <Components.Form onSubmit={handleClick}>
+            <Components.Form onSubmit={handleClick} action="none">
               <Components.Title>Create Account</Components.Title>
               <Components.Input type="text" placeholder="Name" ref={name} />
               <Components.Input type="email" placeholder="Email" ref={emailUp} />

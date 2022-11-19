@@ -1,0 +1,21 @@
+.postLogin .nav-links a {
+    color: black;
+  }
+  
+  .postLogin a.btn-dark {
+    border: 2px solid black;
+  }
+  
+  .postLogin .logo-text {
+    color: black;
+    font-weight: 550;
+  }
+  
+#test {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 5rem;
+    font-weight: 700;
+}  
