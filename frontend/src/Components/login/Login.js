@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import {json, useNavigate} from "react-router-dom";
 import * as Components from "./LoginCSS";
 import "./LoginCSS";
 import "./Login.css"
@@ -7,12 +7,19 @@ import {Navbar} from "../";
 import { Link } from 'react-router-dom';
 // import { BackgroundImage } from 'react-image-and-background-image-fade'
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
 
 function Login() {
   const email = useRef(null)
   const pswd = useRef(null)
 
   const name = useRef(null)
+  const forename = useRef(null)
   const emailUp = useRef(null)
   const pswdUp = useRef(null)
 
@@ -63,7 +70,40 @@ function Login() {
       }
 
     } else {
-      alert("Signin: " + signIn + "\nName: " + name.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
+      event.preventDefault();
+      alert("Signin: " + signIn + "\nName: " + name.current.value + "\nforename: " + forename.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
+
+      var csrftoken = getCookie('csrftoken');
+      let formField
+
+
+      formField = {
+        "nom": name.current.value,
+        "prenom": forename.current.value,
+        "dateNaissance": "24/08/2001",
+        "telephone": 138638165,
+        "email": emailUp.current.value,
+        "MotherPwd": pswdUp.current.value,
+        "adresse": "rue emile mathis",
+        "numAdresse": 2,
+        "codePostal": 2,
+        "pays": "france"
+    }
+
+    formField = JSON.stringify(formField)
+
+      fetch('/api/', {
+        method: 'POST',
+        body: formField,
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          'X-CSRFToken': csrftoken
+        }
+      })
+      .then(response=>response.json())
+      .then((data)=>console.log(data))
+
+      navigate("/postSignup",{});
     }
   }
 
@@ -76,25 +116,26 @@ function Login() {
         <Components.Container>  
           <Components.SignUpContainer signingIn={signIn}>
             <Components.Form onSubmit={handleClick} action="none">
-              <Components.Title>Create Account</Components.Title>
-              <Components.Input type="text" placeholder="Name" ref={name} />
+              <Components.Title>Inscription</Components.Title>
+              <Components.Input type="text" placeholder="Nom" ref={name} />
+              <Components.Input type="text" placeholder="Prenom" ref={forename} />
               <Components.Input type="email" placeholder="Email" ref={emailUp} />
-              <Components.Input type="password" placeholder="Password" ref={pswdUp} />
+              <Components.Input type="password" placeholder="Mot de passe" ref={pswdUp} />
               <Components.Button type="submit">
-                Sign Up
+              s'inscrire
               </Components.Button>
             </Components.Form>
           </Components.SignUpContainer>
           <Components.SignInContainer signingIn={signIn}>
             <Components.Form onSubmit={handleClick}>
-              <Components.Title>Sign in</Components.Title>
+              <Components.Title>Connection</Components.Title>
               <Components.Input type="email" placeholder="Email" ref={email} />
-              <Components.Input type="password" placeholder="Password" ref={pswd} />
+              <Components.Input type="password" placeholder="Mot de passe" ref={pswd} />
               <Components.Anchor href="" onClick={() => {alert("Password Forgoten")}}>
-                Forgot your password?
+                Mot de passe oublié ?
               </Components.Anchor>
               <Components.Button type="submit">
-                Sign In
+                Se connecter
               </Components.Button>
             </Components.Form>
           </Components.SignInContainer>
@@ -102,22 +143,22 @@ function Login() {
             <Components.Overlay signingIn={signIn}>
               <Components.LeftOverlayPanel signingIn={signIn}>
                 <Components.Title>
-                  Welcome Back!
+                  Bon retour !
                 </Components.Title>
                 <Components.Paragraph>
-                  To keep connected with us please login with your personal info
+                  Afin d'avoir accès à vos mot de passe merci de vous connecter.
                 </Components.Paragraph>
                 <Components.GhostButton onClick={() => {toggle(true);}}>
-                  Sign In
+                  Se connecter
                 </Components.GhostButton>
               </Components.LeftOverlayPanel>
               <Components.RightOverlayPanel signingIn={signIn}>
-                <Components.Title>Hello, Friend!</Components.Title>
+                <Components.Title>Inscrivez vous !</Components.Title>
                 <Components.Paragraph>
-                  Enter your personal details and start journey with us
+                  Veuillez vous inscrire afin de pouvoir utiliser nos services bande de pd.
                 </Components.Paragraph>
                 <Components.GhostButton onClick={() => toggle(false)}>
-                  Sign Up
+                  S'inscrire
                 </Components.GhostButton>
               </Components.RightOverlayPanel>
             </Components.Overlay>
