@@ -1,25 +1,24 @@
 from datetime import date
 from django.db import models
+import django.contrib.auth
+from django.db import models, IntegrityError
+from django.utils import timezone
 
 # Create your models here.
 class Users(models.Model):
     nom = models.CharField(max_length=30)
     prenom = models.CharField(max_length=30)
-    dateNaissance = models.CharField(max_length=10)
-    telephone = models.IntegerField(max_length=10)
     email = models.EmailField(max_length=30)
     MotherPwd = models.TextField()
-    adresse = models.TextField()
-    numAdresse = models.IntegerField()
-    codePostal = models.IntegerField()
-    pays = models.TextField()
     
-    def __str__(self):
-        return self.nom
+    @classmethod
+    def create(nom, prenom, email, MotherPwd):
+        Users.save()
+        return Users
 
 
 
-    
+
 class Password(models.Model):
     users = models.ForeignKey(Users, on_delete=models.CASCADE)
     pwd = models.TextField()

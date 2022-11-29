@@ -53,7 +53,7 @@ function Login() {
         console.log(user["email"])
         console.log(user["MotherPwd"])
 
-        if (email.current.value == user["email"] && pswd.current.value == user["MotherPwd"]) {
+        if (email.current.value === user["email"] && pswd.current.value === user["MotherPwd"]) {
           match = true;
           index = i;
           break;
@@ -80,14 +80,8 @@ function Login() {
       formField = {
         "nom": name.current.value,
         "prenom": forename.current.value,
-        "dateNaissance": "24/08/2001",
-        "telephone": 138638165,
         "email": emailUp.current.value,
         "MotherPwd": pswdUp.current.value,
-        "adresse": "rue emile mathis",
-        "numAdresse": 2,
-        "codePostal": 2,
-        "pays": "france"
     }
 
     formField = JSON.stringify(formField)
