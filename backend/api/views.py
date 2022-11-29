@@ -49,7 +49,7 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
                 return self.get_paginated_response(serializer.data)
 
             serializer = self.get_serializer(queryset, many=True)
-            request.data vs serializer.data
+            #request.data vs serializer.data
             return Response(data=request.data)
 
 
