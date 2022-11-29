@@ -13,14 +13,14 @@ from rest_framework import generics
 from .models import Users
 
 class UserView(mixins.CreateModelMixin, generics.ListAPIView):
-    class UserRegisterViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    class UserRegisterViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
 
         queryset = Users.objects.all()
         serializer_class = RegisterSerializer
 
         def post(self, request, *args, **kwargs):
-            #self.data = request.data
-            code = mixins.CreateModelMixin.create(self, request, *args, **kwargs).status_code
+            self.data = request.data
+            code = self.create(self, request, *args, **kwargs).status_code
             if code == 201:
                 return Response(status=code, data={"status": "ok"})
             else:
@@ -33,16 +33,28 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
         #     serialized.save()
         #     return Response({"status": "ok"})
         
-        # def list(self, request):
+
+
+    class LoginViewSet(mixins.ListModelMixin, generics.GenericAPIView):
+        
+        queryset = Users.objects.all()
+        serializer_class = LoginSerializer
+
+        def post(self, request, *args, **kwargs):
+            queryset = self.filter_queryset(self.get_queryset())
+
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = self.get_serializer(queryset, many=True)
+            request.data vs serializer.data
+            return Response(data=request.data)
+
+
+        # def get(self, request): 
         #     serialized = RegisterSerializer(data=request.data)
+        #     serialized.is_valid(raise_exception=True)
+        #     serialized.save()
         #     return Response({"status": "ok", "data": serialized.data})
-
-
-    class LoginViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, APIView):
-
-        def get(self, request): 
-            serialized = RegisterSerializer(data=request.data)
-            serialized.is_valid(raise_exception=True)
-            serialized.save()
-            return Response({"status": "ok", "data": serialized.data})
-            

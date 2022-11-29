@@ -39,31 +39,52 @@ function Login() {
   }
 
   useEffect(() => {
-    callApi();
+    //callApi();
   }, [])
 
   const handleClick = event => {
     if (signIn) {
 
-      let index = 0;
-      let match = false;
-      for (let i = 0; i < response_api.length; i++) {
-        const user = response_api[i];
+      // let index = 0;
+      // let match = false;
+      // for (let i = 0; i < response_api.length; i++) {
+      //   const user = response_api[i];
 
-        console.log(user["email"])
-        console.log(user["MotherPwd"])
+      //   console.log(user["email"])
+      //   console.log(user["MotherPwd"])
 
-        if (email.current.value === user["email"] && pswd.current.value === user["MotherPwd"]) {
-          match = true;
-          index = i;
-          break;
-        }
-      }
-
+      //   if (email.current.value === user["email"] && pswd.current.value === user["MotherPwd"]) {
+      //     match = true;
+      //     index = i;
+      //     break;
+      //   }
+      // }
+      let match = true;
       if (match) {
         alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
         event.preventDefault();
-        navigate("/postLogin",{state: response_api[index]});
+
+        var csrftoken = getCookie('csrftoken');
+        
+        let formField = {
+          "email": email.current.value,
+          "MotherPwd": pswd.current.value,
+      }
+      formField = JSON.stringify(formField)
+
+        fetch('/api/login', {
+          method: 'POST',
+          body: formField,
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-CSRFToken': csrftoken
+          }
+        })
+        .then(response=>response.json())
+        .then((data)=> {
+          console.log(data);
+        });
+        //navigate("/postLogin",{state: response_api[index]});
       } else {
         alert("mot de passe ou identifiant éronée");
         event.preventDefault();
