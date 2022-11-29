@@ -86,7 +86,7 @@ function Login() {
 
     formField = JSON.stringify(formField)
 
-      fetch('/api/', {
+      fetch('/api/register', {
         method: 'POST',
         body: formField,
         headers: {
@@ -95,9 +95,14 @@ function Login() {
         }
       })
       .then(response=>response.json())
-      .then((data)=>console.log(data))
+      .then((data)=> {
+        if (data['status'] === 'ok') {
+          navigate("/postSignup",{});
+        } else {
+          alert("erreur lors de l'authentification")
+        }
+      })
 
-      navigate("/postSignup",{});
     }
   }
 

@@ -11,10 +11,12 @@ class Users(models.Model):
     email = models.EmailField(max_length=30)
     MotherPwd = models.TextField()
     
-    @classmethod
-    def create(nom, prenom, email, MotherPwd):
-        Users.save()
-        return Users
+    # @classmethod
+    # def create(nom, prenom, email, MotherPwd):
+    #     Users.save()
+    #     return Users
+    def __str__(self):
+        return self.users
 
 
 
