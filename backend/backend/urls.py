@@ -4,8 +4,8 @@ from django.urls import path
 from rest_framework import routers
 from django.urls import include, path
 
-router = routers.DefaultRouter()
-router.register(r"users", UserView, basename="api_user")
+# router = routers.DefaultRouter()
+# router.register(r"users", UserView, basename="api_user")
 
 
 urlpatterns = [

@@ -1,11 +1,10 @@
 import React, { useRef, useState, useEffect} from "react";
-import {json, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import * as Components from "./LoginCSS";
 import "./LoginCSS";
 import "./Login.css"
 import {Navbar} from "../";
-import { Link } from 'react-router-dom';
-// import { BackgroundImage } from 'react-image-and-background-image-fade'
+
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -24,55 +23,51 @@ function Login() {
   const pswdUp = useRef(null)
 
   const navigate = useNavigate();
- 
-  const [response_api, setReponse_api] = useState("");
-  const callApi = async () => {
-    const result = await fetch("/api/")  
-    setReponse_api(await result.json()) 
 
-    // console.log(Array.isArray(response_api))
-    // console.log(response_api[0].nom)
+  // const [response_api, setReponse_api] = useState("");
+  // const callApi1 = async () => {
+  //   const result = await fetch("/api/")  
+  //   setReponse_api(await result.json()) 
 
-    // response_api.map((response_api, index) => {
-    //   console.log(response_api["nom"])
-    // })
-  }
+  //   // console.log(Array.isArray(response_api))
+  //   // console.log(response_api[0].nom)
 
-  useEffect(() => {
-    //callApi();
-  }, [])
+  //   // response_api.map((response_api, index) => {
+  //   //   console.log(response_api["nom"])
+  //   // })
+  // }
 
-  const handleClick = event => {
+  // useEffect(() => {
+  //   //callApi();
+  // }, [])
+
+
+
+
+  // ********************************************************************************************************************************************
+  // Fonction handleClick appelé quand cliqué sur certain bouton
+  // ********************************************************************************************************************************************
+  const handleClick = async event => {
+
+    // check si c'est une inscription ou une connexion   signin=connexion
     if (signIn) {
-
-      // let index = 0;
-      // let match = false;
-      // for (let i = 0; i < response_api.length; i++) {
-      //   const user = response_api[i];
-
-      //   console.log(user["email"])
-      //   console.log(user["MotherPwd"])
-
-      //   if (email.current.value === user["email"] && pswd.current.value === user["MotherPwd"]) {
-      //     match = true;
-      //     index = i;
-      //     break;
-      //   }
-      // }
-      let match = true;
-      if (match) {
-        alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
-        event.preventDefault();
-
-        var csrftoken = getCookie('csrftoken');
-        
-        let formField = {
-          "email": email.current.value,
-          "MotherPwd": pswd.current.value,
+      //prevent refresh apres un submit d'un form
+      event.preventDefault();
+      
+      //chopper le token csrf dans le cookie
+      var csrftoken = getCookie('csrftoken');
+      
+      //creation de la donnée en json qu'on vas envoyer dans la requete a l'api
+      let formField = {
+        "email": email.current.value,
+        "MotherPwd": pswd.current.value,
       }
       formField = JSON.stringify(formField)
-
-        fetch('/api/login', {
+      
+      // ********************************************************************************************************************************************
+      // Appel à l'api login avec les champ de connexion
+      // ********************************************************************************************************************************************
+      fetch('/api/login', {
           method: 'POST',
           body: formField,
           headers: {
@@ -83,30 +78,38 @@ function Login() {
         .then(response=>response.json())
         .then((data)=> {
           console.log(data);
-        });
-        //navigate("/postLogin",{state: response_api[index]});
-      } else {
-        alert("mot de passe ou identifiant éronée");
-        event.preventDefault();
-      }
+        
+          // ********************************************************************************************************************************************
+          // test si la réponse de l'api confirme l'authentification de l'utilisateur
+          // ********************************************************************************************************************************************
+          if (data['status'] === 'ok') {
+            alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
 
+            // envoie des données a la page postLogin et redirection
+            navigate("/postLogin",{state: data['donnes']});
+
+          } else {
+            alert("mot de passe ou identifiant éronée");
+          }
+
+        });
+
+
+    // inscription
     } else {
       event.preventDefault();
-      alert("Signin: " + signIn + "\nName: " + name.current.value + "\nforename: " + forename.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
 
-      var csrftoken = getCookie('csrftoken');
-      let formField
-
-
-      formField = {
+      let formField = {
         "nom": name.current.value,
         "prenom": forename.current.value,
         "email": emailUp.current.value,
         "MotherPwd": pswdUp.current.value,
-    }
+      } 
+      formField = JSON.stringify(formField)
 
-    formField = JSON.stringify(formField)
-
+      // ********************************************************************************************************************************************
+      // Appel à l'api register avec les champ d'inscription'
+      // ********************************************************************************************************************************************
       fetch('/api/register', {
         method: 'POST',
         body: formField,
@@ -117,10 +120,17 @@ function Login() {
       })
       .then(response=>response.json())
       .then((data)=> {
+
+        // ********************************************************************************************************************************************
+        // test si la réponse de l'api confirme la création de l'utilisateur
+        // ********************************************************************************************************************************************
         if (data['status'] === 'ok') {
-          navigate("/postSignup",{});
+          alert("Signin: " + signIn + "\nName: " + name.current.value + "\nforename: " + forename.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
+          
+          // envoie des données a la page postSignup et redirection
+          navigate("/postSignup",{state: data['status']});
         } else {
-          alert("erreur lors de l'authentification")
+          alert("erreur lors de la création")
         }
       })
 
@@ -128,7 +138,6 @@ function Login() {
   }
 
   const [signIn, toggle] = React.useState(true);
-  // const loaded = useState();
   return (
     <div className={"whole"}>
       <Navbar/>
@@ -175,7 +184,7 @@ function Login() {
               <Components.RightOverlayPanel signingIn={signIn}>
                 <Components.Title>Inscrivez vous !</Components.Title>
                 <Components.Paragraph>
-                  Veuillez vous inscrire afin de pouvoir utiliser nos services bande de pd.
+                  Veuillez vous inscrire afin de pouvoir utiliser nos services.
                 </Components.Paragraph>
                 <Components.GhostButton onClick={() => toggle(false)}>
                   S'inscrire

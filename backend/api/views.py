@@ -1,38 +1,33 @@
-from rest_framework import viewsets
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from .models import Users
 from .serializer import RegisterSerializer
 from .serializer import LoginSerializer
 
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import mixins
 from rest_framework import generics
 
-from .models import Users
+
+
 
 class UserView(mixins.CreateModelMixin, generics.ListAPIView):
     class UserRegisterViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
-
-        queryset = Users.objects.all()
+        
+        # initialise le serializer pour permettre a la fonction create de CreateModelMixin de serializer les donnée en fonction des models
         serializer_class = RegisterSerializer
 
+        #override de la fonction post pour ajouter la méthode post au methode authoriser sur l'api register
         def post(self, request, *args, **kwargs):
+
+            #transfert des données de la requete aux donnée de l'objets CreateModelMixin prcq il veut que ça alors qu'on transmet l'objet requete dans la fonction create mais bon on y peut rien c'est codé avec le cul #mathis
             self.data = request.data
+
+            #create renvoie un un objet reponse, c'est qu'on vas return aussi mais dans la réponse de create t'as les info de l'utilisateur et ça on veut pas alors 
+            # on check le code de la réponse si c'est 201 CREATED alors on envoie une réponse avec status ok en data qu'on checkera coté client pour validé la creation
             code = self.create(self, request, *args, **kwargs).status_code
             if code == 201:
                 return Response(status=code, data={"status": "ok"})
             else:
                 return Response(status=code, data={"status": "ko"})
-
-        # def post(self, request):
-            
-        #     serialized = RegisterSerializer(data=request.data)
-        #     serialized.is_valid(raise_exception=True)
-        #     serialized.save()
-        #     return Response({"status": "ok"})
-        
 
 
     class LoginViewSet(mixins.ListModelMixin, generics.GenericAPIView):
@@ -49,12 +44,12 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
                 return self.get_paginated_response(serializer.data)
 
             serializer = self.get_serializer(queryset, many=True)
-            #request.data vs serializer.data
-            return Response(data=request.data)
+            #request.data(les données de la requete) vs serializer.data(les données de la db)
+            
+            for user in serializer.data:
+                if user['email'] == request.data['email'] and user['MotherPwd'] == request.data['MotherPwd']:
+                    return Response(data={'status': 'ok','donnes': {'email': user['email'],
+                                                                    'nom': user['nom'],
+                                                                    'prenom': user['prenom']}})
 
-
-        # def get(self, request): 
-        #     serialized = RegisterSerializer(data=request.data)
-        #     serialized.is_valid(raise_exception=True)
-        #     serialized.save()
-        #     return Response({"status": "ok", "data": serialized.data})
+            return Response(data={'status': "ko"})

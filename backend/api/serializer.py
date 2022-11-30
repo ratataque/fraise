@@ -7,19 +7,16 @@ class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=30)
     MotherPwd = serializers.CharField()
 
-    # def create(self, validated_data):
-    #     """
-    #     Create and return a new `Snippet` instance, given the validated data.
-    #     """
-    #     return Users.objects.create(**validated_data)
+    #implémentation appelé par serializer.save() dans la fonction create de l'objet CreateModelMixin si la sérialization est valide
     def create(self, validated_data):
-        """
-        Create and return a new `Snippet` instance, given the validated data.
-        """
+
+        #crée un user avec les data transmise
         return Users.objects.create(**validated_data)
 
 
 
 class LoginSerializer(serializers.Serializer):
+    nom = serializers.CharField(max_length=30) 
+    prenom = serializers.CharField(max_length=30)
     email = serializers.CharField()
     MotherPwd = serializers.CharField()
