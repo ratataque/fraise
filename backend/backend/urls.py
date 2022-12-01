@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
 from django.urls import include, path
+from api.tests import ApiRegisterTestCase
 
 # router = routers.DefaultRouter()
 # router.register(r"users", UserView, basename="api_user")

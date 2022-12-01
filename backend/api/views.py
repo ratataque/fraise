@@ -1,6 +1,7 @@
 from .models import Users
 from .serializer import RegisterSerializer
 from .serializer import LoginSerializer
+from rest_framework import status
 
 from rest_framework.response import Response
 from rest_framework import mixins
@@ -50,6 +51,6 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
                 if user['email'] == request.data['email'] and user['MotherPwd'] == request.data['MotherPwd']:
                     return Response(data={'status': 'ok','donnes': {'email': user['email'],
                                                                     'nom': user['nom'],
-                                                                    'prenom': user['prenom']}})
+                                                                    'prenom': user['prenom']}}, status=status.HTTP_200_OK)
 
-            return Response(data={'status': "ko"})
+            return Response(data={'status': "ko"}, status=status.HTTP_401_UNAUTHORIZED)
