@@ -1,0 +1,23 @@
+.VerifEmail .nav-links a {
+    color: black;
+}
+
+.VerifEmail a.btn-dark {
+    border: 2px solid black;
+}
+
+.VerifEmail .logo-text {
+    color: black;
+    font-weight: 550;
+}
+
+#test {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 5rem;
+    font-weight: 700;
+    padding-left: 10%;
+    padding-right: 10%;
+}  

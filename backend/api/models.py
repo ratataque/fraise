@@ -6,17 +6,19 @@ from django.utils import timezone
 
 # Create your models here.
 class Users(models.Model):
+    uuid = models.TextField(default="rien")
     nom = models.CharField(max_length=30)
     prenom = models.CharField(max_length=30)
     email = models.EmailField(max_length=30)
     MotherPwd = models.TextField()
+    is_active = models.BooleanField(default=False)
     
     # @classmethod
     # def create(nom, prenom, email, MotherPwd):
     #     Users.save()
     #     return Users
     def __str__(self):
-        return self.users
+        return self.uuid
 
 
 

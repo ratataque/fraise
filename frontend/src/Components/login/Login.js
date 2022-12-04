@@ -1,9 +1,10 @@
-import React, { useRef, useState, useEffect} from "react";
+import React, { useRef, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import * as Components from "./LoginCSS";
 import "./LoginCSS";
 import "./Login.css"
 import {Navbar} from "../";
+import { v4 as uuidv4 } from 'uuid';
 
 
 function getCookie(name) {
@@ -37,9 +38,10 @@ function Login() {
   //   // })
   // }
 
-  // useEffect(() => {
-  //   //callApi();
-  // }, [])
+  useEffect(() => {
+    //callApi();
+    //console.log(URLSearchParams(window.location.search).get("test"));
+  }, [])
 
 
 
@@ -53,6 +55,8 @@ function Login() {
     if (signIn) {
       //prevent refresh apres un submit d'un form
       event.preventDefault();
+      const queryParameters = new URLSearchParams(window.location.search)
+      console.log(queryParameters.get("test"));
       
       //chopper le token csrf dans le cookie
       var csrftoken = getCookie('csrftoken');
@@ -88,6 +92,8 @@ function Login() {
             // envoie des données a la page postLogin et redirection
             navigate("/postLogin",{state: data['donnes']});
 
+          } else if (data['status'] === "unactive") {
+            alert("vous devez activer votre compte avec l'email envoyé");
           } else {
             alert("mot de passe ou identifiant éronée");
           }
@@ -99,11 +105,57 @@ function Login() {
     } else {
       event.preventDefault();
 
+      const uuid = uuidv4();
+      console.log(uuid)
+
+      //création du mail de confirmation 
+      let mailField = {  
+        "sender":{  
+          "name":"Fraise le gestionnaire",
+          "email":"fraise@fraise.com"
+        },
+        "to":[  
+          {  
+              "email": emailUp.current.value,
+              "name": (name.current.value + " " + forename.current.value)
+          }
+        ],
+        "subject":"Mail de confirmation d'inscpition à Fraise",
+        "htmlContent": "<html><head></head><body><h1>Bonjour, veuillez cliquer <a href='http://localhost:3000/verifEmail?uuid="+uuid+"'>Ici</a> afin de pouvoir activer votre compte, merci ! "+uuid+"</h1></body></html>",
+        "headers":{  
+          "X-Mailin-custom":"custom_header_1:custom_value_1|custom_header_2:custom_value_2|custom_header_3:custom_value_3",
+          "charset":"iso-8859-1"
+        }
+      }
+      mailField = JSON.stringify(mailField)
+
+      // ********************************************************************************************************************************************
+      // Appel à l'api pour envoyer l'emal de confiramtion
+      // ********************************************************************************************************************************************
+      fetch('https://api.sendinblue.com/v3/smtp/email', {
+        method: 'POST',
+        body: mailField,
+        headers: {
+          'accept': 'application/json',
+          'Content-type': 'application/json; charset=UTF-8',
+          'api-key': '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'
+        }
+      })
+      .then(response=>response.json())
+      .then((data)=> {
+        console.log(data)
+      })
+
+
+
+      //création de la requete
       let formField = {
+        "uuid": uuid,
         "nom": name.current.value,
         "prenom": forename.current.value,
         "email": emailUp.current.value,
         "MotherPwd": pswdUp.current.value,
+        "is_active": false
       } 
       formField = JSON.stringify(formField)
 
@@ -146,10 +198,10 @@ function Login() {
           <Components.SignUpContainer signingIn={signIn}>
             <Components.Form onSubmit={handleClick} action="none">
               <Components.Title>Inscription</Components.Title>
-              <Components.Input type="text" placeholder="Nom" ref={name} />
-              <Components.Input type="text" placeholder="Prenom" ref={forename} />
-              <Components.Input type="email" placeholder="Email" ref={emailUp} />
-              <Components.Input type="password" placeholder="Mot de passe" ref={pswdUp} />
+              <Components.Input type="text" placeholder="Nom" ref={name} required/>
+              <Components.Input type="text" placeholder="Prenom" ref={forename} required/>
+              <Components.Input type="email" placeholder="Email" ref={emailUp} required/>
+              <Components.Input type="password" placeholder="Mot de passe" ref={pswdUp} required/>
               <Components.Button type="submit">
               s'inscrire
               </Components.Button>
@@ -158,8 +210,8 @@ function Login() {
           <Components.SignInContainer signingIn={signIn}>
             <Components.Form onSubmit={handleClick}>
               <Components.Title>Connection</Components.Title>
-              <Components.Input type="email" placeholder="Email" ref={email} />
-              <Components.Input type="password" placeholder="Mot de passe" ref={pswd} />
+              <Components.Input type="email" placeholder="Email" ref={email} required/>
+              <Components.Input type="password" placeholder="Mot de passe" ref={pswd} required/>
               <Components.Anchor href="" onClick={() => {alert("Password Forgoten")}}>
                 Mot de passe oublié ?
               </Components.Anchor>

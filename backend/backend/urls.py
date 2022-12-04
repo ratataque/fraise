@@ -12,5 +12,6 @@ from api.tests import ApiRegisterTestCase
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/register', UserView.UserRegisterViewSet.as_view()),
-    path('api/login', UserView.LoginViewSet.as_view()),
+    path('api/login', UserView.LoginViewSet.as_view()), 
+    path('api/verifMail/<uuid:uuid>', UserView.VerifMailViewSet.as_view()),
 ]

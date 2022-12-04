@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import image from "../../assets/fraise.jpg";
 // const show = keyframes`
 //   0%, 49.99% {
 // 		opacity: 0;
@@ -113,6 +112,7 @@ export const Button = styled.button`
   padding: 12px 45px;
   letter-spacing: 1px;
   text-transform: uppercase;
+  cursor: pointer;
   transition: transform 80ms ease-in;
   &:active {
     transform: scale(0.95);
@@ -125,6 +125,7 @@ export const Button = styled.button`
 export const GhostButton = styled(Button)`
   background-color: transparent;
   border-color: #ffffff;
+  cursor: pointer;
 `;
 
 export const Anchor = styled.a`

@@ -1,7 +1,7 @@
-import React, { useRef, useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import "./PostSignup.css"
 import {Navbar} from "../../Components";
-import { Link, useLocation } from 'react-router-dom';
+import {useLocation } from 'react-router-dom';
 
 
 

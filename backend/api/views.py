@@ -34,7 +34,7 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
     class LoginViewSet(mixins.ListModelMixin, generics.GenericAPIView):
         
         queryset = Users.objects.all()
-        serializer_class = LoginSerializer
+        serializer_class = RegisterSerializer
 
         def post(self, request, *args, **kwargs):
             queryset = self.filter_queryset(self.get_queryset())
@@ -49,8 +49,38 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
             
             for user in serializer.data:
                 if user['email'] == request.data['email'] and user['MotherPwd'] == request.data['MotherPwd']:
-                    return Response(data={'status': 'ok','donnes': {'email': user['email'],
-                                                                    'nom': user['nom'],
-                                                                    'prenom': user['prenom']}}, status=status.HTTP_200_OK)
+                    if user['is_active'] == False:
+                        return Response(data={'status': "unactive"}, status=status.HTTP_401_UNAUTHORIZED)
 
+                    return Response(data={'status': 'ok','donnes': {'email': user['email'],
+                                                                        'nom': user['nom'],
+                                                                        'prenom': user['prenom'],
+                                                                        'uuid': user['uuid']}}, status=status.HTTP_200_OK)
+                    
             return Response(data={'status': "ko"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+    class VerifMailViewSet(mixins.UpdateModelMixin, generics.GenericAPIView):
+
+        serializer_class = RegisterSerializer
+        
+        # def get(self, request, uuid):
+        #     queryset = Users.objects.get(uuid=uuid) 
+
+        #     page = self.paginate_queryset(queryset)
+        #     if page is not None:
+        #         serializer = self.get_serializer(page, many=True)
+        #         return self.get_paginated_response(serializer.data)
+
+        #     serializer = self.get_serializer(queryset)
+        #     return Response(serializer.data)
+
+        def put(self, request,  uuid, **keyargs):
+            queryset = Users.objects.get(uuid=uuid)
+
+            print(queryset)
+            serializer = RegisterSerializer(queryset, request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            return Response(serializer.data)

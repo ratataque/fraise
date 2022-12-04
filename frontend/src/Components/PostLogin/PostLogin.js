@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import "./PostLogin.css"
 import {Navbar} from "../../Components";
 import {useLocation } from 'react-router-dom';
