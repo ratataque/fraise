@@ -21,9 +21,7 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
         def post(self, request, *args, **kwargs):
 
             #transfert des données de la requete aux donnée de l'objets CreateModelMixin prcq il veut que ça alors qu'on transmet l'objet requete dans la fonction create mais bon on y peut rien c'est codé avec le cul #mathis
-            
-            #_mutable = request.data._mutable
-            # request.data._mutable = True
+
             uuidaz = uuid.uuid4()
             sel = hashlib.sha256(str(uuidaz).encode('utf-8')).hexdigest()
             poivre = open("/fraise/backend/api/poivre.txt", "r").read()
@@ -32,7 +30,6 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
             securise = hashlib.sha256(securisation.encode('utf-8')).hexdigest()
             mdpSecuriser = sel+securise
             request.data["MotherPwd"] = mdpSecuriser
-            # request.data._mutable = _mutable
             self.data = request.data
             
 
@@ -49,9 +46,9 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
     class LoginViewSet(mixins.ListModelMixin, generics.GenericAPIView):
         
         queryset = Users.objects.all()
-        serializer_class = RegisterSerializer
+        serializer_class = LoginSerializer
 
-        def post(self, requete, *args, **kwargs):
+        def post(self, request, *args, **kwargs):
             queryset = self.filter_queryset(self.get_queryset())
 
             page = self.paginate_queryset(queryset)
@@ -60,24 +57,19 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
                 return self.get_paginated_response(serializer.data)
 
             serializer = self.get_serializer(queryset, many=True)
-            #requete.data(les données de la requete) vs serializer.data(les données de la db)
+            #request.data(les données de la request) vs serializer.data(les données de la db)
 
             for user in serializer.data:
 
-                # _mutable = requete.data._mutable
-                # requete.data._mutable = True
-                test = user['MotherPwd']
                 sel = user['MotherPwd'][0:len(user['MotherPwd'])//2]
                 poivre = open("/fraise/backend/api/poivre.txt", "r").read()
-                mdp  = requete.data["MotherPwd"]
+                mdp  = request.data["MotherPwd"]
                 securisation = sel+mdp+poivre
                 securise = hashlib.sha256(securisation.encode('utf-8')).hexdigest()
                 mdpSecuriser = sel+securise
-                requete.data["MotherPwd"] = mdpSecuriser
-                # requete.data._mutable = _mutable
 
 
-                if user['email'] == requete.data['email'] and user['MotherPwd'] == mdpSecuriser:
+                if user['email'] == request.data['email'] and user['MotherPwd'] == mdpSecuriser:
                     if user['is_active'] == False:
                         return Response(data={'status': "unactive"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -86,8 +78,7 @@ class UserView(mixins.CreateModelMixin, generics.ListAPIView):
                                                                         'prenom': user['prenom'],
                                                                         'uuid': user['uuid']}}, status=status.HTTP_200_OK)
                     
-            return Response(data={'status': "ko", 'donnes': {'test': requete.data["MotherPwd"],
-                                                                "mdp" : mdp}}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(data={'status': "ko"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
     class VerifMailViewSet(mixins.UpdateModelMixin, generics.GenericAPIView):

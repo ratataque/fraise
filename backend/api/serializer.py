@@ -29,7 +29,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    nom = serializers.CharField(max_length=30) 
-    prenom = serializers.CharField(max_length=30)
-    email = serializers.CharField()
+    uuid = serializers.CharField(required=False)
+    nom = serializers.CharField(required=False, max_length=30) 
+    prenom = serializers.CharField(required=False, max_length=30)
+    email = serializers.EmailField(required=False, max_length=30)
     MotherPwd = serializers.CharField(required=False)
+    is_active = serializers.BooleanField()
+
+    class Meta:
+        model = Users
+        fields = '__all__'
