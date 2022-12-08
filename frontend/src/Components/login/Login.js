@@ -64,14 +64,14 @@ function Login() {
       //creation de la donnée en json qu'on vas envoyer dans la requete a l'api
       let formField = {
         "email": email.current.value,
-        "MotherPwd": pswd.current.value,
+        "clearpwd": pswd.current.value,
       }
       formField = JSON.stringify(formField)
       
       // ********************************************************************************************************************************************
       // Appel à l'api login avec les champ de connexion
       // ********************************************************************************************************************************************
-      fetch('/api/login', {
+      fetch('/api/user/login/', {
           method: 'POST',
           body: formField,
           headers: {
@@ -162,7 +162,7 @@ function Login() {
       // ********************************************************************************************************************************************
       // Appel à l'api register avec les champ d'inscription'
       // ********************************************************************************************************************************************
-      fetch('/api/register', {
+      fetch('/api/user/register/', {
         method: 'POST',
         body: formField,
         headers: {

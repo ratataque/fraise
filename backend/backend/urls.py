@@ -1,17 +1,18 @@
-from api.views import UserView
+from api.views import *
 from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
 from django.urls import include, path
 from api.tests import ApiRegisterTestCase
 
-# router = routers.DefaultRouter()
-# router.register(r"users", UserView, basename="api_user")
+router = routers.DefaultRouter()
+router.register(r"user", UserViewSet, basename="register")
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/register', UserView.UserRegisterViewSet.as_view()),
-    path('api/login', UserView.LoginViewSet.as_view()), 
-    path('api/verifMail/<uuid:uuid>', UserView.VerifMailViewSet.as_view()),
+    path('api/', include(router.urls)),
+
+    # path('api/login', LoginViewSet.as_view()), 
+    # path('api/verifMail/<uuid:uuid>', VerifMailViewSet.as_view()),
 ]

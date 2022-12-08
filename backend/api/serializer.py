@@ -2,12 +2,10 @@ from rest_framework import serializers
 from .models import Users
 
 class RegisterSerializer(serializers.ModelSerializer):
-    uuid = serializers.CharField(required=False)
     nom = serializers.CharField(required=False, max_length=30) 
     prenom = serializers.CharField(required=False, max_length=30)
-    email = serializers.EmailField(required=False, max_length=30)
+    email = serializers.EmailField(required=False, max_length=100)
     MotherPwd = serializers.CharField(required=False)
-    is_active = serializers.BooleanField()
 
     class Meta:
         model = Users
@@ -29,13 +27,5 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    uuid = serializers.CharField(required=False)
-    nom = serializers.CharField(required=False, max_length=30) 
-    prenom = serializers.CharField(required=False, max_length=30)
-    email = serializers.EmailField(required=False, max_length=30)
-    MotherPwd = serializers.CharField(required=False)
-    is_active = serializers.BooleanField()
-
-    class Meta:
-        model = Users
-        fields = '__all__'
+    email = serializers.EmailField(max_length=100)
+    clearpwd = serializers.CharField()
