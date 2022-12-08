@@ -32,4 +32,4 @@ class LoginSerializer(serializers.Serializer):
     nom = serializers.CharField(max_length=30) 
     prenom = serializers.CharField(max_length=30)
     email = serializers.CharField()
-    MotherPwd = serializers.CharField()
+    MotherPwd = serializers.CharField(required=False)
