@@ -1,19 +1,11 @@
-import email
+
 from .models import Users
-from .serializer import RegisterSerializer
-from .serializer import LoginSerializer
+from .serializer import *
 from rest_framework import status
 from rest_framework import viewsets
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import mixins
-from rest_framework import generics
-import uuid
-import hashlib
-import re
-from rest_framework.exceptions import APIException
-
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -31,7 +23,9 @@ class UserViewSet(viewsets.ViewSet):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        Users.create_user(nom=serializer.validated_data["nom"], prenom=serializer.validated_data["prenom"], email=serializer.validated_data["email"], clearpwd=serializer.validated_data["MotherPwd"])
+        user = Users.create_user(nom=serializer.validated_data["nom"], prenom=serializer.validated_data["prenom"], email=serializer.validated_data["email"], clearpwd=serializer.validated_data["MotherPwd"])
+
+        user.send_verif_mail()
 
         return Response(data={'status': "ok"}, status=status.HTTP_201_CREATED)
     
@@ -42,81 +36,38 @@ class UserViewSet(viewsets.ViewSet):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = Users.objects.get(email=serializer.validated_data["email"])
-
-        if user.check_password(serializer.validated_data["clearpwd"]):
-            return Response(data={'status': "ok"})
-        else:
-            raise APIException.AuthenticationFailed()
-
-
-    # POST /api/user/verif-email/{XXXX}/
-    @action(detail=True, methods=["get"])
-    # /api/users
-    def verif_mail(self, request, pk=None):
-        pass
-
-
-
-class LoginViewSet(mixins.ListModelMixin, generics.GenericAPIView):
-    
-    queryset = Users.objects.all() 
-    serializer_class = LoginSerializer
-
-    def post(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True) 
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        #request.data(les données de la request) vs serializer.data(les données de la db)
-
-        for user in serializer.data:
-
-            sel = user['MotherPwd'][0:len(user['MotherPwd'])//2]
-            poivre = open("/fraise/backend/api/poivre.txt", "r").read()
-            mdp  = request.data["MotherPwd"]
-            securisation = sel+mdp+poivre
-            securise = hashlib.sha256(securisation.encode('utf-8')).hexdigest()
-            mdpSecuriser = sel+securise
-
-
-            if user['email'] == request.data['email'] and user['MotherPwd'] == mdpSecuriser:
-                if user['is_active'] == False:
+        try:
+            user = Users.objects.get(email=serializer.validated_data["email"])
+        except:
+            return Response(data={'status': "ko"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        if user.is_active == False:
                     return Response(data={'status': "unactive"}, status=status.HTTP_401_UNAUTHORIZED)
 
-                return Response(data={'status': 'ok','donnes': {'email': user['email'],
-                                                                    'nom': user['nom'],
-                                                                    'prenom': user['prenom'],
-                                                                    'uuid': user['uuid']}}, status=status.HTTP_200_OK)
-                
-        return Response(data={'status': "ko"}, status=status.HTTP_401_UNAUTHORIZED)
+        if user.check_password(serializer.validated_data["clearpwd"]):
+            return Response(data={'status': 'ok','donnes': {'email': user.email,
+                                                            'nom': user.nom,
+                                                            'prenom': user.prenom,
+                                                            'uuid': user.uuid}}, status=status.HTTP_200_OK)
+        else:
+            return Response(data={'status': "ko"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class VerifMailViewSet(mixins.UpdateModelMixin, generics.GenericAPIView):
 
-    serializer_class = RegisterSerializer
-    
-    # def get(self, request, uuid):
-    #     queryset = Users.objects.get(uuid=uuid) 
+    # GET /api/user/{XXXX}/verif-email/
+    @action(detail=True, methods=["get"])
+    def verif_mail(self, request, pk=None):
+        data = {'uuid': pk}
 
-    #     page = self.paginate_queryset(queryset)
-    #     if page is not None:
-    #         serializer = self.get_serializer(page, many=True)
-    #         return self.get_paginated_response(serializer.data)
-
-    #     serializer = self.get_serializer(queryset)
-    #     return Response(serializer.data)
-
-    def put(self, request,  uuid, **keyargs):
-        queryset = Users.objects.get(uuid=uuid)
-
-        print(queryset)
-        serializer = RegisterSerializer(queryset, request.data)
+        serializer = VerifMailSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        
+        try:
+            user = Users.objects.get(uuid=serializer.validated_data['uuid'])
+        except:
+            return Response(data={'status': "ko"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        return Response(serializer.data)
+        user.activate_email()
+
+        return Response(data={'status': user.is_active})
+        

@@ -25,18 +25,6 @@ function Login() {
 
   const navigate = useNavigate();
 
-  // const [response_api, setReponse_api] = useState("");
-  // const callApi1 = async () => {
-  //   const result = await fetch("/api/")  
-  //   setReponse_api(await result.json()) 
-
-  //   // console.log(Array.isArray(response_api))
-  //   // console.log(response_api[0].nom)
-
-  //   // response_api.map((response_api, index) => {
-  //   //   console.log(response_api["nom"])
-  //   // })
-  // }
 
   useEffect(() => {
     //callApi();
@@ -109,53 +97,51 @@ function Login() {
       console.log(uuid)
 
       //création du mail de confirmation 
-      let mailField = {  
-        "sender":{  
-          "name":"Fraise le gestionnaire",
-          "email":"fraise@fraise.com"
-        },
-        "to":[  
-          {  
-              "email": emailUp.current.value,
-              "name": (name.current.value + " " + forename.current.value)
-          }
-        ],
-        "subject":"Mail de confirmation d'inscpition à Fraise",
-        "htmlContent": "<html><head></head><body><h1>Bonjour, veuillez cliquer <a href='http://localhost:3000/verifEmail?uuid="+uuid+"'>Ici</a> afin de pouvoir activer votre compte, merci ! "+uuid+"</h1></body></html>",
-        "headers":{  
-          "X-Mailin-custom":"custom_header_1:custom_value_1|custom_header_2:custom_value_2|custom_header_3:custom_value_3",
-          "charset":"iso-8859-1"
-        }
-      }
-      mailField = JSON.stringify(mailField)
+      // let mailField = {  
+      //   "sender":{  
+      //     "name":"Fraise le gestionnaire",
+      //     "email":"fraise@fraise.com"
+      //   },
+      //   "to":[  
+      //     {  
+      //         "email": emailUp.current.value,
+      //         "name": (name.current.value + " " + forename.current.value)
+      //     }
+      //   ],
+      //   "subject":"Mail de confirmation d'inscpition à Fraise",
+      //   "htmlContent": "<html><head></head><body><h1>Bonjour, veuillez cliquer <a href='http://localhost:3000/verifEmail?uuid="+uuid+"'>Ici</a> afin de pouvoir activer votre compte, merci ! "+uuid+"</h1></body></html>",
+      //   "headers":{  
+      //     "X-Mailin-custom":"custom_header_1:custom_value_1|custom_header_2:custom_value_2|custom_header_3:custom_value_3",
+      //     "charset":"iso-8859-1"
+      //   }
+      // }
+      // mailField = JSON.stringify(mailField)
 
-      // ********************************************************************************************************************************************
-      // Appel à l'api pour envoyer l'emal de confiramtion
-      // ********************************************************************************************************************************************
-      fetch('https://api.sendinblue.com/v3/smtp/email', {
-        method: 'POST',
-        body: mailField,
-        headers: {
-          'accept': 'application/json',
-          'Content-type': 'application/json; charset=UTF-8',
-          'api-key': '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'
-        }
-      })
-      .then(response=>response.json())
-      .then((data)=> {
-        console.log(data)
-      })
+      // // ********************************************************************************************************************************************
+      // // Appel à l'api pour envoyer l'emal de confiramtion
+      // // ********************************************************************************************************************************************
+      // fetch('https://api.sendinblue.com/v3/smtp/email', {
+      //   method: 'POST',
+      //   body: mailField,
+      //   headers: {
+      //     'accept': 'application/json',
+      //     'Content-type': 'application/json; charset=UTF-8',
+      //     'api-key': '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'
+      //   }
+      // })
+      // .then(response=>response.json())
+      // .then((data)=> {
+      //   console.log(data)
+      // })
 
 
 
       //création de la requete
       let formField = {
-        "uuid": uuid,
         "nom": name.current.value,
         "prenom": forename.current.value,
         "email": emailUp.current.value,
         "MotherPwd": pswdUp.current.value,
-        "is_active": false
       } 
       formField = JSON.stringify(formField)
 

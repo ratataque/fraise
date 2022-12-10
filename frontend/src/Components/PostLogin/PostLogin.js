@@ -9,7 +9,7 @@ function PostLogin() {
     const {state} = useLocation();
 
     useEffect(() => {
-        console.log(state)
+        // console.log(state)
     }, [])
 
     return (

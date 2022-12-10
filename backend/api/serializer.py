@@ -29,3 +29,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=100)
     clearpwd = serializers.CharField()
+
+
+
+class VerifMailSerializer(serializers.Serializer):
+    uuid = serializers.UUIDField()

@@ -1,7 +1,7 @@
-import React, {useEffect} from "react";
+import React from "react";
 import "./VerifEmail.css"
 import {Navbar} from "..";
-import {useLocation } from 'react-router-dom';
+// import {useLocation } from 'react-router-dom';
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -11,21 +11,15 @@ function getCookie(name) {
 
 
 function VerifEmail() {
-    const {state} = useLocation();
+    // const {state} = useLocation();
     const queryParameters = new URLSearchParams(window.location.search)
     let uuid = queryParameters.get("uuid");
-    console.log(uuid);
+    // console.log(uuid);
 
     var csrftoken = getCookie('csrftoken');
 
-    let formField = {
-        "is_active": true
-    } 
-    formField = JSON.stringify(formField)
-
-    fetch('/api/verifMail/'+uuid, {
-        method: 'PUT',
-        body: formField,
+    fetch('/api/user/'+uuid+'/verif_mail/', {
+        method: 'get',
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
             'X-CSRFToken': csrftoken
@@ -33,7 +27,7 @@ function VerifEmail() {
     })
     .then(response=>response.json())
     .then((data)=> {
-        console.log(data)
+        // console.log(data)
     })
 
     // useEffect(() => {
