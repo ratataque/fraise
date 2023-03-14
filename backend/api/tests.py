@@ -18,8 +18,7 @@ class ApiRegisterTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json()["status"], "ok")
 
-
-    #pour Karl
+    # pour Karl
     """
     def test02_cant_recreate_with_same_mail(self):
             client = APIClient()
@@ -51,14 +50,14 @@ class ApiRegisterTestCase(TestCase):
         response = client.get("/api/login")
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         response = client.post(
-                "/api/register",
-                data={
-                    "nom": "test03",
-                    "prenom": "test03",
-                    "email": "test03@test.com",
-                    "MotherPwd": "password03",
-                },
-            )
+            "/api/register",
+            data={
+                "nom": "test03",
+                "prenom": "test03",
+                "email": "test03@test.com",
+                "MotherPwd": "password03",
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json()["status"], "ok")
         response = client.post(
@@ -76,7 +75,6 @@ class ApiRegisterTestCase(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["status"], "ok")
-        self.assertEqual(response.json()['donnes']["nom"], "test03")
-        self.assertEqual(response.json()['donnes']["prenom"], "test03")
-        self.assertEqual(response.json()['donnes']["email"], "test03@test.com")
-
+        self.assertEqual(response.json()["donnes"]["nom"], "test03")
+        self.assertEqual(response.json()["donnes"]["prenom"], "test03")
+        self.assertEqual(response.json()["donnes"]["email"], "test03@test.com")

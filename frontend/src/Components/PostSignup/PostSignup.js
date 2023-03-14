@@ -10,7 +10,7 @@ function PostSignup() {
 
     useEffect(() => {
         console.log(state)
-    }, [])
+    })
 
     return (
         <div className="PostSignup">
