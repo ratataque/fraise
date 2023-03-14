@@ -28,10 +28,15 @@ class UserViewSet(viewsets.ViewSet):
             email=serializer.validated_data["email"],
             clearpwd=serializer.validated_data["MotherPwd"],
         )
+        if user == "IntegrityError" :
+            return Response(data={"status": "mail_utilise"}, status=status.HTTP_401_UNAUTHORIZED)                                 
+            
+        else :
+            user.send_verif_mail()
+            return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
 
-        user.send_verif_mail()
+    
 
-        return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
 
     # POST /api/user/login/
     @action(detail=False, methods=["post"])
@@ -43,7 +48,7 @@ class UserViewSet(viewsets.ViewSet):
         try:
             user = Users.objects.get(email=serializer.validated_data["email"])
         except:
-            return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
 
         if user.is_active == False:
             return Response(

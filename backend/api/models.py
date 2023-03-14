@@ -32,9 +32,12 @@ class Users(models.Model):
         user.prenom = prenom
         user.email = email
         user.MotherPwd = mdpSecuriser
-
-        user.save()
-        return user
+        
+        try  :
+            user.save()
+            return user
+        except IntegrityError as e :
+            return "IntegrityError"
 
     def send_verif_mail(self):
         mailField = {

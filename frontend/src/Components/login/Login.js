@@ -91,13 +91,18 @@ function Login() {
 
     // inscription
     } else {
+      // Empêche de faire le refresh de la page.
       event.preventDefault();
 
+      // Génère un uuid unique (Plus utile, normalement il est jamais utilisé).
       const uuid = uuidv4();
+
+      // Affiche l'uuid
       console.log(uuid)
 
       //création de la requete
       let formField = {
+        
         "nom": name.current.value,
         "prenom": forename.current.value,
         "email": emailUp.current.value,
@@ -110,6 +115,7 @@ function Login() {
       // ********************************************************************************************************************************************
       fetch('/api/user/register/', {
         method: 'POST',
+        // Contenu de la requête
         body: formField,
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
