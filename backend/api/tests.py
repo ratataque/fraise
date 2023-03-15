@@ -1,77 +1,90 @@
 from rest_framework import status
 from rest_framework.test import APIClient
 from unittest import TestCase
-
+from rest_framework.test import APIRequestFactory
+from api.views import UserViewSet 
 
 class ApiRegisterTestCase(TestCase):
     def test01_create(self):
-        client = APIClient()
-        response = client.post(
-            "/api/register",
+        view = UserViewSet.as_view('register')
+        client = APIRequestFactory()
+        request = client.post(
+            "/api/user/register",
             data={
                 "nom": "test01",
                 "prenom": "test01",
                 "email": "test01@test.com",
                 "MotherPwd": "password01",
             },
+            follow=True
         )
+        response = view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json()["status"], "ok")
 
-    # pour Karl
-    """
-    def test02_cant_recreate_with_same_mail(self):
-            client = APIClient()
-            response = client.post(
-                "/api/register",
-                data={
-                    "nom": "test02",
-                    "prenom": "test02",
-                    "email": "test02@test.com",
-                    "MotherPwd": "password02",
-                },
-            )
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            self.assertEqual(response.json()["status"], "ok")
-            response = client.post(
-                "/api/register",
-                data={
-                    "nom": "test03",
-                    "prenom": "test03",
-                    "email": "test02@test.com",
-                    "MotherPwd": "password03",
-                },
-            )
-            self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-    """
+    def test02_mail_used(self):
+        client = APIClient()
+        response = client.post(
+            "/api/user/register",
+            data={
+                "nom" : "test_nom",
+                "prenom" : "test_prenom",
+                "email" : "email@test.com",
+                "MotherPwd" : "testpwd",
+            },
+            follow=True
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json()["status"], "ok")
+        
+        response = client.post(
+            "/api/user/register",
+            data={
+                "nom" : "test_nom2",
+                "prenom" : "test_prenom2",
+                "email" : "email@test.com",
+                "MotherPwd" : "testpwd2",
+            },
+            follow=True
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.json()["status"], "mail_used")
+        
+    
 
     def test03_login(self):
         client = APIClient()
-        response = client.get("/api/login")
+        response = client.get("/api/user/login", follow=True)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         response = client.post(
-            "/api/register",
+            "/api/user/register",
             data={
                 "nom": "test03",
                 "prenom": "test03",
                 "email": "test03@test.com",
                 "MotherPwd": "password03",
             },
+            follow=True
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json()["status"], "ok")
         response = client.post(
-            "/api/login",
+            "/api/user/login",
             data={"email": "test03@test.comwrong", "MotherPwd": "password03"},
+            follow=True
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         response = client.post(
-            "/api/login",
+            "/api/user/login",
             data={"email": "test03@test.com", "MotherPwd": "password03Wrong"},
+            follow=True
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         response = client.post(
-            "/api/login", data={"email": "test03@test.com", "MotherPwd": "password03"}
+            "/api/user/login", data={"email": "test03@test.com", "MotherPwd": "password03"},
+            follow=True
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["status"], "ok")
