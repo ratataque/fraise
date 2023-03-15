@@ -26,11 +26,11 @@
   height: 70vh;
   margin-left: 8vw;
   margin-top: 6vh;
-  background-color: #1e1e1e;
+  background-color: #444444;
   border-radius: 30px;
   padding-left: 2vw;
   padding-top: 2vh;
-  box-shadow: -20px 25px 25px #555;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 
   color: white;
   font-weight: 700;
@@ -43,11 +43,11 @@
   height: 70vh;
   left: 31vw;
   margin-top: 6vh;
-  background-color: #1e1e1e;
+  background-color: gray;
   border-radius: 30px;
   padding-left: 2vw;
   padding-top: 2vh;
-  box-shadow: 20px 25px 25px #555;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 
   color: white;
   font-weight: 700;
