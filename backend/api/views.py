@@ -5,6 +5,7 @@ from rest_framework import viewsets
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db import IntegrityError
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -28,8 +29,8 @@ class UserViewSet(viewsets.ViewSet):
             email=serializer.validated_data["email"],
             clearpwd=serializer.validated_data["MotherPwd"],
         )
-        if user == "IntegrityError" :
-            return Response(data={"status": "mail_utilise"}, status=status.HTTP_401_UNAUTHORIZED)                                 
+        if type(user) == IntegrityError :
+            return Response(data={"status": "mail_used"}, status=status.HTTP_401_UNAUTHORIZED)                                 
             
         else :
             user.send_verif_mail()

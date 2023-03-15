@@ -37,7 +37,7 @@ class Users(models.Model):
             user.save()
             return user
         except IntegrityError as e :
-            return "IntegrityError"
+            return e
 
     def send_verif_mail(self):
         mailField = {

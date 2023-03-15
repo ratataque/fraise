@@ -133,6 +133,9 @@ function Login() {
           
           // envoie des données a la page postSignup et redirection
           navigate("/postSignup",{state: data['status']});
+          
+        } else if (data['status'] === 'mail_used') {
+          alert("Adresse mail deja utilise")
         } else {
           alert("erreur lors de la création")
         }
