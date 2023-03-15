@@ -1,16 +1,16 @@
 .postLogin .nav-links a {
     color: black;
   }
-  
-  .postLogin a.btn-dark {
-    border: 2px solid black;
-  }
-  
-  .postLogin .logo-text {
-    color: black;
-    font-weight: 550;
-  }
-  
+
+.postLogin a.btn-dark {
+  border: 2px solid black;
+}
+
+.postLogin .logo-text {
+  color: black;
+  font-weight: 550;
+}
+
 #test {
     align-items: center;
     display: flex;
@@ -19,3 +19,37 @@
     font-size: 5rem;
     font-weight: 700;
 }  
+
+.postLogin .website_container {
+  position: absolute;
+  width: 20vw;
+  height: 70vh;
+  margin-left: 8vw;
+  margin-top: 6vh;
+  background-color: #1e1e1e;
+  border-radius: 30px;
+  padding-left: 2vw;
+  padding-top: 2vh;
+  box-shadow: -20px 25px 25px #555;
+
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+}
+
+.postLogin .password_container {
+  position: absolute;
+  width: 56vw;
+  height: 70vh;
+  left: 31vw;
+  margin-top: 6vh;
+  background-color: #1e1e1e;
+  border-radius: 30px;
+  padding-left: 2vw;
+  padding-top: 2vh;
+  box-shadow: 20px 25px 25px #555;
+
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+}

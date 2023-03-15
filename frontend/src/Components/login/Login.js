@@ -122,25 +122,27 @@ function Login() {
           'X-CSRFToken': csrftoken
         }
       })
-      .then(response=>response.json())
-      .then((data)=> {
+      .then((response)=> {
+        response.json().then((data)=> {
 
-        // ********************************************************************************************************************************************
-        // test si la réponse de l'api confirme la création de l'utilisateur
-        // ********************************************************************************************************************************************
-        if (data['status'] === 'ok') {
-          alert("Signin: " + signIn + "\nName: " + name.current.value + "\nforename: " + forename.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
-          
-          // envoie des données a la page postSignup et redirection
-          navigate("/postSignup",{state: data['status']});
-          
-        } else if (data['status'] === 'mail_used') {
-          alert("Adresse mail deja utilise")
-        } else {
-          alert("erreur lors de la création")
-        }
+          // ********************************************************************************************************************************************
+          // test si la réponse de l'api confirme la création de l'utilisateur
+          // ********************************************************************************************************************************************
+          // console.log(response.status);
+
+          if (data['status'] === 'ok') {
+            alert("Signin: " + signIn + "\nName: " + name.current.value + "\nforename: " + forename.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
+            
+            // envoie des données a la page postSignup et redirection
+            navigate("/postSignup",{state: data['status']});
+
+          } else if (data['status'] === 'mail_used') {
+            alert("Adresse mail deja utilise")
+          } else {
+            alert("erreur lors de la création")
+          }
+        })
       })
-
     }
   }
 
