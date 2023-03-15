@@ -30,13 +30,13 @@ class UserViewSet(viewsets.ViewSet):
             clearpwd=serializer.validated_data["MotherPwd"],
         )
         if type(user) == IntegrityError :
-            return Response(data={"status": "mail_used"}, status=status.HTTP_401_UNAUTHORIZED)                                 
+            return Response(data={"status": "mail_used"}, status=status.HTTP_409_CONFLICT)                                 
             
         else :
             user.send_verif_mail()
             return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
 
-    
+
 
 
     # POST /api/user/login/
