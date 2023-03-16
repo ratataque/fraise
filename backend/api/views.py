@@ -72,7 +72,7 @@ class UserViewSet(viewsets.ViewSet):
         else:
             return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)
 
-    # GET /api/user/{XXXX}/verif-email/
+    # GET /api/user/{XXXX}/verif_mail/
     @action(detail=True, methods=["get"])
     def verif_mail(self, request, pk=None):
         data = {"uuid": pk}

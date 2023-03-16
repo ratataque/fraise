@@ -22,7 +22,9 @@ class Users(models.Model):
 
         uuidaz = uuid.uuid4()
         sel = hashlib.sha256(str(uuidaz).encode("utf-8")).hexdigest()
-        poivre = open("/fraise/backend/api/poivre.txt", "r").read()
+        file = open("/fraise/backend/api/poivre.txt", "r")
+        poivre = file.read()
+        file.close()
         mdp = clearpwd
         securisation = sel + mdp + poivre
         securise = hashlib.sha256(securisation.encode("utf-8")).hexdigest()
@@ -66,7 +68,9 @@ class Users(models.Model):
     def check_password(self, clearpwd):
 
         sel = self.MotherPwd[0 : len(self.MotherPwd) // 2]
-        poivre = open("/fraise/backend/api/poivre.txt", "r").read()
+        file = open("/fraise/backend/api/poivre.txt", "r")
+        poivre = file.read()
+        file.close()
         mdp = clearpwd
         securisation = sel + mdp + poivre
         securise = hashlib.sha256(securisation.encode("utf-8")).hexdigest()

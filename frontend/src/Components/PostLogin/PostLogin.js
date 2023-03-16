@@ -18,7 +18,11 @@ function PostLogin() {
             <div id="test">{"Bonjour "+state["nom"]+" "+state["prenom"]}</div>
 
             <div className="website_container">
-                Website liste
+                <div className="titre_website">Website liste</div>
+
+                <div className="liste_website">
+
+                </div>
             </div>
 
             <div className="password_container">

@@ -28,13 +28,8 @@
   margin-top: 6vh;
   background-color: #444444;
   border-radius: 30px;
-  padding-left: 2vw;
-  padding-top: 2vh;
-  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
-
-  color: white;
-  font-weight: 700;
-  font-size: 3rem;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  border: solid 7px orangered;
 }
 
 .postLogin .password_container {
@@ -47,7 +42,33 @@
   border-radius: 30px;
   padding-left: 2vw;
   padding-top: 2vh;
-  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  border: solid 7px orangered;
+  /* background-image: url("../../assets/fraise_postlogin.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover; */
+
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+}
+
+.postLogin .website_container .titre_website {
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+  padding-left: 2vw;
+  padding-top: 1.4vh;
+  margin-bottom: 0.8vh;
+}
+
+.postLogin .website_container .liste_website {
+  position: relative;
+  height: 91.5%;
+  width: 100%;
+  background-color: white;
+  border-radius: 20px;
 
   color: white;
   font-weight: 700;
