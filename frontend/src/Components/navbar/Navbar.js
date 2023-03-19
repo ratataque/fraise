@@ -19,7 +19,7 @@ const Navbar = () => {
       <div className="logo">
         <GiStrawberry color="#ff4b2b" size={36}/>
         <p className="logo-text">
-		   <span>F</span>raise
+        <span>F</span>raise
         </p>
       </div>
       <menu>

@@ -42,7 +42,8 @@
   border-radius: 30px;
   padding-left: 2vw;
   padding-top: 2vh;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  /* box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; */
   border: solid 7px orangered;
   /* background-image: url("../../assets/fraise_postlogin.jpg");
   background-repeat: no-repeat;
@@ -69,8 +70,160 @@
   width: 100%;
   background-color: white;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1vh;
 
   color: white;
   font-weight: 700;
   font-size: 3rem;
+}
+
+.postLogin .website_container .list_site_cont {
+  position: relative;
+  height: 98.5%;
+  width: 100%;
+  background-color: darkgray;
+  border-radius: 0 0 20px 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow: auto;
+
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+}
+
+.postLogin .website_container .list_site_marg {
+  position: relative;
+  height: 6.5%;
+  width: 100%;
+  background-color: darkgray;
+  border-radius: 20px 20px 0 0;
+  margin-top: 1vh;
+  padding-top: 4vh;
+}
+
+.postLogin .website_container .list_site_cont .site {
+  margin-bottom: 1vh;
+  cursor: pointer;
+}
+
+/* .postLogin .website_container .list_site_cont .site:hover {
+  color: orangered;
+} */
+
+.postLogin .encoche {
+  position: absolute;
+  background-color: white;
+  width: 4.5vh;
+  height: 3.2vh;
+  z-index: 2;
+  border-radius: 0 0 180px 180px;
+}
+.postLogin .carre {
+  position: absolute;
+  background-color: white;
+  width: 6.5vh;
+  height: 1.9vh;
+  z-index: 1;
+}
+.postLogin .encoche:before,
+.postLogin .encoche:after {
+  content: "";
+  position: absolute;
+  height: 2.13vh;
+  width: 1.6vh;
+  top: 1vh;
+  background-color: darkgray;
+  z-index: 3;
+}
+.postLogin .encoche:before {
+  border-top-right-radius: 90%;
+  left: -1.16vh;
+}
+.postLogin .encoche:after {
+  border-top-left-radius: 90%;
+  left: 4.1vh;
+}
+
+.addButton {
+  position: absolute;
+  border-width: 2px;
+  border-style: solid;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s all;
+  z-index: 3;
+  background-color: orangered;
+}
+.addButton:before,
+.addButton:after {
+  content: "";
+  position: absolute;
+  height: 4px;
+  width: 4px;
+}
+.addButton:before {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-left-width: 2px;
+  border-left-style: solid;
+  left: 7px;
+  top: 3px;
+}
+.addButton:after {
+  border-top-width: 2px;
+  border-top-style: solid;
+  border-right-width: 2px;
+  border-right-style: solid;
+  left: 3px;
+  top: 7px;
+}
+.addButton--active {
+  border-color: orangered;
+}
+.addButton--active:before,
+.addButton--active:after {
+  border-color: white;
+}
+.addButton--active:hover {
+  scale: 1.2;
+}
+
+
+.postLogin .website_container .list_site_cont::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+
+.postLogin .website_container .list_site_cont::-webkit-scrollbar-thumb {
+  background-color: #444444;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid darkgray;  /* creates padding around scroll thumb */
+}
+
+.postLogin .website_container .list_site_cont .underline{
+  position: relative;
+}
+.postLogin .website_container .list_site_cont .underline::before{
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 3px;
+  background-color: orangered;
+  transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  top: 4vh;
+}
+@media (hover: hover) {
+  .postLogin .website_container .list_site_cont .underline:hover::before{
+    left: 0;
+    right: auto;
+    width: 100%;
+  }
 }
