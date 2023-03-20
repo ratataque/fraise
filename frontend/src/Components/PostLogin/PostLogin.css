@@ -1,5 +1,15 @@
+.postLogin .navbar {
+  position: relative;
+  left: 18vw
+}
+.postLogin .container {
+  margin: 0;
+  max-width: 70vw;
+}
 .postLogin .nav-links a {
     color: black;
+    font-size: 1.8rem;
+    font-weight: 500;
   }
 
 .postLogin a.btn-dark {
@@ -18,7 +28,13 @@
     flex-direction: column;
     font-size: 5rem;
     font-weight: 700;
-}  
+}
+
+.postLogin {
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+}
 
 .postLogin .website_container {
   position: absolute;
@@ -32,7 +48,7 @@
   border: solid 7px orangered;
 }
 
-.postLogin .password_container {
+.postLogin .add_password_container {
   position: absolute;
   width: 56vw;
   height: 70vh;
@@ -42,20 +58,77 @@
   border-radius: 30px;
   padding-left: 2vw;
   padding-top: 2vh;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  /* box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; */
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
   border: solid 7px orangered;
-  /* background-image: url("../../assets/fraise_postlogin.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover; */
+  transform: translateY(-100vh);
+  transition: 1s 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+}
+.postLogin .add_password_container.add_password {
+  transform: none !important;
+}
+
+.postLogin .password_container {
+  position: absolute;
+  width: 56vw;
+  height: 70vh;
+  left: 31vw;
+  margin-top: 6vh;
+  border-radius: 30px;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
+  transition: 1s 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+  box-sizing: border-box;
+  background-color: gray;
+  border: solid 7px orangered;
+}
+.postLogin .password_container .account_container {
+  position: relative;
+  width: 20vw;
+  height: 68.5vh;
+  background-color: #444444;
+  border-radius: 20px;
+  outline: solid 6px orangered;
+}
+.postLogin .password_container .account_container .list_account_cont {
+  position: relative;
+  height: 91.7%;
+  width: 100%;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  overflow: auto;
+
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+}
+.postLogin .password_container .account_container .list_account {
+  position: relative;
+  height: 100%;
+  width: 94%;
+  background-color: darkgray;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow: auto;
 
   color: white;
   font-weight: 700;
   font-size: 3rem;
 }
 
-.postLogin .website_container .titre_website {
+.postLogin .password_container.add_password {
+  transform: translateY(100vh) !important;
+}
+
+
+.titre_website {
   color: white;
   font-weight: 700;
   font-size: 3rem;
@@ -122,6 +195,18 @@
   height: 3.2vh;
   z-index: 2;
   border-radius: 0 0 180px 180px;
+  cursor: pointer;
+}
+.list_account_cont .encoche {
+  position: absolute;
+  background-color: white;
+  width: 4.5vh;
+  height: 2.5vh;
+  z-index: 2;
+  border-radius: 0 0 40px 40px;
+  cursor: pointer;
+  transform: rotate(90deg);
+  right: 1vh;
 }
 .postLogin .carre {
   position: absolute;
@@ -129,6 +214,14 @@
   width: 6.5vh;
   height: 1.9vh;
   z-index: 1;
+}
+.list_account_cont .carre {
+  position: absolute;
+  background-color: white;
+  width: 1.7vh;
+  height: 8.8vh;
+  z-index: 1;
+  right: 1.8vh;
 }
 .postLogin .encoche:before,
 .postLogin .encoche:after {
@@ -148,6 +241,24 @@
   border-top-left-radius: 90%;
   left: 4.1vh;
 }
+.list_account_cont .encoche:before,
+.list_account_cont .encoche:after {
+  content: "";
+  position: absolute;
+  height: 1.99vh;
+  width: 3.3vh;
+  top: 0.57vh;
+  background-color: darkgray;
+  z-index: 3;
+}
+.list_account_cont .encoche:before {
+  border-top-right-radius: 100%;
+  left: -2.59vh;
+}
+.list_account_cont .encoche:after {
+  border-top-left-radius: 100%;
+  left: 3.7vh;
+}
 
 .addButton {
   position: absolute;
@@ -160,6 +271,19 @@
   transition: 0.3s all;
   z-index: 3;
   background-color: orangered;
+}
+.list_account_cont .addButton {
+  position: absolute;
+  border-width: 2px;
+  border-style: solid;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s all;
+  z-index: 3;
+  background-color: orangered;
+  right: 1vh;
 }
 .addButton:before,
 .addButton:after {
@@ -191,8 +315,11 @@
 .addButton--active:after {
   border-color: white;
 }
-.addButton--active:hover {
-  scale: 1.2;
+.encoche:hover + .addButton {
+    scale: 1.2;
+}
+.addButton:hover {
+    scale: 1.2;
 }
 
 
@@ -220,10 +347,8 @@
   transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   top: 4vh;
 }
-@media (hover: hover) {
-  .postLogin .website_container .list_site_cont .underline:hover::before{
-    left: 0;
-    right: auto;
-    width: 100%;
-  }
+.postLogin .website_container .list_site_cont .underline:hover::before{
+  left: 0;
+  right: auto;
+  width: 100%;
 }

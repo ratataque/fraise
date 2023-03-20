@@ -3,6 +3,7 @@ import "./Navbar.css"
 import {GiStrawberry} from "react-icons/gi" //React-logo d'une fraise
 import {AiOutlineBars} from "react-icons/ai" //icone hamburger (les 3 traits ---)
 import {RiCloseLine} from "react-icons/ri" //icone d'une croix
+import { useNavigate } from "react-router-dom";
 import "../UI/button/Button.css"
 import Button from '../UI/button/Button'
 
@@ -11,12 +12,17 @@ import "./Navbar.css";
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
 
+  let navigate = useNavigate(); 
+  const accueil = () =>{ 
+    navigate("/");
+  }
+
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
   return (
     <nav className="navbar container">
-      <div className="logo">
+      <div className="logo" onClick={accueil}>
         <GiStrawberry color="#ff4b2b" size={36}/>
         <p className="logo-text">
         <span>F</span>raise
