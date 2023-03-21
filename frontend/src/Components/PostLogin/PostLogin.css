@@ -1,3 +1,14 @@
+.postLogin {
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../../assets/background_postlogin.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-attachment: fixed;
+}
 .postLogin .navbar {
   position: relative;
   left: 18vw
@@ -28,12 +39,6 @@
     flex-direction: column;
     font-size: 5rem;
     font-weight: 700;
-}
-
-.postLogin {
-  position: relative;
-  overflow: hidden;
-  height: 100vh;
 }
 
 .postLogin .website_container {
@@ -81,16 +86,19 @@
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
   transition: 1s 0.1s cubic-bezier(0.35, 0, 0.07, 1);
   box-sizing: border-box;
-  background-color: gray;
-  border: solid 7px orangered;
+  background-color: white;
+  /* border: solid 7px orangered; */
+  padding: 6px;
+  display: flex;
 }
 .postLogin .password_container .account_container {
   position: relative;
   width: 20vw;
-  height: 68.5vh;
+  height: 68.7vh;
   background-color: #444444;
   border-radius: 20px;
   outline: solid 6px orangered;
+  z-index: 2;
 }
 .postLogin .password_container .account_container .list_account_cont {
   position: relative;
@@ -110,21 +118,197 @@
 .postLogin .password_container .account_container .list_account {
   position: relative;
   height: 100%;
-  width: 94%;
+  width: 17.3vw;
   background-color: darkgray;
-  border-radius: 20px;
   display: flex;
   align-items: center;
   flex-direction: column;
   overflow: auto;
+  padding-top: 2vh;
 
   color: white;
   font-weight: 700;
   font-size: 3rem;
 }
+.password_container .display_password_cont {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #444444;
+  width: 70%;
+  height: 100%;
+  border-radius: 20px;
+  padding-left: 3.5vw;
+  padding-top: 6vh;
+  border: solid 6px orangered;
+  transition: all 0.25s ease;
+  overflow: hidden;
+  /* transform: translateX(80vw); */
+}
+.password_container .display_password_cont_titre {
+  position: absolute;
+  height: 91.5%;
+  width: 90.9%;
+}
+.display_password_cont .titre_website {
+  top: -6vh;
+  position: absolute;
+}
+.password_container .marge {
+  position: relative;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px 20px 14px 20px;
+  padding-right: 2vh;
+  padding-bottom: 2vh;
+  bottom: 0;
+  right: 0;
+  transition: all 0.25s ease;
+  transform: translateX(-40vw);
+  z-index: -1;
+}
+.password_container .display_password_cont_titre .marge.montre_display {
+  transform: none;
+  z-index: 1 !important;
+}
+.password_container .display_password {
+  position: relative;
+  background-color: darkgray;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding-left: 2vw;
+  padding-top: 2vh;
+}
+.display_password .titre_email {
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+}
+.display_password .email_field {
+  position: relative;
+  left: -1vw;
+  margin-top: 2vh;
+  height: 5vh;
+  width: 20vw;
+  border: none;
+  border-radius: 18px 40px 40px 18px;
+  padding: 0 40px;
+  font-size: 2.4rem;
+  font-weight: 500;
+  outline-color: orangered;
+  color: #444444;
+}
+.display_password .titre_password {
+  margin-top: 4vh;
+  color: white;
+  font-weight: 700;
+  font-size: 3rem;
+  transition: all 0.25s ease;
+  transition-delay: 250ms;
+
+}
+.display_password .password_field {
+  position: relative;
+  left: -1vw;
+  margin-top: 2vh;
+  height: 5vh;
+  width: 20vw;
+  border: none;
+  border-radius: 18px 40px 40px 18px;
+  padding: 0 40px;
+  font-size: 2.4rem;
+  font-weight: 500;
+  outline-color: orangered;
+  color: #444444;
+  transition: all 0.45s ease;
+  transition-delay: 250ms;
+}
+.display_password .btn_copy {
+  position: relative;
+  margin-left: 3vh;
+  padding: 6px 0px;
+  top: 0.3vh;
+  outline: none;
+  height: 5vh;
+  text-align: center;
+  width: 3vw;
+  border-radius: 12px 12px 12px 12px;
+  background: white;
+  border: 3px solid orangered;
+  color: #444444;
+  font-size: 2.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.display_password .btn_copy.active {
+  background: #444444;
+  color: white;
+}
+.display_password .btn_copy.active:hover {
+  /* background: white;
+  color: #444444; */
+  scale: 1.2;
+}
+.display_password .btn_copy:hover {
+  background: #444444;
+  color: white;
+}
+.display_password .btn_copy:active {
+  transition: all 0.15s ease;
+  scale: 0.8;
+}
+.display_password .btn_change {
+  position: absolute;
+  left: 1vw;
+  bottom: 9vh;
+  padding: 6px 0px;
+  outline: none;
+  height: 5vh;
+  text-align: center;
+  width: 7vw;
+  border-radius: 12px 12px 12px 12px;
+  background: white;
+  border: 3px solid orangered;
+  color: #444444;
+  font-size: 2.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.55s ease;
+}
+.display_password .btn_change:hover {
+  background: #444444;
+  color: white;
+}
+.display_password .btn_change:active {
+  transition: all 0.15s ease;
+  scale: 0.8;
+}
+
+.display_password .cacher {
+  transition-delay: 0ms;
+  transform: translateX(-21vw);
+}
+.display_password .email_cacher {
+  transition-delay: 200ms;
+  transform: translateY(-15vh);
+}
 
 .postLogin .password_container.add_password {
   transform: translateY(100vh) !important;
+}
+
+
+.password_container .new_password_cont {
+  position: absolute;
+  height: 91.5%;
+  width: 90.9%;
+}
+.password_container .new_password_cont .marge.montre_add {
+  transform: none;
+  z-index: 1 !important;
 }
 
 
@@ -178,12 +362,22 @@
   margin-top: 1vh;
   padding-top: 4vh;
 }
+.list_account_cont .list_account_marg {
+  position: relative;
+  height: 100%;
+  width: 1.467vw;
+  background-color: darkgray;
+  border-radius: 0 20px 20px 0;
+}
 
 .postLogin .website_container .list_site_cont .site {
   margin-bottom: 1vh;
   cursor: pointer;
 }
-
+.list_account .site {
+  margin-top: 1vh;
+  cursor: pointer;
+}
 /* .postLogin .website_container .list_site_cont .site:hover {
   color: orangered;
 } */
@@ -200,13 +394,13 @@
 .list_account_cont .encoche {
   position: absolute;
   background-color: white;
-  width: 4.5vh;
-  height: 2.5vh;
+  width: 2.2vw;
+  height: 1.36vw;
   z-index: 2;
   border-radius: 0 0 40px 40px;
   cursor: pointer;
   transform: rotate(90deg);
-  right: 1vh;
+  right: 0.49vw;
 }
 .postLogin .carre {
   position: absolute;
@@ -218,10 +412,10 @@
 .list_account_cont .carre {
   position: absolute;
   background-color: white;
-  width: 1.7vh;
-  height: 8.8vh;
+  width: 0.9vw;
+  height: 4vw;
   z-index: 1;
-  right: 1.8vh;
+  right: 0.9vw;
 }
 .postLogin .encoche:before,
 .postLogin .encoche:after {
@@ -245,19 +439,19 @@
 .list_account_cont .encoche:after {
   content: "";
   position: absolute;
-  height: 1.99vh;
-  width: 3.3vh;
-  top: 0.57vh;
+  height: 2vw;
+  width: 1.6vw;
+  top: 0.33vw;
   background-color: darkgray;
   z-index: 3;
 }
 .list_account_cont .encoche:before {
   border-top-right-radius: 100%;
-  left: -2.59vh;
+  left: -1vw;
 }
 .list_account_cont .encoche:after {
   border-top-left-radius: 100%;
-  left: 3.7vh;
+  left: 1.57vw;
 }
 
 .addButton {
@@ -283,7 +477,7 @@
   transition: 0.3s all;
   z-index: 3;
   background-color: orangered;
-  right: 1vh;
+  right: 0.56vw;
 }
 .addButton:before,
 .addButton:after {
@@ -326,17 +520,27 @@
 .postLogin .website_container .list_site_cont::-webkit-scrollbar {
   width: 12px;               /* width of the entire scrollbar */
 }
-
 .postLogin .website_container .list_site_cont::-webkit-scrollbar-thumb {
   background-color: #444444;    /* color of the scroll thumb */
   border-radius: 20px;       /* roundness of the scroll thumb */
   border: 3px solid darkgray;  /* creates padding around scroll thumb */
 }
 
-.postLogin .website_container .list_site_cont .underline{
+.list_account_cont .list_account::-webkit-scrollbar {
+  position: absolute;
+  width: 12px;               /* width of the entire scrollbar */
+  left: 1vh;
+}
+.list_account_cont .list_account::-webkit-scrollbar-thumb {
+  background-color: #444444;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid darkgray;  /* creates padding around scroll thumb */
+}
+
+.underline{
   position: relative;
 }
-.postLogin .website_container .list_site_cont .underline::before{
+.underline::before{
   content: '';
   position: absolute;
   bottom: 0;
@@ -347,7 +551,7 @@
   transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   top: 4vh;
 }
-.postLogin .website_container .list_site_cont .underline:hover::before{
+.underline:hover::before{
   left: 0;
   right: auto;
   width: 100%;
