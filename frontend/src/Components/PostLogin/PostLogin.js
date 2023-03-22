@@ -79,9 +79,9 @@ function PostLogin() {
 
                     <div className="list_account_cont">
                         <div className="list_account">
-                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true);}}>test@test.com</div>
-                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true);}}>test@test.com</div>
-                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true);}}>test@test.com</div>
+                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true); toggle_password(true);}}>test@test.com</div>
+                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true); toggle_password(true);}}>test@test.com</div>
+                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true); toggle_password(true);}}>test@test.com</div>
                         </div>
 
                         <div className="list_account_marg"></div>
@@ -129,6 +129,8 @@ function PostLogin() {
 
                                 <div className={"titre_password " + cacher}>Confirm Password :</div>
                                 <input type={"text"} className={"password_field " + cacher} ></input>
+                                <button className={cacher + " btn_copy " + active_password} onClick={() => toggle_password(prevState=>!prevState)}><AiOutlineEdit/></button>
+
                                 <button className={email_change + " btn_change "}>Confirm</button>
                             </div>
                         </div>

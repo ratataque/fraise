@@ -164,9 +164,9 @@
   padding-bottom: 2vh;
   bottom: 0;
   right: 0;
-  transition: all 0.25s ease;
+  transition: all 0.35s ease;
   transform: translateX(-40vw);
-  z-index: -1;
+  /* z-index: -1; */
 }
 .password_container .display_password_cont_titre .marge.montre_display {
   transform: none;
@@ -241,23 +241,28 @@
   font-size: 2.6rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.45s ease 250ms;
 }
+/* .display_password .btn_copy.cacher { */
+/*   transition: all 0.15s ease 0ms; */
+/* } */
 .display_password .btn_copy.active {
   background: #444444;
   color: white;
 }
 .display_password .btn_copy.active:hover {
+  transition: all 0.15s ease 0ms;
   /* background: white;
   color: #444444; */
   scale: 1.2;
 }
 .display_password .btn_copy:hover {
+  transition: all 0.15s ease 0ms;
   background: #444444;
   color: white;
 }
 .display_password .btn_copy:active {
-  transition: all 0.15s ease;
+  transition: all 0.15s ease 0ms;
   scale: 0.8;
 }
 .display_password .btn_change {
@@ -268,7 +273,7 @@
   outline: none;
   height: 5vh;
   text-align: center;
-  width: 7vw;
+  width: 120px;
   border-radius: 12px 12px 12px 12px;
   background: white;
   border: 3px solid orangered;
@@ -279,17 +284,23 @@
   transition: all 0.55s ease;
 }
 .display_password .btn_change:hover {
+  transition: all 0.25s ease;
+  transition-delay: 0ms;
   background: #444444;
   color: white;
 }
 .display_password .btn_change:active {
   transition: all 0.15s ease;
-  scale: 0.8;
+  transform: scale(0.8);
+}
+.display_password .btn_change.email_cacher:active {
+  transition: all 0.15s ease;
+  transform: translateY(-15vh) scale(0.8);
 }
 
 .display_password .cacher {
   transition-delay: 0ms;
-  transform: translateX(-21vw);
+  transform: translateX(-28vw);
 }
 .display_password .email_cacher {
   transition-delay: 200ms;
@@ -447,11 +458,11 @@
 }
 .list_account_cont .encoche:before {
   border-top-right-radius: 100%;
-  left: -1vw;
+  left: -0.93vw;
 }
 .list_account_cont .encoche:after {
   border-top-left-radius: 100%;
-  left: 1.57vw;
+  left: 1.53vw;
 }
 
 .addButton {
