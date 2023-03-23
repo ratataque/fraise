@@ -66,7 +66,7 @@
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
   border: solid 7px orangered;
   transform: translateY(-100vh);
-  transition: 1s 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+  transition: 750ms 0.1s cubic-bezier(0.35, 0, 0.07, 1);
 
   color: white;
   font-weight: 700;
@@ -84,7 +84,7 @@
   margin-top: 6vh;
   border-radius: 30px;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
-  transition: 1s 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+  transition: 750ms 0.1s cubic-bezier(0.35, 0, 0.07, 1);
   box-sizing: border-box;
   background-color: white;
   /* border: solid 7px orangered; */
@@ -194,7 +194,7 @@
   width: 20vw;
   border: none;
   border-radius: 18px 40px 40px 18px;
-  padding: 0 40px;
+  padding: 0 30px;
   font-size: 2.4rem;
   font-weight: 500;
   outline-color: orangered;
@@ -205,8 +205,8 @@
   color: white;
   font-weight: 700;
   font-size: 3rem;
-  transition: all 0.25s ease;
-  transition-delay: 250ms;
+  transition: all 0.35s ease;
+  transition-delay: 350ms;
 
 }
 .display_password .password_field {
@@ -217,17 +217,16 @@
   width: 20vw;
   border: none;
   border-radius: 18px 40px 40px 18px;
-  padding: 0 40px;
+  padding: 0 30px;
   font-size: 2.4rem;
   font-weight: 500;
   outline-color: orangered;
   color: #444444;
-  transition: all 0.45s ease;
-  transition-delay: 250ms;
+  transition: transform 0.35s ease 250ms;
 }
 .display_password .btn_copy {
   position: relative;
-  margin-left: 3vh;
+  margin-left: 1.3vw;
   padding: 6px 0px;
   top: 0.3vh;
   outline: none;
@@ -241,11 +240,12 @@
   font-size: 2.6rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.45s ease 250ms;
+  transition: all 0.25s ease, transform 0.35s ease 250ms;
 }
-/* .display_password .btn_copy.cacher { */
-/*   transition: all 0.15s ease 0ms; */
-/* } */
+.display_password .btn_generate {
+  width: 7vw;
+  margin-left: 1vw;
+}
 .display_password .btn_copy.active {
   background: #444444;
   color: white;
@@ -281,7 +281,7 @@
   font-size: 2.6rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.55s ease;
+  transition: all 0.25s ease, transform 0.45s ease;
 }
 .display_password .btn_change:hover {
   transition: all 0.25s ease;
@@ -297,13 +297,17 @@
   transition: all 0.15s ease;
   transform: translateY(-15vh) scale(0.8);
 }
+.display_password .btn_change.btn_cancel {
+  left: 23.4vw;
+}
+
 
 .display_password .cacher {
-  transition-delay: 0ms;
-  transform: translateX(-28vw);
+  transition: all 0.45s ease;
+  transform: translateX(-31vw);
 }
 .display_password .email_cacher {
-  transition-delay: 200ms;
+  transition: all 0.25s ease, transform 0.45s ease 250ms;
   transform: translateY(-15vh);
 }
 
