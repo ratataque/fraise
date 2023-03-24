@@ -152,6 +152,21 @@
   top: -6vh;
   position: absolute;
 }
+.new_password_cont .website_field {
+  position: relative;
+  left: 10vw;
+  top: -5vh;
+  height: 5vh;
+  width: 20vw;
+  border: none;
+  border-radius: 18px 40px 40px 18px;
+  padding: 0 30px;
+  font-size: 2.4rem;
+  font-weight: 500;
+  outline-color: orangered;
+  color: #444444;
+}
+
 .password_container .marge {
   position: relative;
   background-color: white;
@@ -170,12 +185,11 @@
   position: relative;
   background-color: white;
   width: 100%;
-  height: 91%;
+  height: 89.8%;
   border-radius: 20px 20px 20px 20px;
   padding-right: 2vh;
   padding-bottom: 2vh;
-  bottom: 0;
-  right: 0;
+  top: -3.8vh;
   transition: all 0.35s ease;
   /* z-index: -1; */
 }
@@ -315,10 +329,14 @@
 }
 .display_password .btn_change.email_cacher:active {
   transition: all 0.15s ease;
-  transform: translateY(-15vh) scale(0.8);
+  transform: translateY(-14vh) scale(0.8);
+}
+.add_password_container .btn_change.email_cacher:active {
+  transition: all 0.15s ease;
+  transform: translateY(-12vh) scale(0.8);
 }
 .display_password .btn_change.btn_cancel {
-  left: 23.4vw;
+  left: 14.8vw;
 }
 
 
@@ -328,7 +346,11 @@
 }
 .display_password .email_cacher {
   transition: all 0.25s ease, transform 0.45s ease 250ms;
-  transform: translateY(-15vh);
+  transform: translateY(-14vh);
+}
+.add_password_container .email_cacher {
+  transition: all 0.25s ease, transform 0.45s ease 250ms;
+  transform: translateY(-12vh);
 }
 
 .postLogin .password_container.add_password {
@@ -346,6 +368,7 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  padding-top: 0.3vh;
 }
 .password_container .new_password_cont .marge.montre_add {
   transform: none;
@@ -559,7 +582,7 @@
 
 
 .postLogin .website_container .list_site_cont::-webkit-scrollbar {
-  width: 12px;               /* width of the entire scrollbar */
+  width: 0.6vw;               /* width of the entire scrollbar */
 }
 .postLogin .website_container .list_site_cont::-webkit-scrollbar-thumb {
   background-color: #444444;    /* color of the scroll thumb */
@@ -569,7 +592,7 @@
 
 .list_account_cont .list_account::-webkit-scrollbar {
   position: absolute;
-  width: 12px;               /* width of the entire scrollbar */
+  width: 0.6vw;               /* width of the entire scrollbar */
   left: 1vh;
 }
 .list_account_cont .list_account::-webkit-scrollbar-thumb {

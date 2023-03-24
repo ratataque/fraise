@@ -46,6 +46,9 @@ function PostLogin() {
         }, 300);
     }
 
+    const handle_email_change = (event) => {
+        // change_generated_password(event.target.value)
+    }
     const handle_password_change = (event) => {
         change_generated_password(event.target.value)
     }
@@ -77,52 +80,53 @@ function PostLogin() {
 
                 <div className="liste_website">
                     <div className="encoche" onClick={() => toggle("add_password")}></div>
-                    <div className="addButton addButton--active" onClick={() => toggle("add_password")}></div>
+                    <div className="addButton addButton--active" onClick={() => {toggle("add_password");toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked)}}></div>
                     <div className="carre"></div>
 
                     <div className="list_site_marg"></div>
                     <div className="list_site_cont">
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
-                        <div className="site underline" onClick={() => toggle("")}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
+                        <div className="site underline" onClick={() => {toggle("");toggle_email(true); toggle_password(true);}}>Site test</div>
                     </div>
                 </div>
             </div>
 
             <div className={"add_password_container " + add_password} >
                     <div className="new_password_cont">
-                        <div className="titre_website">Add password</div>
+                        <div className="titre_website">Website : </div>
+                        <input id="email_add_new" type={"email"} className="website_field" placeholder="Example.com" ></input>
 
                         <div className={"marge " + switch_}>
                             <div className="display_password">
                                 <div className="titre_email"> Email / Username :</div>
-                                <input id="email_add" type={"email"} className="email_field" placeholder="Example@example.com" ></input>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email_add").value)}><BsClipboardPlus/></button>
+                                <input id="email_add_new" type={"email"} className="email_field" placeholder="Example@example.com" ></input>
+                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email_add_new").value)}><BsClipboardPlus/></button>
 
                                 <div className="titre_password">Password :</div>
-                                <input id="password_add" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change}></input>
+                                <input id="password_add_new" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change}></input>
                                 <button className={"btn_copy " + active_password} onClick={() => toggle_password(!edit_password)}><AiOutlineEdit/></button>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password_add").value)}><BsClipboardPlus/></button>
+                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password_add_new").value)}><BsClipboardPlus/></button>
 
                                 <div className={"titre_password " + cacher}>Confirm Password :</div>
                                 <input type={"text"} className={"password_field " + cacher} value={generated_password_change_confirm} onChange={handle_password_change_confirm}></input>
                                 <button className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
 
                                 <button className={email_change + " btn_change "}>Confirm</button>
-                                <button className={email_change + " btn_change btn_cancel "}>Cancel</button>
+                                <button className={email_change + " btn_change btn_cancel "} onClick={() => {toggle_email(false);toggle_password(true);change_generated_password(generated_password_main);change_generated_password_confirm(generated_password_main);}}>Cancel</button>
                             </div>
                         </div>
                     </div>
