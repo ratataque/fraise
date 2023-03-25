@@ -174,12 +174,8 @@ function PostLogin() {
         if (form_new_password.current.value === form_confirm_new_password.current.value) {
             console.log(username);
             console.log(email_main);
-            if (username === email_main || switch_ === "montre_add") {
-                website_dict[site][username] = form_new_password.current.value;
-            } else {
-                delete Object.assign(website_dict[site], {[username]: form_new_password.current.value})[email_main];
-                // website_dict[site][username] = form_new_password.current.value;
-            }
+
+            website_dict[site][username] = form_new_password.current.value;
             set_new_website_dict(website_dict);
 
             display_another_password(username)
@@ -192,14 +188,14 @@ function PostLogin() {
         event.preventDefault();
 
         var site = website_current
-        var username = form_new_email.current.value
-        if (form_new_password.current.value === form_confirm_new_password.current.value) {
+        var username = form_change_email.current.value
+        if (form_change_password.current.value === form_confirm_change_password.current.value) {
             console.log(username);
             console.log(email_main);
-            if (username === email_main || switch_ === "montre_add") {
+            if (username === email_main) {
                 website_dict[site][username] = form_new_password.current.value;
             } else {
-                delete Object.assign(website_dict[site], {[username]: form_new_password.current.value})[email_main];
+                delete Object.assign(website_dict[site], {[username]: form_change_password.current.value})[email_main];
                 // website_dict[site][username] = form_new_password.current.value;
             }
             set_new_website_dict(website_dict);
@@ -317,7 +313,7 @@ function PostLogin() {
 
                         <div className={"marge " + switch_}>
                             <div className="display_password">
-                                <form id="form_change_password" onSubmit={(event) => submit_new_password(event)}>
+                                <form id="form_change_password" onSubmit={(event) => submit_change_password(event)}>
                                     <div className="titre_email"> Email / Username :</div>
                                     <input id="email" type={"text"} className="email_field" readOnly={edit_email} value={change_email} onChange={handle_email_change} ref={form_change_email}></input>
                                     <button type="button" className={"btn_copy " + active_email} onClick={() => toggle_email(!edit_email)}><AiOutlineEdit/></button>
