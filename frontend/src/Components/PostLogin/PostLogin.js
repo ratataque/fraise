@@ -188,7 +188,7 @@ function PostLogin() {
                         <div className={"marge " + switch_}>
                             <div className="display_password">
                                 <div className="titre_email"> Email / Username :</div>
-                                <input id="email" type={"email"} className="email_field" readOnly={edit_email} defaultValue="test@test.com"></input>
+                                <input id="email" type={"email"} className="email_field" readOnly={edit_email} Value="test@test.com"></input>
                                 <button className={"btn_copy " + active_email} onClick={() => toggle_email(!edit_email)}><AiOutlineEdit/></button>
                                 <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email").value)}><BsClipboardPlus/></button>
 
