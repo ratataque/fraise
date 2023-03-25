@@ -82,7 +82,8 @@
   margin-top: 6vh;
   border-radius: 30px;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
-  transition: 750ms 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+  transition: all 750ms 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+  /* transition: transform 0.35s ease, translateX 0.95s ease; */
   box-sizing: border-box;
   background-color: white;
   /* border: solid 7px orangered; */
@@ -154,7 +155,7 @@
 }
 .new_password_cont .website_field {
   position: relative;
-  left: 10vw;
+  left: 11vw;
   top: -5vh;
   height: 5vh;
   width: 20vw;
@@ -212,13 +213,14 @@
   width: 100%;
   height: 100%;
   border-radius: 20px;
-  padding-left: 2vw;
+  padding-left: 3vw;
   padding-top: 2vh;
 }
 .display_password .titre_email {
   color: white;
   font-weight: 700;
   font-size: 3rem;
+
 }
 .display_password .email_field {
   position: relative;
@@ -317,6 +319,9 @@
   cursor: pointer;
   transition: all 0.25s ease, transform 0.45s ease;
 }
+.add_password_container .btn_change {
+  left: 2vw;
+}
 .display_password .btn_change:hover {
   transition: all 0.25s ease;
   transition-delay: 0ms;
@@ -338,11 +343,21 @@
 .display_password .btn_change.btn_cancel {
   left: 14.8vw;
 }
+.add_password_container .btn_change.btn_cancel {
+  left: 15.8vw;
+}
 
 
+.password_container.transi {
+  transition: all 350ms 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+}
+.password_container.cacher {
+  transition: all 350ms 0.1s cubic-bezier(0.35, 0, 0.07, 1);
+  transform: translateX(80vw);
+}
 .display_password .cacher {
   transition: all 0.45s ease;
-  transform: translateX(-31vw);
+  transform: translateX(-32.2vw);
 }
 .display_password .email_cacher {
   transition: all 0.25s ease, transform 0.45s ease 250ms;
@@ -380,10 +395,28 @@
   color: white;
   font-weight: 700;
   font-size: 3rem;
-  padding-left: 2vw;
+  padding-left: 3vw;
   padding-top: 1.4vh;
   margin-bottom: 0.8vh;
 }
+.recherche {
+  position: absolute;
+  color: gray;
+  font-weight: 700;
+  font-size: 2.5rem;
+  top: 0.8vh;
+  width: 18vw;
+  padding: 0 1.5vw;
+  outline-color: orangered;
+  border-radius: 14px;
+  height: 4vh;
+  border: none;
+  /* background-color: gray; */
+  /* border: 2px #444444 solid; */
+}
+/* .recherche::placeholder {
+  color: white;
+} */
 
 .postLogin .website_container .liste_website {
   position: relative;
@@ -394,7 +427,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 1vh;
+  padding-top: 5.5vh;
 
   color: white;
   font-weight: 700;
@@ -594,11 +627,13 @@
   position: absolute;
   width: 0.6vw;               /* width of the entire scrollbar */
   left: 1vh;
+  z-index: 5;
 }
 .list_account_cont .list_account::-webkit-scrollbar-thumb {
   background-color: #444444;    /* color of the scroll thumb */
   border-radius: 20px;       /* roundness of the scroll thumb */
   border: 3px solid darkgray;  /* creates padding around scroll thumb */
+  z-index: 5;
 }
 
 .underline{
