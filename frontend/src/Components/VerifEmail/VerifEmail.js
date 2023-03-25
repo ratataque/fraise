@@ -39,7 +39,7 @@ function VerifEmail() {
         <div className="VerifEmail">
             <Navbar/>
             {/* {verif(uuid)} */}
-            <div id="test"> <p>{"Compte activé ! vous pouvez vous connecter."}</p></div>
+            <div id="verif_mail"> <p>{"Compte activé ! vous pouvez vous connecter."}</p></div>
         </div>
     );
 }

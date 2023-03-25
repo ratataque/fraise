@@ -15,7 +15,7 @@ function PostSignup() {
     return (
         <div className="PostSignup">
             <Navbar/>
-            <div id="test"> <p>{"Inscription réussi ! merci de valider votre compte grâce a l'email que nous vous avons envoyé."}</p></div>
+            <div id="post_signup"> <p>{"Inscription réussi ! merci de valider votre compte grâce a l'email que nous vous avons envoyé."}</p></div>
         </div>
     );
 }

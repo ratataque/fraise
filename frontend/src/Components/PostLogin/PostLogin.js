@@ -4,16 +4,32 @@ import {Navbar} from "../../Components";
 import {useLocation } from 'react-router-dom';
 import {BsClipboardPlus} from "react-icons/bs" //React-logo d'une fraise
 import {AiOutlineEdit} from "react-icons/ai" //React-logo d'une fraise
+import strawberry_guy from "../../assets/strawberry_guy.png" //React-logo d'une fraise
 // import {BigUint64Array} from "typescript/lib";
 
 
 function PostLogin() {
     const {state} = useLocation();
 
+    const form_website = useRef(null)
+    const form_email = useRef(null)
+    const form_new_email = useRef(null)
+    const form_change_email = useRef(null)
+    const form_password = useRef(null)
+    const form_new_password = useRef(null)
+    const form_change_password = useRef(null)
+    const form_confirm_password = useRef(null)
+    const form_confirm_new_password = useRef(null)
+    const form_confirm_change_password = useRef(null)
+
+
     const [isButtonClicked, setIsButtonClicked] = useState(false);
-    const [generated_password_main, set_generated_password] = useState("");
+    const [generated_password_main, set_generated_password_main] = useState("");
     const [generated_password_change, change_generated_password] = useState("");
     const [generated_password_change_confirm, change_generated_password_confirm] = useState("");
+
+    const [email_main, set_email_main] = useState("");
+    const [change_email, set_change_email] = useState("");
 
     const test_data = {
                         "Site test 1": {"test1@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
@@ -35,10 +51,22 @@ function PostLogin() {
     const [website_dict, set_new_website_dict] = useState(test_data);
     const [website_current, set_current_website] = useState("");
 
-    function set_current_website_func(e) {
+    function set_current_website_props(e) {
+        var id = e.target.getAttribute("id")
         setTimeout(() => {
-            set_current_website(e.target.getAttribute("id"))
-        }, 350);
+            if (switch_ !== "montre_display") {
+                marg_switch("montre_display");
+            }
+
+            var mail = Object.keys(website_dict[id])[0]
+            var pswd = Object.values(website_dict[id])[0]
+            set_current_website(id)
+            set_email_main(mail)
+            set_change_email(mail)
+            set_generated_password_main(pswd);
+            change_generated_password(pswd);
+            change_generated_password_confirm(pswd);
+        }, 100);
     }
 
     useEffect(() => {
@@ -58,7 +86,6 @@ function PostLogin() {
                 window.crypto.getRandomValues(new Uint8Array(1))[0]
             ).join('')
 
-        set_generated_password(password);
         change_generated_password(password);
         change_generated_password_confirm(password);
     }, [isButtonClicked])
@@ -85,7 +112,7 @@ function PostLogin() {
     }
 
     const handle_email_change = (event) => {
-        // change_generated_password(event.target.value)
+        set_change_email(event.target.value)
     }
     const handle_password_change = (event) => {
         change_generated_password(event.target.value)
@@ -94,6 +121,94 @@ function PostLogin() {
         change_generated_password_confirm(event.target.value)
     }
 
+    function submit_new_website(event) {
+        event.preventDefault();
+
+        var site = form_website.current.value
+        if (form_password.current.value === form_confirm_password.current.value) {
+            website_dict[site] = {[form_email.current.value] : form_password.current.value};
+            set_new_website_dict(website_dict);
+
+            toggle_email(true);
+            toggle_password(true);
+            toggle("");
+            document.getElementById("email_add_new").value="";
+            document.getElementById("website_new").value="";
+            marg_switch("montre_display");
+
+            var mail = Object.keys(website_dict[site])[0]
+            var pswd = Object.values(website_dict[site])[0]
+            set_current_website(site)
+            set_email_main(mail)
+            set_change_email(mail)
+            set_generated_password_main(pswd);
+            change_generated_password(pswd);
+            change_generated_password_confirm(pswd);
+        } else {
+            alert("Les deux mots passes ne sont pas identique !")
+        }
+    }
+
+    function display_another_password(username) {
+        var site = website_current
+
+        toggle_email(true);
+        toggle_password(true);
+        toggle("");
+        document.getElementById("email_add").value="";
+        marg_switch("montre_display");
+
+        var pswd = website_dict[site][username]
+        set_email_main(username)
+        set_change_email(username)
+        set_generated_password_main(pswd);
+        change_generated_password(pswd);
+        change_generated_password_confirm(pswd);
+    }
+
+    function submit_new_password(event) {
+        event.preventDefault();
+
+        var site = website_current
+        var username = form_new_email.current.value
+        if (form_new_password.current.value === form_confirm_new_password.current.value) {
+            console.log(username);
+            console.log(email_main);
+            if (username === email_main || switch_ === "montre_add") {
+                website_dict[site][username] = form_new_password.current.value;
+            } else {
+                delete Object.assign(website_dict[site], {[username]: form_new_password.current.value})[email_main];
+                // website_dict[site][username] = form_new_password.current.value;
+            }
+            set_new_website_dict(website_dict);
+
+            display_another_password(username)
+        } else {
+            alert("Les deux mots passes ne sont pas identique !")
+        }
+    }
+
+    function submit_change_password(event) {
+        event.preventDefault();
+
+        var site = website_current
+        var username = form_new_email.current.value
+        if (form_new_password.current.value === form_confirm_new_password.current.value) {
+            console.log(username);
+            console.log(email_main);
+            if (username === email_main || switch_ === "montre_add") {
+                website_dict[site][username] = form_new_password.current.value;
+            } else {
+                delete Object.assign(website_dict[site], {[username]: form_new_password.current.value})[email_main];
+                // website_dict[site][username] = form_new_password.current.value;
+            }
+            set_new_website_dict(website_dict);
+
+            display_another_password(username)
+        } else {
+            alert("Les deux mots passes ne sont pas identique !")
+        }
+    }
 
     const [add_password, toggle] = React.useState("add_password");
     const [edit_password, toggle_password] = React.useState(true);
@@ -111,7 +226,7 @@ function PostLogin() {
     return (
         <div className="postLogin">
             <Navbar/>
-            {/* <div id="test">{"Bonjour "+state["nom"]+" "+state["prenom"]}</div> */}
+            {/* <div id="presentation">{"Bonjour "+state["nom"]+" "+state["prenom"]}</div> */}
 
             <div className="website_container">
                 <div className="titre_website">Website list</div>
@@ -127,7 +242,14 @@ function PostLogin() {
                     <div className="list_site_marg"></div>
                     <div className="list_site_cont">
                         {
-                            Object.entries(website_dict).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {transi_website(); toggle("");toggle_email(true); toggle_password(true);set_current_website_func(e)}}>{key}</div>)
+                            Object.entries(website_dict).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {
+                                                                                                                    transi_website();
+                                                                                                                    toggle("");
+                                                                                                                    toggle_email(true);
+                                                                                                                    toggle_password(true);
+
+                                                                                                                    set_current_website_props(e);
+                                                                                                                }}>{key}</div>)
                         }
                     </div>
                 </div>
@@ -135,28 +257,39 @@ function PostLogin() {
 
             <div className={" add_password_container " + add_password} >
                     <div className="new_password_cont">
-                        <div className="titre_website">Website : </div>
-                        <input type="text" className="website_field" placeholder="Example.com" ></input>
+                        <form id="form_new_website" onSubmit={(event) => {submit_new_website(event)}}>
+                            <div className="titre_website">Website : </div>
+                            <input id="website_new" type="text" className="website_field" placeholder="Example.com" ref={form_website} required></input>
 
-                        <div className={"marge " + switch_}>
-                            <div className="display_password">
-                                <div className="titre_email"> Email / Username :</div>
-                                <input id="email_add_new" type={"email"} className="email_field" placeholder="Example@example.com" ></input>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email_add_new").value)}><BsClipboardPlus/></button>
+                            <div className={"marge " + switch_}>
+                                <div className="display_password">
+                                    <div className="titre_email"> Email / Username :</div>
+                                    <input id="email_add_new" type={"text"} className="email_field" placeholder="Example@example.com" ref={form_email} required></input>
+                                    <button type="button" className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email_add_new").value)}><BsClipboardPlus/></button>
 
-                                <div className="titre_password">Password :</div>
-                                <input id="password_add_new" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change}></input>
-                                <button className={"btn_copy " + active_password} onClick={() => toggle_password(!edit_password)}><AiOutlineEdit/></button>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password_add_new").value)}><BsClipboardPlus/></button>
+                                    <div className="titre_password">Password :</div>
+                                    <input id="password_add_new" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change}ref={form_password} required></input>
+                                    <button type="button" className={"btn_copy " + active_password} onClick={() => toggle_password(!edit_password)}><AiOutlineEdit/></button>
+                                    <button type="button" className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password_add_new").value)}><BsClipboardPlus/></button>
 
-                                <div className={"titre_password " + cacher}>Confirm Password :</div>
-                                <input type={"text"} className={"password_field " + cacher} value={generated_password_change_confirm} onChange={handle_password_change_confirm}></input>
-                                <button className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
+                                    <div className={"titre_password " + cacher}>Confirm Password :</div>
+                                    <input type={"text"} className={"password_field " + cacher} value={generated_password_change_confirm} onChange={handle_password_change_confirm} ref={form_confirm_password} required></input>
+                                    <button type="button" className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
 
-                                <button className={email_change + " btn_change "}>Confirm</button>
-                                <button className={email_change + " btn_change btn_cancel "} onClick={() => {toggle_email(false);toggle_password(true);change_generated_password(generated_password_main);change_generated_password_confirm(generated_password_main);}}>Cancel</button>
+                                    <button type="submit" className={email_change + " btn_change "} >Confirm</button>
+                                    <button type="button" className={email_change + " btn_change btn_cancel "} onClick={() => {
+                                                                                                                    toggle_email(true);
+                                                                                                                    toggle_password(true);
+                                                                                                                    toggle("");
+                                                                                                                    document.getElementById("email_add_new").value="";
+                                                                                                                    document.getElementById("website_new").value="";
+                                                                                                                    marg_switch("montre_display");
+                                                                                                                }}>Cancel</button>
+
+                                    <img src={strawberry_guy} alt="strawberry guy" className="strawberry_guy"></img>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
             </div>
 
@@ -167,11 +300,8 @@ function PostLogin() {
                     <div className="list_account_cont">
                         <div className="list_account">
                         {
-                            website_current ? Object.entries(website_dict[website_current]).map( ([key, value]) => <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true); toggle_password(true);}}>{key}</div>) : <div className="site underline" onClick={() => {marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked);}}>Add</div>
+                            website_current ? Object.entries(website_dict[website_current]).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {display_another_password(e.target.getAttribute("id"))}}>{key}</div>) : <div className="site underline" onClick={() => {marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked);}}>Add</div>
                         }
-                            {/* <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true); toggle_password(true);}}>test@test.com</div>
-                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true); toggle_password(true);}}>test@test.com</div>
-                            <div className="site underline" onClick={() => {toggle(""); marg_switch("montre_display"); toggle_email(true); toggle_password(true);}}>test@test.com</div> */}
                         </div>
 
                         <div className="list_account_marg"></div>
@@ -187,47 +317,49 @@ function PostLogin() {
 
                         <div className={"marge " + switch_}>
                             <div className="display_password">
-                                <div className="titre_email"> Email / Username :</div>
-                                <input id="email" type={"email"} className="email_field" readOnly={edit_email} Value="test@test.com"></input>
-                                <button className={"btn_copy " + active_email} onClick={() => toggle_email(!edit_email)}><AiOutlineEdit/></button>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email").value)}><BsClipboardPlus/></button>
+                                <form id="form_change_password" onSubmit={(event) => submit_new_password(event)}>
+                                    <div className="titre_email"> Email / Username :</div>
+                                    <input id="email" type={"text"} className="email_field" readOnly={edit_email} value={change_email} onChange={handle_email_change} ref={form_change_email}></input>
+                                    <button type="button" className={"btn_copy " + active_email} onClick={() => toggle_email(!edit_email)}><AiOutlineEdit/></button>
+                                    <button type="button" className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email").value)}><BsClipboardPlus/></button>
 
-                                <div className="titre_password">Password :</div>
-                                <input id="password" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change}></input>
-                                <button className={"btn_copy " + active_password} onClick={() => toggle_password(!edit_password)}><AiOutlineEdit/></button>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password").value)}><BsClipboardPlus/></button>
+                                    <div className="titre_password">Password :</div>
+                                    <input id="password" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change} ref={form_change_password}></input>
+                                    <button type="button" className={"btn_copy " + active_password} onClick={() => toggle_password(!edit_password)}><AiOutlineEdit/></button>
+                                    <button type="button" className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password").value)}><BsClipboardPlus/></button>
 
-                                <div className={"titre_password " + cacher}>Confirm Password :</div>
-                                <input type={"text"} className={"password_field " + cacher} value={generated_password_change_confirm} onChange={handle_password_change_confirm}></input>
-                                <button className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
+                                    <div className={"titre_password " + cacher}>Confirm Password :</div>
+                                    <input type={"text"} className={"password_field " + cacher} value={generated_password_change_confirm} onChange={handle_password_change_confirm} ref={form_confirm_change_password}></input>
+                                    <button type="button" className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
 
-                                <button className={email_change + " btn_change " + cacher}>Change</button>
-                                <button className={email_change + " btn_change btn_cancel " + cacher} onClick={() => {toggle_email(true);toggle_password(true);change_generated_password(generated_password_main);change_generated_password_confirm(generated_password_main);}}>Cancel</button>
+                                    <button type="submit" className={email_change + " btn_change " + cacher}>Change</button>
+                                    <button type="button" className={email_change + " btn_change btn_cancel " + cacher} onClick={() => {toggle_email(true);toggle_password(true);set_change_email(email_main);change_generated_password(generated_password_main);change_generated_password_confirm(generated_password_main);}}>Cancel</button>
+                                </form>
                             </div>
                         </div>
                     </div>
 
 
                     <div className="new_password_cont">
-                        <div className="titre_website">Site test</div>
-
                         <div className={"marge " + switch_}>
                             <div className="display_password">
-                                <div className="titre_email"> Email / Username :</div>
-                                <input id="email_add" type={"email"} className="email_field" placeholder="Example@example.com" ></input>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email_add").value)}><BsClipboardPlus/></button>
+                                <form id="form_new_password" onSubmit={(event) => {submit_new_password(event)}}>
+                                    <div className="titre_email"> Email / Username :</div>
+                                    <input id="email_add" type={"text"} className="email_field" placeholder="Example@example.com" ref={form_new_email} required></input>
+                                    <button type="button" className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("email_add").value)}><BsClipboardPlus/></button>
 
-                                <div className="titre_password">Password :</div>
-                                <input id="password_add" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change}></input>
-                                <button className={"btn_copy " + active_password} onClick={() => toggle_password(!edit_password)}><AiOutlineEdit/></button>
-                                <button className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password_add").value)}><BsClipboardPlus/></button>
+                                    <div className="titre_password">Password :</div>
+                                    <input id="password_add" type={password} className="password_field" readOnly={edit_password} value={generated_password_change} onChange={handle_password_change} ref={form_new_password} required></input>
+                                    <button type="button" className={"btn_copy " + active_password} onClick={() => toggle_password(!edit_password)}><AiOutlineEdit/></button>
+                                    <button type="button" className="btn_copy" onClick={() => navigator.clipboard.writeText(document.getElementById("password_add").value)}><BsClipboardPlus/></button>
 
-                                <div className={"titre_password " + cacher}>Confirm Password :</div>
-                                <input type={"text"} className={"password_field " + cacher} value={generated_password_change_confirm} onChange={handle_password_change_confirm}></input>
-                                <button className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
+                                    <div className={"titre_password " + cacher}>Confirm Password :</div>
+                                    <input type={"text"} className={"password_field " + cacher} value={generated_password_change_confirm} onChange={handle_password_change_confirm} ref={form_confirm_new_password} required></input>
+                                    <button type="button" className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
 
-                                <button className={email_change + " btn_change "}>Confirm</button>
-                                <button className={email_change + " btn_change btn_cancel "} onClick={() => {toggle_email(false);toggle_password(true);change_generated_password(generated_password_main);change_generated_password_confirm(generated_password_main);}}>Cancel</button>
+                                    <button type="submit" className={email_change + " btn_change "}>Confirm</button>
+                                    <button type="button" className={email_change + " btn_change btn_cancel "} onClick={() => {toggle_email(true);toggle_password(true);marg_switch("montre_display");document.getElementById("email_add").value="";}}>Cancel</button>
+                                </form>
                             </div>
                         </div>
                     </div>
