@@ -233,7 +233,7 @@ function PostLogin() {
         set_new_website_dict(website_dict)
 
         if (Object.keys(website_dict).length === 0) {
-            toggle_email(true);
+            toggle_email(false);
             toggle_password(true);
             toggle("add_password");
             document.getElementById("email_add_new").value="";
