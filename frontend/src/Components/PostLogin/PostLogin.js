@@ -49,7 +49,7 @@ function PostLogin() {
                         "Site test 15": {"test15@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
                     }
     const [website_dict, set_new_website_dict] = useState(test_data);
-    const [website_current, set_current_website] = useState("");
+    const [website_current, set_current_website] = useState(Object.keys(website_dict)[0]);
 
     function set_current_website_props(e) {
         var id = e.target.getAttribute("id")
@@ -58,8 +58,16 @@ function PostLogin() {
                 marg_switch("montre_display");
             }
 
-            var mail = Object.keys(website_dict[id])[0]
-            var pswd = Object.values(website_dict[id])[0]
+            if (Object.keys(website_dict[id]).length === 0) {
+                setIsButtonClicked(!isButtonClicked);
+                var mail = "";
+                var pswd = generated_password_change;
+                toggle_email(false);
+                marg_switch("montre_add");
+            } else {
+                var mail = Object.keys(website_dict[id])[0]
+                var pswd = Object.values(website_dict[id])[0]
+            }
             set_current_website(id)
             set_email_main(mail)
             set_change_email(mail)
@@ -149,8 +157,8 @@ function PostLogin() {
         }
     }
 
-    function display_another_password(username) {
-        var site = website_current
+    function display_another_password(site, username) {
+        // var site = website_current
 
         toggle_email(true);
         toggle_password(true);
@@ -178,7 +186,7 @@ function PostLogin() {
             website_dict[site][username] = form_new_password.current.value;
             set_new_website_dict(website_dict);
 
-            display_another_password(username)
+            display_another_password(site, username)
         } else {
             alert("Les deux mots passes ne sont pas identique !")
         }
@@ -190,8 +198,6 @@ function PostLogin() {
         var site = website_current
         var username = form_change_email.current.value
         if (form_change_password.current.value === form_confirm_change_password.current.value) {
-            console.log(username);
-            console.log(email_main);
             if (username === email_main) {
                 website_dict[site][username] = form_new_password.current.value;
             } else {
@@ -200,10 +206,59 @@ function PostLogin() {
             }
             set_new_website_dict(website_dict);
 
-            display_another_password(username)
+            display_another_password(site, username)
         } else {
             alert("Les deux mots passes ne sont pas identique !")
         }
+    }
+
+    function delete_password(username) {
+        var site = website_dict[website_current]
+
+        delete site[username]
+        set_new_website_dict(website_dict)
+        if (Object.keys(site).length === 0) {
+            toggle_email(false);
+            toggle_password(true);
+            toggle("");
+            document.getElementById("email_add").value="";
+            marg_switch("montre_add");
+        } else {
+            display_another_password(site, Object.keys(site)[0])
+        }
+    }
+
+    function delete_website(website) {
+        delete website_dict[website]
+        set_new_website_dict(website_dict)
+
+        if (Object.keys(website_dict).length === 0) {
+            toggle_email(true);
+            toggle_password(true);
+            toggle("add_password");
+            document.getElementById("email_add_new").value="";
+            document.getElementById("website_new").value="";
+        } else {
+            var site = Object.keys(website_dict)[0];
+            set_current_website(site)
+            display_another_password(site, Object.keys(website_dict[site])[0])
+        }
+    }
+
+    function cancel_add() {
+        toggle("")
+        toggle_password(true);
+        change_generated_password(generated_password_main)
+        change_generated_password_confirm(generated_password_main)
+        if (Object.keys(website_dict[website_current]).length !== 0) {
+            toggle_email(true);
+            marg_switch("montre_display")
+        } else {
+            marg_switch("montre_add")
+        }
+        document.getElementById("email_add").value="";
+        document.getElementById("email_add_new").value="";
+        document.getElementById("website_new").value="";
     }
 
     const [add_password, toggle] = React.useState("add_password");
@@ -215,9 +270,6 @@ function PostLogin() {
     var email_change = !edit_email && edit_password ? "email_cacher" : "";
     var active_email = !edit_email ? "active" : ""
     var active_password = !edit_password ? "active" : ""
-
-    // console.log(generated_password_main);
-    // console.log(generated_password_change);
 
     return (
         <div className="postLogin">
@@ -238,14 +290,14 @@ function PostLogin() {
                     <div className="list_site_marg"></div>
                     <div className="list_site_cont">
                         {
-                            Object.entries(website_dict).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {
+                            Object.keys(website_dict).length !== 0 ? Object.entries(website_dict).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {
                                                                                                                     transi_website();
                                                                                                                     toggle("");
                                                                                                                     toggle_email(true);
                                                                                                                     toggle_password(true);
 
                                                                                                                     set_current_website_props(e);
-                                                                                                                }}>{key}</div>)
+                                                                                                                }}>{key}</div>) : <div className="site underline" onClick={() => {toggle("add_password");toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked)}}>Add</div> 
                         }
                     </div>
                 </div>
@@ -273,14 +325,7 @@ function PostLogin() {
                                     <button type="button" className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
 
                                     <button type="submit" className={email_change + " btn_change "} >Confirm</button>
-                                    <button type="button" className={email_change + " btn_change btn_cancel "} onClick={() => {
-                                                                                                                    toggle_email(true);
-                                                                                                                    toggle_password(true);
-                                                                                                                    toggle("");
-                                                                                                                    document.getElementById("email_add_new").value="";
-                                                                                                                    document.getElementById("website_new").value="";
-                                                                                                                    marg_switch("montre_display");
-                                                                                                                }}>Cancel</button>
+                                    <button type="button" className={email_change + " btn_change btn_cancel "} onClick={() => {cancel_add()}}>Cancel</button>
 
                                     <img src={strawberry_guy} alt="strawberry guy" className="strawberry_guy"></img>
                                 </div>
@@ -296,7 +341,7 @@ function PostLogin() {
                     <div className="list_account_cont">
                         <div className="list_account">
                         {
-                            website_current ? Object.entries(website_dict[website_current]).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {display_another_password(e.target.getAttribute("id"))}}>{key}</div>) : <div className="site underline" onClick={() => {marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked);}}>Add</div>
+                            Object.keys(website_dict).length !== 0 && Object.keys(website_dict[website_current]).length !== 0 ? Object.entries(website_dict[website_current]).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {display_another_password(website_current, e.target.getAttribute("id"))}}>{key}</div>) : <div className="site underline" onClick={() => {marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked);}}>Add</div>
                         }
                         </div>
 
@@ -304,6 +349,8 @@ function PostLogin() {
                         <div className="encoche" onClick={() => {marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked);}}></div>
                         <div className="addButton addButton--active" onClick={() => {marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked);}}></div>
                         <div className="carre"></div>
+
+                        <button type="button" className="delete_website" onClick={() => delete_website(website_current)}>Delete Website</button>
                     </div>
                 </div>
 
@@ -330,6 +377,7 @@ function PostLogin() {
 
                                     <button type="submit" className={email_change + " btn_change " + cacher}>Change</button>
                                     <button type="button" className={email_change + " btn_change btn_cancel " + cacher} onClick={() => {toggle_email(true);toggle_password(true);set_change_email(email_main);change_generated_password(generated_password_main);change_generated_password_confirm(generated_password_main);}}>Cancel</button>
+                                    <button type="button" className={cacher + " btn_change btn_delete "} onClick={() => {delete_password(email_main);}}>Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -354,7 +402,7 @@ function PostLogin() {
                                     <button type="button" className={cacher + " btn_copy btn_generate"} onClick={() => setIsButtonClicked(!isButtonClicked)}>Generate</button>
 
                                     <button type="submit" className={email_change + " btn_change "}>Confirm</button>
-                                    <button type="button" className={email_change + " btn_change btn_cancel "} onClick={() => {toggle_email(true);toggle_password(true);marg_switch("montre_display");document.getElementById("email_add").value="";}}>Cancel</button>
+                                    <button type="button" className={email_change + " btn_change btn_cancel "} onClick={() => cancel_add()}>Cancel</button>
                                 </form>
                             </div>
                         </div>

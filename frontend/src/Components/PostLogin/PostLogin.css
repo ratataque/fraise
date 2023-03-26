@@ -357,8 +357,41 @@
 .display_password .btn_change.btn_cancel {
   left: 14.8vw;
 }
+.display_password .btn_change.btn_delete {
+  left: 23.5vw;
+}
+.display_password .btn_change.btn_delete.cacher {
+  transition: all 0.25s ease, transform 0.45s ease 250ms;
+  transform: translateY(-14vh);
+}
 .add_password_container .btn_change.btn_cancel {
   left: 15.8vw;
+}
+.list_account_cont .delete_website {
+  position: absolute;
+  left: 3.3vw;
+  bottom: 2vh;
+  padding: 6px 0px;
+  outline: none;
+  height: 5vh;
+  text-align: center;
+  width: 220px;
+  border-radius: 12px 12px 12px 12px;
+  background: white;
+  border: 3px solid orangered;
+  color: #444444;
+  font-size: 2.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.25s ease, transform 0.45s ease;
+}
+.list_account_cont .delete_website:hover {
+  background: #444444;
+  color: white;
+}
+.list_account_cont .delete_website:active {
+  transition: all 0.25s ease;
+  transform: scale(0.8);
 }
 
 
