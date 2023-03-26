@@ -30,6 +30,18 @@ function PostLogin() {
 
     const [email_main, set_email_main] = useState("");
     const [change_email, set_change_email] = useState("");
+    
+    const [search, set_search] = useState("")
+
+    const [add_password, toggle] = React.useState("add_password");
+    const [edit_password, toggle_password] = React.useState(true);
+    const [edit_email, toggle_email] = React.useState(false);
+
+    var cacher = edit_password ? "cacher" : "";
+    var password = edit_password ? "password" : "text";
+    var email_change = !edit_email && edit_password ? "email_cacher" : "";
+    var active_email = !edit_email ? "active" : ""
+    var active_password = !edit_password ? "active" : ""
 
     const test_data = {
                         "Site test 1": {"test1@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
@@ -261,16 +273,6 @@ function PostLogin() {
         document.getElementById("website_new").value="";
     }
 
-    const [add_password, toggle] = React.useState("add_password");
-    const [edit_password, toggle_password] = React.useState(true);
-    const [edit_email, toggle_email] = React.useState(false);
-
-    var cacher = edit_password ? "cacher" : "";
-    var password = edit_password ? "password" : "text";
-    var email_change = !edit_email && edit_password ? "email_cacher" : "";
-    var active_email = !edit_email ? "active" : ""
-    var active_password = !edit_password ? "active" : ""
-
     return (
         <div className="postLogin">
             <Navbar/>
@@ -281,7 +283,7 @@ function PostLogin() {
                 {/* <TbWorld color="www_icone white" size={36}/> */}
 
                 <div className="liste_website">
-                    <input className="recherche" placeholder="Recherche"></input>
+                    <input className="recherche" placeholder="Recherche" onChange={(e) => set_search(e.target.value)}></input>
 
                     <div className="encoche" onClick={() => {toggle("add_password");toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked)}}></div>
                     <div className="addButton addButton--active" onClick={() => {toggle("add_password");toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked)}}></div>
@@ -290,14 +292,15 @@ function PostLogin() {
                     <div className="list_site_marg"></div>
                     <div className="list_site_cont">
                         {
-                            Object.keys(website_dict).length !== 0 ? Object.entries(website_dict).map( ([key, value]) => <div id={key} className="site underline" onClick={(e) => {
+                            Object.keys(website_dict).length !== 0 ? Object.entries(website_dict).map( ([key, value]) => search === "" || key.includes(search) ? 
+                                                                                                                <div id={key} className="site underline" onClick={(e) => {
                                                                                                                     transi_website();
                                                                                                                     toggle("");
                                                                                                                     toggle_email(true);
                                                                                                                     toggle_password(true);
-
-                                                                                                                    set_current_website_props(e);
-                                                                                                                }}>{key}</div>) : <div className="site underline" onClick={() => {toggle("add_password");toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked)}}>Add</div> 
+                                                                                                                    set_current_website_props(e); }}>{key}
+                                                                                                                </div> : null
+                                                                                                                ) : <div className="site underline" onClick={() => {toggle("add_password");toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked)}}>Add</div> 
                         }
                     </div>
                 </div>
