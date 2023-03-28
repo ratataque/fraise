@@ -1,11 +1,9 @@
 import React from "react";
 import "./VerifEmail.css"
 import {Navbar} from "..";
-import ReactDOM from "react";
 import QRCode from "react-qr-code";
 // import {useLocation } from 'react-router-dom';
 
-ReactDOM.render(<QRCode value="hey" />, document.getElementById("Container"));
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -15,15 +13,19 @@ function getCookie(name) {
 
 const token_otp = window.crypto.getRandomValues(new Uint32Array(2)).reduce(
     (prev, curr, index) => (
-        prev = prev.toString(32).toUpperCase()
+        prev = prev.toString(16).toUpperCase()
     ) + (
-        curr =  curr.toString(32).toUpperCase()
+        curr =  curr.toString(16).toUpperCase()
     )
 ).split('').sort(() => 128 -
     window.crypto.getRandomValues(new Uint32Array(1))[0]
 ).join('')
 
-console.log(token_otp)
+var Base32Converter = require('base32-converter');
+var converter = new Base32Converter(Base32Converter.system.RFC3548);
+var val = converter.encode(token_otp);
+
+console.log(val)
 
 
 function VerifEmail() {
@@ -56,11 +58,12 @@ function VerifEmail() {
             <Navbar/>
             {/* {verif(uuid)} */}
             <div id="verif_mail"> <p>{"Compte activé ! vous pouvez vous connecter."}</p></div>
+
             <div style={{ height: "auto", margin: "0 auto", maxWidth: 64, width: "100%"}}>
             <QRCode
             size={256}
             style={{ height: "auto", maxWidth: "100%", width: "100%"}}
-            value={token_otp}
+            value={"otpauth://totp/Fraise?secret="+token_otp}
             viewBox={'0 0 256 256'}
             />
             </div>
