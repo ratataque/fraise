@@ -3,6 +3,8 @@ import "./VerifEmail.css"
 import {Navbar} from "..";
 import QRCode from "react-qr-code";
 // import {useLocation } from 'react-router-dom';
+import * as OTPAuth from "otpauth";
+
 
 
 function getCookie(name) {
@@ -11,7 +13,7 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-const token_otp = window.crypto.getRandomValues(new Uint32Array(2)).reduce(
+const secret = window.crypto.getRandomValues(new Uint16Array(3)).reduce(
     (prev, curr, index) => (
         prev = prev.toString(16).toUpperCase()
     ) + (
@@ -21,11 +23,10 @@ const token_otp = window.crypto.getRandomValues(new Uint32Array(2)).reduce(
     window.crypto.getRandomValues(new Uint32Array(1))[0]
 ).join('')
 
-var Base32Converter = require('base32-converter');
-var converter = new Base32Converter(Base32Converter.system.RFC3548);
-var val = converter.encode(token_otp);
+const token_otp = OTPAuth.Secret.fromUTF8(secret).base32
+// console.log(key)
 
-console.log(val)
+
 
 
 function VerifEmail() {
@@ -36,17 +37,19 @@ function VerifEmail() {
 
     var csrftoken = getCookie('csrftoken');
 
-    fetch('/api/user/'+uuid+'/verif_mail/', {
-        method: 'get',
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-            'X-CSRFToken': csrftoken
-        }
-    })
-    .then(response=>response.json())
-    .then((data)=> {
-        // console.log(data)
-    })
+    if (uuid) {
+        fetch('/api/user/'+uuid+'/verif_mail/', {
+            method: 'get',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': csrftoken
+            }
+        })
+        .then(response=>response.json())
+        .then((data)=> {
+            // console.log(data)
+        })
+    }
 
     // useEffect(() => {
     //     //console.log(state)
