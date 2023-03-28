@@ -12,17 +12,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = Users
         fields = "__all__"
 
-    # #implémentation appelé par serializer.save() dans la fonction create de l'objet CreateModelMixin si la sérialization est valide
-    # def create(self, validated_data):
-
-    #     #crée un user avec les data transmise
-    #     return Users.objects.create(**validated_data)
-
-    # def update(queryset, validated_data):
-
-    #     #crée un user avec les data transmise
-    #     return Users.objects.update(queryset, **validated_data)
-
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=100)
@@ -31,3 +20,9 @@ class LoginSerializer(serializers.Serializer):
 
 class VerifMailSerializer(serializers.Serializer):
     uuid = serializers.UUIDField()
+
+    
+class AddPasswordSerializer(serializers.Serializer):
+    website = serializers.CharField(max_length=100)
+    email = serializers.EmailField(max_length=100)
+    password = serializers.CharField(max_length=100)

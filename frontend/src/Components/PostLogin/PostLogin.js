@@ -43,24 +43,24 @@ function PostLogin() {
     var active_email = !edit_email ? "active" : ""
     var active_password = !edit_password ? "active" : ""
 
-    const test_data = {
-                        "Site test 1": {"test1@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 2": {"test2@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 3": {"test3@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 4": {"test4@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 5": {"test5@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 6": {"test6@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 7": {"test7@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 8": {"test8@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 9": {"test9@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 10": {"test10@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 11": {"test11@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 12": {"test12@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 13": {"test13@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 14": {"test14@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                        "Site test 15": {"test15@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-                    }
-    const [website_dict, set_new_website_dict] = useState(test_data);
+    // const test_data = {
+    //                     "Site test 1": {"test1@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 2": {"test2@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 3": {"test3@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 4": {"test4@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 5": {"test5@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 6": {"test6@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 7": {"test7@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 8": {"test8@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 9": {"test9@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 10": {"test10@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 11": {"test11@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 12": {"test12@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 13": {"test13@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 14": {"test14@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                     "Site test 15": {"test15@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
+    //                 }
+    const [website_dict, set_new_website_dict] = useState(state["passwords"]);
     const [website_current, set_current_website] = useState(Object.keys(website_dict)[0]);
 
     function set_current_website_props(e) {
@@ -276,7 +276,7 @@ function PostLogin() {
     return (
         <div className="postLogin">
             <Navbar/>
-            {/* <div id="presentation">{"Bonjour "+state["nom"]+" "+state["prenom"]}</div> */}
+            <div id="presentation">{"Bonjour "+state["nom"]+" "+state["prenom"]}</div>
 
             <div className="website_container">
                 <div className="titre_website">Website list</div>

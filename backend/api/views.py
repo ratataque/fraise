@@ -1,4 +1,4 @@
-from .models import Users
+from .models import Users, Password
 from .serializer import *
 from rest_framework import status
 from rest_framework import viewsets
@@ -17,8 +17,6 @@ class UserViewSet(viewsets.ViewSet):
     # POST /api/user/register/
     @action(detail=False, methods=["post"])
     def register(self, request):
-
-        # transfert des données de la requete aux donnée de l'objets CreateModelMixin prcq il veut que ça alors qu'on transmet l'objet requete dans la fonction create mais bon on y peut rien c'est codé avec le cul #mathis
 
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -47,7 +45,7 @@ class UserViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
 
         try:
-            user = Users.objects.get(email=serializer.validated_data["email"])
+            user = Users.objects.all().prefetch_related("passwords").get(email=serializer.validated_data["email"])
         except:
             return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
 
@@ -57,6 +55,7 @@ class UserViewSet(viewsets.ViewSet):
             )
 
         if user.check_password(serializer.validated_data["clearpwd"]):
+
             return Response(
                 data={
                     "status": "ok",
@@ -64,7 +63,7 @@ class UserViewSet(viewsets.ViewSet):
                         "email": user.email,
                         "nom": user.nom,
                         "prenom": user.prenom,
-                        "uuid": user.uuid,
+                        "passwords": user.passwords.all(),
                     },
                 },
                 status=status.HTTP_200_OK,
@@ -88,3 +87,8 @@ class UserViewSet(viewsets.ViewSet):
         user.activate_email()
 
         return Response(data={"status": user.is_active})
+
+
+
+#------------------------------------password actions --------------------------------------------------------
+

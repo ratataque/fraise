@@ -84,11 +84,33 @@ class Users(models.Model):
 
 
 class Password(models.Model):
-    users = models.ForeignKey(Users, on_delete=models.CASCADE)
-    pwd = models.TextField()
-    siteOrigine = models.TextField()
-    description = models.TextField()
-    dateCreation = models.DateField()
+    users = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="passwords")
+    website = models.CharField(max_length=100, default="null")
+    email = models.EmailField(max_length=100, default="null")
+    password = models.CharField(max_length=100, default="null")
+    dateCreation = models.DateField(auto_now=True)
 
-    def __str__(self):
-        return self.users
+    @classmethod
+    def create_password(cls, website, email, password):
+        user = Password()
+
+        # uuidaz = uuid.uuid4()
+        # sel = hashlib.sha256(str(uuidaz).encode("utf-8")).hexdigest()
+        # file = open("/fraise/backend/api/poivre.txt", "r")
+        # poivre = file.read()
+        # file.close()
+        # mdp = clearpwd
+        # securisation = sel + mdp + poivre
+        # securise = hashlib.sha256(securisation.encode("utf-8")).hexdigest()
+        # mdpSecuriser = sel + securise
+
+        # user.nom = nom
+        # user.prenom = prenom
+        # user.email = email
+        # user.MotherPwd = mdpSecuriser
+        
+        # try  :
+        #     user.save()
+        #     return user
+        # except IntegrityError as e :
+        #     return e
