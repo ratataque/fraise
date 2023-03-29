@@ -66,7 +66,7 @@ class UserViewSet(viewsets.ViewSet):
                         "nom": user.nom,
                         "prenom": user.prenom,
                         "passwords": user.passwords.all(),
-                        "token": Token.objects.create(user=user).key
+                        "token": Token.objects.create(user=user.email).key
                     },
                 },
                 status=status.HTTP_200_OK,
