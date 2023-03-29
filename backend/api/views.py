@@ -6,6 +6,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import IntegrityError
+from rest_framework.authtoken.models import Token
+
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -64,6 +66,7 @@ class UserViewSet(viewsets.ViewSet):
                         "nom": user.nom,
                         "prenom": user.prenom,
                         "passwords": user.passwords.all(),
+                        "token": Token.objects.create(user=user).key
                     },
                 },
                 status=status.HTTP_200_OK,
