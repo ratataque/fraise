@@ -6,7 +6,9 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import IntegrityError
-from rest_framework.authtoken.models import Token
+import rest_framework_simplejwt.views
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 
 
@@ -23,18 +25,26 @@ class UserViewSet(viewsets.ViewSet):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+
         user = Users.create_user(
             nom=serializer.validated_data["nom"],
             prenom=serializer.validated_data["prenom"],
             email=serializer.validated_data["email"],
             clearpwd=serializer.validated_data["MotherPwd"],
         )
+
+        token_serializer = TokenObtainPairSerializer(data={"username": serializer.validated_data["email"], "password": serializer.validated_data["MotherPwd"]})
+        try:
+            token_serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
         if type(user) == IntegrityError :
             return Response(data={"status": "mail_used"}, status=status.HTTP_409_CONFLICT)                                 
             
         else :
             user.send_verif_mail()
-            return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+            return Response(data={"status": "ok", "access_token": token_serializer.validated_data["access"], "refresh_token": token_serializer.validated_data["refresh"]}, status=status.HTTP_201_CREATED)
 
 
 
@@ -66,7 +76,7 @@ class UserViewSet(viewsets.ViewSet):
                         "nom": user.nom,
                         "prenom": user.prenom,
                         "passwords": user.passwords.all(),
-                        "token": Token.objects.create(user=user.email).key
+                        # "token": Token.objects.create(user=user.email).key
                     },
                 },
                 status=status.HTTP_200_OK,

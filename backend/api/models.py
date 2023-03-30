@@ -6,19 +6,26 @@ from django.utils import timezone
 import uuid
 import requests
 import hashlib
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Users(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default="null")
     uuid = models.UUIDField(default=uuid.uuid4)
-    nom = models.CharField(max_length=30)
-    prenom = models.CharField(max_length=30)
-    email = models.EmailField(max_length=100, unique=True)
-    MotherPwd = models.TextField()
+    nom = models.CharField(max_length=30, default="null")
+    prenom = models.CharField(max_length=30, default="null")
+    email = models.EmailField(max_length=100, unique=True, default="null")
+    MotherPwd = models.TextField(default="null")
     is_active = models.BooleanField(default=False)
 
     @classmethod
     def create_user(cls, nom, prenom, email, clearpwd):
         user = Users()
+
+        try  :
+            u = User.objects.create_user(username=email, password=clearpwd)
+        except IntegrityError as e :
+            return e
 
         uuidaz = uuid.uuid4()
         sel = hashlib.sha256(str(uuidaz).encode("utf-8")).hexdigest()
@@ -30,16 +37,14 @@ class Users(models.Model):
         securise = hashlib.sha256(securisation.encode("utf-8")).hexdigest()
         mdpSecuriser = sel + securise
 
+        user.user = u
         user.nom = nom
         user.prenom = prenom
         user.email = email
         user.MotherPwd = mdpSecuriser
         
-        try  :
-            user.save()
-            return user
-        except IntegrityError as e :
-            return e
+        user.save()
+        return user
 
     def send_verif_mail(self):
         mailField = {
@@ -84,7 +89,7 @@ class Users(models.Model):
 
 
 class Password(models.Model):
-    users = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="passwords")
+    users = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="passwords", default="null")
     website = models.CharField(max_length=100, default="null")
     email = models.EmailField(max_length=100, default="null")
     password = models.CharField(max_length=100, default="null")
