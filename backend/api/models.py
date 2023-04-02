@@ -1,8 +1,5 @@
-from datetime import date
 from django.db import models
-import django.contrib.auth
 from django.db import models, IntegrityError
-from django.utils import timezone
 import uuid
 import requests
 import hashlib
