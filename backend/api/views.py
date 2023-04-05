@@ -2,6 +2,8 @@ from .models import Users, Password
 from .serializer import *
 from rest_framework import status
 from rest_framework import viewsets
+from django.views.decorators.csrf import csrf_protect 
+from django.utils.decorators import method_decorator
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,6 +11,8 @@ from django.db import IntegrityError
 import rest_framework_simplejwt.views
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import update_last_login
 
 
 
@@ -32,25 +36,20 @@ class UserViewSet(viewsets.ViewSet):
             email=serializer.validated_data["email"],
             clearpwd=serializer.validated_data["MotherPwd"],
         )
-
-        token_serializer = TokenObtainPairSerializer(data={"username": serializer.validated_data["email"], "password": serializer.validated_data["MotherPwd"]})
-        try:
-            token_serializer.is_valid(raise_exception=True)
-        except TokenError as e:
-            raise InvalidToken(e.args[0])
-
+        
         if type(user) == IntegrityError :
             return Response(data={"status": "mail_used"}, status=status.HTTP_409_CONFLICT)                                 
             
         else :
             user.send_verif_mail()
-            return Response(data={"status": "ok", "access_token": token_serializer.validated_data["access"], "refresh_token": token_serializer.validated_data["refresh"]}, status=status.HTTP_201_CREATED)
+            return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
 
 
 
 
     # POST /api/user/login/
     @action(detail=False, methods=["post"])
+    @method_decorator(csrf_protect)
     def login(self, request):
 
         serializer = LoginSerializer(data=request.data)
@@ -68,6 +67,9 @@ class UserViewSet(viewsets.ViewSet):
 
         if user.check_password(serializer.validated_data["clearpwd"]):
 
+            refresh = RefreshToken.for_user(user)
+            update_last_login(None, user.user)
+
             return Response(
                 data={
                     "status": "ok",
@@ -76,7 +78,8 @@ class UserViewSet(viewsets.ViewSet):
                         "nom": user.nom,
                         "prenom": user.prenom,
                         "passwords": user.passwords.all(),
-                        # "token": Token.objects.create(user=user.email).key
+                        "access_token": str(refresh),
+                        "refresh_token": str(refresh.access_token),
                     },
                 },
                 status=status.HTTP_200_OK,

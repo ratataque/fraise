@@ -70,14 +70,16 @@ function Login() {
         .then(response=>response.json())
         .then((data)=> {
           // console.log(data);
-        
+
           // ********************************************************************************************************************************************
           // test si la réponse de l'api confirme l'authentification de l'utilisateur
           // ********************************************************************************************************************************************
           if (data['status'] === 'ok') {
             alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
 
-            sessionStorage.setItem("access_token", "token")
+            sessionStorage.setItem("access_token", data['donnes']["access_token"])
+            sessionStorage.setItem("refresh_token", data['donnes']["refresh_token"])
+
             // envoie des données a la page postLogin et redirection
             navigate("/postLogin",{state: data['donnes']});
 
