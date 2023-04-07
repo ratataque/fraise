@@ -53,18 +53,17 @@ function Login() {
     if (signIn) {
       //prevent refresh apres un submit d'un form
       event.preventDefault();
-      const queryParameters = new URLSearchParams(window.location.search)
-      console.log(queryParameters.get("test"));
       
       //chopper le token csrf dans le cookie
       var csrftoken = getCookie('csrftoken');
       
       //creation de la donnée en json qu'on vas envoyer dans la requete a l'api
-      var formField = {
+      let formField = {
         "email": email.current.value,
         "clearpwd": await sha256(pswd.current.value + "back"),
       }
       formField = JSON.stringify(formField)
+      var front_key = await sha256(pswd.current.value + "front")
       
       // ********************************************************************************************************************************************
       // Appel à l'api login avec les champ de connexion
@@ -78,7 +77,7 @@ function Login() {
           }
         })
         .then(response=>response.json())
-        .then(async(data)=> {
+        .then((data)=> {
           // console.log(data);
 
           // ********************************************************************************************************************************************
@@ -87,9 +86,10 @@ function Login() {
           if (data['status'] === 'ok') {
             alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
 
+            sessionStorage.clear()
             sessionStorage.setItem("access_token", data['donnes']["access_token"])
             sessionStorage.setItem("refresh_token", data['donnes']["refresh_token"])
-            sessionStorage.setItem("front_key", await sha256(formField["clearpwd"]+"front"))
+            sessionStorage.setItem("front_key", front_key )
 
             // envoie des données a la page postLogin et redirection
             navigate("/postLogin",{state: data['donnes']});
