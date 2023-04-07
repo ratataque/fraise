@@ -68,7 +68,7 @@ class UserViewSet(viewsets.ViewSet):
         if user.check_password(serializer.validated_data["clearpwd"]):
 
             refresh = RefreshToken.for_user(user)
-            update_last_login(None, user.user)
+            update_last_login(None, user)
 
             return Response(
                 data={

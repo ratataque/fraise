@@ -4,25 +4,23 @@ import uuid
 import requests
 import hashlib
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Users(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default="null")
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, default="null")
     uuid = models.UUIDField(default=uuid.uuid4)
-    nom = models.CharField(max_length=30, default="null")
-    prenom = models.CharField(max_length=30, default="null")
-    email = models.EmailField(max_length=100, unique=True, default="null")
-    MotherPwd = models.TextField(default="null")
+    nom = models.CharField(max_length=30)
+    prenom = models.CharField(max_length=30)
+    email = models.EmailField(max_length=100, unique=True)
+    MotherPwd = models.TextField()
     is_active = models.BooleanField(default=False)
+    last_login = models.DateTimeField(blank=True, null=True)
+    date_joined = models.DateTimeField(default=timezone.now)
 
     @classmethod
     def create_user(cls, nom, prenom, email, clearpwd):
         user = Users()
-
-        try  :
-            u = User.objects.create_user(username=email, password=clearpwd)
-        except IntegrityError as e :
-            return e
 
         uuidaz = uuid.uuid4()
         sel = hashlib.sha256(str(uuidaz).encode("utf-8")).hexdigest()
@@ -36,13 +34,16 @@ class Users(models.Model):
             securise = hashlib.sha256(securise.encode("utf-8")).hexdigest()
         mdpSecuriser = sel + securise
 
-        user.user = u
         user.nom = nom
         user.prenom = prenom
         user.email = email
         user.MotherPwd = mdpSecuriser
         
-        user.save()
+        try :
+            user.save()
+        except IntegrityError as e :
+            return e
+            
         return user
 
     def send_verif_mail(self):
