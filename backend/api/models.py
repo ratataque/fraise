@@ -98,26 +98,18 @@ class Password(models.Model):
     dateCreation = models.DateField(auto_now=True)
 
     @classmethod
-    def create_password(cls, website, email, password):
-        user = Password()
+    def create_password(cls, user_id, website, email, password_chiffre):
+        password_cls = Password()
 
-        # uuidaz = uuid.uuid4()
-        # sel = hashlib.sha256(str(uuidaz).encode("utf-8")).hexdigest()
-        # file = open("/fraise/backend/api/poivre.txt", "r")
-        # poivre = file.read()
-        # file.close()
-        # mdp = clearpwd
-        # securisation = sel + mdp + poivre
-        # securise = hashlib.sha256(securisation.encode("utf-8")).hexdigest()
-        # mdpSecuriser = sel + securise
+        user = Users.objects.get(id=user_id)
 
-        # user.nom = nom
-        # user.prenom = prenom
-        # user.email = email
-        # user.MotherPwd = mdpSecuriser
+        password_cls.users = user
+        password_cls.website = website
+        password_cls.email = email
+        password_cls.password = password_chiffre
         
-        # try  :
-        #     user.save()
-        #     return user
-        # except IntegrityError as e :
-        #     return e
+        try  :
+            password_cls.save()
+            return password_cls
+        except IntegrityError as e :
+            return e

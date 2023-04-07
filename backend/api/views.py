@@ -13,6 +13,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import update_last_login
+from django.forms.models import model_to_dict
+from django.db.models import Prefetch
 
 
 
@@ -55,10 +57,10 @@ class UserViewSet(viewsets.ViewSet):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        try:
-            user = Users.objects.all().prefetch_related("passwords").get(email=serializer.validated_data["email"])
-        except:
-            return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
+        user = Users.objects.prefetch_related("passwords").get(email=serializer.validated_data["email"])
+        # try:
+        # except:
+        #     return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
 
         if user.is_active == False:
             return Response(
@@ -77,7 +79,7 @@ class UserViewSet(viewsets.ViewSet):
                         "email": user.email,
                         "nom": user.nom,
                         "prenom": user.prenom,
-                        "passwords": user.passwords.all(),
+                        "passwords": {password.website: {password.email: password.password} for password in user.passwords.all()},
                         "access_token": str(refresh),
                         "refresh_token": str(refresh.access_token),
                     },

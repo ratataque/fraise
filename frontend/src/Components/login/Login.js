@@ -5,7 +5,6 @@ import "./LoginCSS";
 import "./Login.css"
 import {Navbar} from "../";
 import { v4 as uuidv4 } from 'uuid';
-import { BsPatchQuestion } from "react-icons/bs";
 
 
 function getCookie(name) {
