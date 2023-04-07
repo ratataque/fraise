@@ -5,6 +5,7 @@ import PostLogin from './Components/PostLogin/PostLogin';
 import PostSignup from './Components/PostSignup/PostSignup';
 import VerifEmail from './Components/VerifEmail/VerifEmail';
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import ProtectedRoute from './Components/route/ProtectedRoute';
 
 //On récupère les compenents de index.js
 // import {Accueil} from "./components";
@@ -17,7 +18,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Accueil/>}/>
         <Route path="/login" element={<Login/>}/>
-        <Route path='/postLogin' element={<PostLogin/>}/>
+
+        <Route path='/postLogin' element={
+            <ProtectedRoute>
+              <PostLogin/>
+            </ProtectedRoute>
+        } />
+        
         <Route path='/postSignup' element={<PostSignup/>}/>
         <Route path='/verifEmail' element={<VerifEmail/>}/>
       </Routes>

@@ -5,6 +5,7 @@ import "./LoginCSS";
 import "./Login.css"
 import {Navbar} from "../";
 import { v4 as uuidv4 } from 'uuid';
+import { BsPatchQuestion } from "react-icons/bs";
 
 
 function getCookie(name) {
@@ -13,6 +14,15 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
+async function sha256(input) {
+  const textAsBuffer = new TextEncoder().encode(input);
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", textAsBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hash = hashArray
+    .map((item) => item.toString(16).padStart(2, "0"))
+    .join("");
+  return hash;
+};
 
 function Login() {
   const email = useRef(null)
@@ -43,8 +53,6 @@ function Login() {
     if (signIn) {
       //prevent refresh apres un submit d'un form
       event.preventDefault();
-      const queryParameters = new URLSearchParams(window.location.search)
-      console.log(queryParameters.get("test"));
       
       //chopper le token csrf dans le cookie
       var csrftoken = getCookie('csrftoken');
@@ -52,9 +60,10 @@ function Login() {
       //creation de la donnée en json qu'on vas envoyer dans la requete a l'api
       let formField = {
         "email": email.current.value,
-        "clearpwd": pswd.current.value,
+        "clearpwd": await sha256(pswd.current.value + "back"),
       }
       formField = JSON.stringify(formField)
+      var front_key = await sha256(pswd.current.value + "front")
       
       // ********************************************************************************************************************************************
       // Appel à l'api login avec les champ de connexion
@@ -69,13 +78,18 @@ function Login() {
         })
         .then(response=>response.json())
         .then((data)=> {
-          console.log(data);
-        
+          // console.log(data);
+
           // ********************************************************************************************************************************************
           // test si la réponse de l'api confirme l'authentification de l'utilisateur
           // ********************************************************************************************************************************************
           if (data['status'] === 'ok') {
             alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
+
+            sessionStorage.clear()
+            sessionStorage.setItem("access_token", data['donnes']["access_token"])
+            sessionStorage.setItem("refresh_token", data['donnes']["refresh_token"])
+            sessionStorage.setItem("front_key", front_key )
 
             // envoie des données a la page postLogin et redirection
             navigate("/postLogin",{state: data['donnes']});
@@ -106,7 +120,7 @@ function Login() {
         "nom": name.current.value,
         "prenom": forename.current.value,
         "email": emailUp.current.value,
-        "MotherPwd": pswdUp.current.value,
+        "MotherPwd": await sha256(pswdUp.current.value + "back"),
       } 
       formField = JSON.stringify(formField)
 
