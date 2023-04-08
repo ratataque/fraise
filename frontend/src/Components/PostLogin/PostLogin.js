@@ -33,16 +33,18 @@ function AES256_decode(password_chiffre, key) {
 }
 
 function decode_les_mdp(passwords_chiffre) {
+    var key = sessionStorage.getItem('front_key')
     if (passwords_chiffre) {
-        var paswords_dechiffre = {}
+        var webiste_dechiffre = {}
         var compte_dechiffre
-        var uuid_dict = {}
         for (const [site, compte] of Object.entries(passwords_chiffre)) {
-            for (const [email, password] of Object.entries(site)) { 
+            var decod = AES256_decode(site, key)
+            webiste_dechiffre[decod['password']] = ({}, decod.uuid)
+            for (const [email, password] of Object.entries(site)) {
                 compte_dechiffre = {}
 
-                email_dechiffre = 
-                password_dechiffre = 
+                email_dechiffre =
+                password_dechiffre =
                 compte_dechiffre['test'] = 'null'
         }}
     }
