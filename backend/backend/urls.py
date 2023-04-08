@@ -7,6 +7,7 @@ from api.tests import ApiRegisterTestCase
 
 router = routers.DefaultRouter()
 router.register(r"user", UserViewSet, basename="register")
+router.register(r"password", PasswordViewSet, basename="create")
 
 
 urlpatterns = [

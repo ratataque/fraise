@@ -8,10 +8,10 @@ from django.utils.decorators import method_decorator
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import IntegrityError
-import rest_framework_simplejwt.views
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenVerifyView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenVerifySerializer
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.contrib.auth.models import update_last_login
 from django.forms.models import model_to_dict
 from django.db.models import Prefetch
@@ -31,7 +31,6 @@ class UserViewSet(viewsets.ViewSet):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-
         user = Users.create_user(
             nom=serializer.validated_data["nom"],
             prenom=serializer.validated_data["prenom"],
@@ -45,8 +44,6 @@ class UserViewSet(viewsets.ViewSet):
         else :
             user.send_verif_mail()
             return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
-
-
 
 
     # POST /api/user/login/
@@ -80,8 +77,8 @@ class UserViewSet(viewsets.ViewSet):
                         "nom": user.nom,
                         "prenom": user.prenom,
                         "passwords": {password.website: {password.email: password.password} for password in user.passwords.all()},
-                        "access_token": str(refresh),
-                        "refresh_token": str(refresh.access_token),
+                        "access_token": str(refresh.access_token),
+                        "refresh_token": str(refresh),
                     },
                 },
                 status=status.HTTP_200_OK,
@@ -107,6 +104,28 @@ class UserViewSet(viewsets.ViewSet):
         return Response(data={"status": user.is_active})
 
 
-
 #------------------------------------password actions --------------------------------------------------------
 
+
+class PasswordViewSet(viewsets.ViewSet):
+
+    @action(detail=False, methods=["post"])
+    def create_password(self, request):
+        # token_serializer = TokenVerifySerializer(data={'token': request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', '')})
+        # token_serializer.is_valid(raise_exception=True)
+        token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
+
+        for pswd in request.data:
+
+            serializer = AddPasswordSerializer(data=pswd)
+            serializer.is_valid(raise_exception=True)
+
+            password = Password.create_password(
+                # user_id=token_serializer.validated_data,
+                user_id=token['user_id'],
+                website=serializer.validated_data["website"],
+                email=serializer.validated_data["email"],
+                password_chiffre=serializer.validated_data["password_chiffre"],
+            )
+        
+        return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
