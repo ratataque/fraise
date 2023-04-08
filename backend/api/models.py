@@ -92,9 +92,9 @@ class Users(models.Model):
 
 class Password(models.Model):
     users = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="passwords", default="null")
-    website = models.CharField(max_length=100, default="null")
-    email = models.CharField(max_length=100, default="null")
-    password = models.CharField(max_length=100, default="null")
+    website = models.CharField(max_length=200, default="null")
+    email = models.CharField(max_length=200, default="null")
+    password = models.CharField(max_length=200, default="null")
     dateCreation = models.DateField(auto_now=True)
 
     @classmethod

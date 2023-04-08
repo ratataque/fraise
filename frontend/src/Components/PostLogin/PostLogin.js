@@ -5,12 +5,47 @@ import { useLocation } from 'react-router-dom';
 import { BsClipboardPlus } from "react-icons/bs" //React-logo d'une fraise
 import { AiOutlineEdit } from "react-icons/ai" //React-logo d'une fraise
 import strawberry_guy from "../../assets/strawberry_guy.png" //React-logo d'une fraise
-// import {BigUint64Array} from "typescript/lib";
+import {v4 as uuidv4} from 'uuid';
+
+var CryptoJS = require("crypto-js");
+var AES = require("crypto-js/aes");
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function AES256_encode(password, key) {
+    var iv = uuidv4();
+
+    var encrypted = CryptoJS.AES.encrypt(iv+password, key).toString();
+
+    return iv+"$"+encrypted
+}
+
+function AES256_decode(password_chiffre, key) {
+    var iv = password_chiffre.split('$')[0];
+
+    var decrypted = CryptoJS.AES.decrypt( password_chiffre.split('$')[1], key).toString(CryptoJS.enc.Utf8);
+
+    return {'uuid': decrypted.slice(0, 35), 'password': decrypted.slice(36, decrypted.length - 1)}
+}
+
+function decode_les_mdp(passwords_chiffre) {
+    if (passwords_chiffre) {
+        var paswords_dechiffre = {}
+        var compte_dechiffre
+        var uuid_dict = {}
+        for (const [site, compte] of Object.entries(passwords_chiffre)) {
+            for (const [email, password] of Object.entries(site)) { 
+                compte_dechiffre = {}
+
+                email_dechiffre = 
+                password_dechiffre = 
+                compte_dechiffre['test'] = 'null'
+        }}
+    }
 }
 
 function PostLogin() {
@@ -149,16 +184,20 @@ function PostLogin() {
     const submit_new_website = async event => {
         event.preventDefault();
 
+        var key = sessionStorage.getItem('front_key')
         var site = form_website.current.value
         if (form_password.current.value === form_confirm_password.current.value) {
             var csrftoken = getCookie('csrftoken');
             let formField = [{
-                "website": site,
-                "email": form_email.current.value,
-                "password_chiffre": form_password.current.value,
+                "website": AES256_encode(site, key),
+                "email": AES256_encode(form_email.current.value, key),
+                "password_chiffre": AES256_encode(form_password.current.value, key),
             }]
             formField = JSON.stringify(formField)
-            console.log(formField);
+            // console.log(formField);
+            // var test = AES256_encode('test', key)
+            // console.log(test);
+            // console.log(AES256_decode(test, key)['password']);
 
             fetch('/api/password/create_password/', {
                 method: 'POST',
@@ -171,27 +210,30 @@ function PostLogin() {
             })
             .then(response => response.json())
             .then((data) => {
-                console.log(data);
+                // console.log(data);
+
+                if (data['status'] === 'ok') {
+                    website_dict[site] = { [form_email.current.value]: form_password.current.value };
+                    set_new_website_dict(website_dict);
+
+                    toggle_email(true);
+                    toggle_password(true);
+                    toggle("");
+                    document.getElementById("email_add_new").value = "";
+                    document.getElementById("website_new").value = "";
+                    marg_switch("montre_display");
+
+                    var mail = Object.keys(website_dict[site])[0]
+                    var pswd = Object.values(website_dict[site])[0]
+                    set_current_website(site)
+                    set_email_main(mail)
+                    set_change_email(mail)
+                    set_generated_password_main(pswd);
+                    change_generated_password(pswd);
+                    change_generated_password_confirm(pswd);
+                }
             })
 
-            website_dict[site] = { [form_email.current.value]: form_password.current.value };
-            set_new_website_dict(website_dict);
-
-            toggle_email(true);
-            toggle_password(true);
-            toggle("");
-            document.getElementById("email_add_new").value = "";
-            document.getElementById("website_new").value = "";
-            marg_switch("montre_display");
-
-            var mail = Object.keys(website_dict[site])[0]
-            var pswd = Object.values(website_dict[site])[0]
-            set_current_website(site)
-            set_email_main(mail)
-            set_change_email(mail)
-            set_generated_password_main(pswd);
-            change_generated_password(pswd);
-            change_generated_password_confirm(pswd);
         } else {
             alert("Les deux mots passes ne sont pas identique !")
         }

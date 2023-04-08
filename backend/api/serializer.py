@@ -23,6 +23,6 @@ class VerifMailSerializer(serializers.Serializer):
 
     
 class AddPasswordSerializer(serializers.Serializer):
-    website = serializers.CharField(max_length=100)
-    email = serializers.CharField(max_length=100)
-    password_chiffre = serializers.CharField(max_length=100)
+    website = serializers.CharField(max_length=200)
+    email = serializers.CharField(max_length=200)
+    password_chiffre = serializers.CharField(max_length=200)
