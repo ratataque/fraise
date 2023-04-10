@@ -1,4 +1,4 @@
-import React, { useEffect, prevState, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./PostLogin.css"
 import { Navbar } from "../../Components";
 import { useLocation } from 'react-router-dom';
@@ -8,7 +8,6 @@ import strawberry_guy from "../../assets/strawberry_guy.png" //React-logo d'une 
 import {v4 as uuidv4} from 'uuid';
 
 var CryptoJS = require("crypto-js");
-var AES = require("crypto-js/aes");
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -17,41 +16,48 @@ function getCookie(name) {
 }
 
 function AES256_encode(password, key) {
-    var iv = uuidv4();
+    var uuid = uuidv4();
 
-    var encrypted = CryptoJS.AES.encrypt(iv+password, key).toString();
+    var encrypted = CryptoJS.AES.encrypt(uuid+password, key+uuid).toString();
 
-    return iv+"$"+encrypted
+    return uuid+"$"+encrypted
 }
 
 function AES256_decode(password_chiffre, key) {
-    var iv = password_chiffre.split('$')[0];
+    var uuid = password_chiffre.split('$')[0];
 
-    var decrypted = CryptoJS.AES.decrypt( password_chiffre.split('$')[1], key).toString(CryptoJS.enc.Utf8);
+    var decrypted = CryptoJS.AES.decrypt( password_chiffre.split('$')[1], key+uuid).toString(CryptoJS.enc.Utf8);
 
-    return {'uuid': decrypted.slice(0, 35), 'password': decrypted.slice(36, decrypted.length - 1)}
+    return {'uuid': decrypted.slice(0, 35), 'password': decrypted.slice(36, decrypted.length)}
+    // return decrypted.slice(36, decrypted.length)
 }
 
-function decode_les_mdp(passwords_chiffre) {
+function dechiffre_les_mdp(passwords_chiffre) {
+    // console.log(passwords_chiffre);                           
     var key = sessionStorage.getItem('front_key')
+    var webiste_dechiffre = {}
+
     if (passwords_chiffre) {
-        var webiste_dechiffre = {}
-        var compte_dechiffre
         for (const [site, compte] of Object.entries(passwords_chiffre)) {
             var decod = AES256_decode(site, key)
-            webiste_dechiffre[decod['password']] = ({}, decod.uuid)
-            for (const [email, password] of Object.entries(site)) {
-                compte_dechiffre = {}
+            webiste_dechiffre[decod.password] ??= {'value': {}, 'uuid': compte.uuid}
 
-                email_dechiffre =
-                password_dechiffre =
-                compte_dechiffre['test'] = 'null'
+            for (const [email, password] of Object.entries(compte.value)) {
+                var email_dechiffre = AES256_decode(email, key)
+                var password_dechiffre = AES256_decode(password.value, key)
+
+                webiste_dechiffre[decod.password].value[email_dechiffre.password] = {'value': password_dechiffre.password, 'uuid': password.uuid}
         }}
+        // console.log(webiste_dechiffre);
     }
+    return webiste_dechiffre
 }
 
 function PostLogin() {
     const { state } = useLocation();
+
+    // var test = AES256_encode("test", '123')
+    // console.log(AES256_decode(test, '123').password, AES256_decode(test, '123').uuid);
 
     const form_website = useRef(null)
     const form_email = useRef(null)
@@ -102,7 +108,7 @@ function PostLogin() {
     //                     "Site test 14": {"test14@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
     //                     "Site test 15": {"test15@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
     //                 }
-    const [website_dict, set_new_website_dict] = useState(state["passwords"]);
+    const [website_dict, set_new_website_dict] = useState(dechiffre_les_mdp(state["passwords"]));
     const [website_current, set_current_website] = useState(Object.keys(website_dict)[0]);
 
     function set_current_website_props(e) {
@@ -112,15 +118,15 @@ function PostLogin() {
                 marg_switch("montre_display");
             }
 
-            if (Object.keys(website_dict[id]).length === 0) {
+            if (Object.keys(website_dict[id].value).length === 0) {
                 setIsButtonClicked(!isButtonClicked);
                 var mail = "";
                 var pswd = generated_password_change;
                 toggle_email(false);
                 marg_switch("montre_add");
             } else {
-                var mail = Object.keys(website_dict[id])[0]
-                var pswd = Object.values(website_dict[id])[0]
+                var mail = Object.keys(website_dict[id].value)[0]
+                var pswd = Object.values(website_dict[id].value)[0].value
             }
             set_current_website(id)
             set_email_main(mail)
@@ -186,11 +192,15 @@ function PostLogin() {
     const submit_new_website = async event => {
         event.preventDefault();
 
+        var uuid = uuidv4();
+        var website_uuid = uuidv4();
         var key = sessionStorage.getItem('front_key')
         var site = form_website.current.value
         if (form_password.current.value === form_confirm_password.current.value) {
             var csrftoken = getCookie('csrftoken');
             let formField = [{
+                'website_uuid': website_uuid,
+                'uuid': uuid,
                 "website": AES256_encode(site, key),
                 "email": AES256_encode(form_email.current.value, key),
                 "password_chiffre": AES256_encode(form_password.current.value, key),
@@ -215,7 +225,7 @@ function PostLogin() {
                 // console.log(data);
 
                 if (data['status'] === 'ok') {
-                    website_dict[site] = { [form_email.current.value]: form_password.current.value };
+                    website_dict[site] = {'value': {[form_email.current.value]: {'value': form_password.current.value, 'uuid': website_uuid}}, 'uuid': uuid};
                     set_new_website_dict(website_dict);
 
                     toggle_email(true);
@@ -225,8 +235,8 @@ function PostLogin() {
                     document.getElementById("website_new").value = "";
                     marg_switch("montre_display");
 
-                    var mail = Object.keys(website_dict[site])[0]
-                    var pswd = Object.values(website_dict[site])[0]
+                    var mail = Object.keys(website_dict[site].value)[0]
+                    var pswd = Object.values(website_dict[site].value)[0].value
                     set_current_website(site)
                     set_email_main(mail)
                     set_change_email(mail)
@@ -250,7 +260,7 @@ function PostLogin() {
         document.getElementById("email_add").value = "";
         marg_switch("montre_display");
 
-        var pswd = website_dict[site][username]
+        var pswd = website_dict[site].value[username].value
         set_email_main(username)
         set_change_email(username)
         set_generated_password_main(pswd);
@@ -261,16 +271,40 @@ function PostLogin() {
     function submit_new_password(event) {
         event.preventDefault();
 
+        var uuid = uuidv4();
         var site = website_current
+        var website_uuid = website_dict[site].uuid;
+        var key = sessionStorage.getItem('front_key')
         var username = form_new_email.current.value
-        if (form_new_password.current.value === form_confirm_new_password.current.value) {
-            console.log(username);
-            console.log(email_main);
+        if (form_password.current.value === form_confirm_password.current.value) {
+            var csrftoken = getCookie('csrftoken');
+            let formField = [{
+                'website_uuid': website_uuid,
+                'uuid': uuid,
+                "website": AES256_encode(site, key),
+                "email": AES256_encode(username, key),
+                "password_chiffre": AES256_encode(form_password.current.value, key),
+            }]
+            formField = JSON.stringify(formField)
 
-            website_dict[site][username] = form_new_password.current.value;
-            set_new_website_dict(website_dict);
+            fetch('/api/password/create_password/', {
+                method: 'POST',
+                body: formField,
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'X-CSRFToken': csrftoken,
+                    'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+                }
+            })
+            .then(response => response.json())
+            .then((data) => {
+                if (data['status'] === 'ok') {
+                        website_dict[site].value[username] = {'value': form_new_password.current.value, 'uuid': uuid};
+                        set_new_website_dict(website_dict);
 
-            display_another_password(site, username)
+                        display_another_password(site, username)
+                }
+            })
         } else {
             alert("Les deux mots passes ne sont pas identique !")
         }
@@ -281,13 +315,19 @@ function PostLogin() {
 
         var site = website_current
         var username = form_change_email.current.value
+        var uuid = website_dict[site].value[email_main].uuid 
         if (form_change_password.current.value === form_confirm_change_password.current.value) {
-            if (username === email_main) {
-                website_dict[site][username] = form_new_password.current.value;
-            } else {
-                delete Object.assign(website_dict[site], { [username]: form_change_password.current.value })[email_main];
-                // website_dict[site][username] = form_new_password.current.value;
+            // if (username === email_main) {
+            //     website_dict[site].value[username] = {'value': form_new_password.current.value, uuid: uuid};
+            // } else {
+            //     delete Object.assign(website_dict[site].value, {[username]: {'value': form_change_password.current.value, 'uuid': uuid}})[email_main];
+            // }
+            Object.assign(website_dict[site].value, {[username]: {'value': form_change_password.current.value, 'uuid': uuid}});
+
+            if (username !== email_main) {
+                delete website_dict[site].value[email_main]
             }
+            
             set_new_website_dict(website_dict);
 
             display_another_password(site, username)
@@ -297,19 +337,41 @@ function PostLogin() {
     }
 
     function delete_password(username) {
-        var site = website_dict[website_current]
+        var site = website_dict[website_current].value
+        var uuid = website_dict[website_current].uuid
+        var csrftoken = getCookie('csrftoken');
 
-        delete site[username]
-        set_new_website_dict(website_dict)
-        if (Object.keys(site).length === 0) {
-            toggle_email(false);
-            toggle_password(true);
-            toggle("");
-            document.getElementById("email_add").value = "";
-            marg_switch("montre_add");
-        } else {
-            display_another_password(site, Object.keys(site)[0])
-        }
+        let formField = [{
+            'uuid': uuid,
+        }]
+        formField = JSON.stringify(formField)
+
+        fetch('/api/password/delete_password/', {
+            method: 'POST',
+            body: formField,
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': csrftoken,
+                'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+            if (data['status'] === 'ok') {
+                delete site[username]
+                set_new_website_dict(website_dict)
+
+                if (Object.keys(site).length === 0) {
+                    toggle_email(false);
+                    toggle_password(true);
+                    toggle("");
+                    document.getElementById("email_add").value = "";
+                    marg_switch("montre_add");
+                } else {
+                    display_another_password(website_current, Object.keys(site)[0])
+                }
+            }
+        })
     }
 
     function delete_website(website) {
@@ -325,8 +387,11 @@ function PostLogin() {
         } else {
             var site = Object.keys(website_dict)[0];
             set_current_website(site)
-            display_another_password(site, Object.keys(website_dict[site])[0])
+            display_another_password(site, Object.keys(website_dict[site].value)[0])
+            setIsButtonClicked(!isButtonClicked)
         }
+
+        console.log(website_dict);
     }
 
     function cancel_add() {
@@ -417,7 +482,7 @@ function PostLogin() {
                     <div className="list_account_cont">
                         <div className="list_account">
                             {
-                                Object.keys(website_dict).length !== 0 && Object.keys(website_dict[website_current]).length !== 0 ? Object.entries(website_dict[website_current]).map(([key, value]) => <div id={key} className="site underline" onClick={(e) => { display_another_password(website_current, e.target.getAttribute("id")) }}>{key}</div>) : <div className="site underline" onClick={() => { marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked); }}>Add</div>
+                                Object.keys(website_dict).length !== 0 && Object.keys(website_dict[website_current].value).length !== 0 ? Object.entries(website_dict[website_current].value).map(([key, value]) => <div id={key} className="site underline" onClick={(e) => { display_another_password(website_current, e.target.getAttribute("id")) }}>{key}</div>) : <div className="site underline" onClick={() => { marg_switch("montre_add"); toggle_email(false); toggle_password(true); setIsButtonClicked(!isButtonClicked); }}>Add</div>
                             }
                         </div>
 

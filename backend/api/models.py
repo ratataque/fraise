@@ -91,19 +91,23 @@ class Users(models.Model):
 
 
 class Password(models.Model):
-    users = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="passwords", default="null")
-    website = models.CharField(max_length=200, default="null")
-    email = models.CharField(max_length=200, default="null")
-    password = models.CharField(max_length=200, default="null")
+    users = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="passwords")
+    website_uuid = models.UUIDField()
+    uuid = models.UUIDField()
+    website = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+    password = models.CharField(max_length=200)
     dateCreation = models.DateField(auto_now=True)
 
     @classmethod
-    def create_password(cls, user_id, website, email, password_chiffre):
+    def create_password(cls, user_id, website_uuid, uuid, website, email, password_chiffre):
         password_cls = Password()
 
         user = Users.objects.get(id=user_id)
 
         password_cls.users = user
+        password_cls.website_uuid = website_uuid
+        password_cls.uuid = uuid
         password_cls.website = website
         password_cls.email = email
         password_cls.password = password_chiffre

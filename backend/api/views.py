@@ -15,6 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.contrib.auth.models import update_last_login
 from django.forms.models import model_to_dict
 from django.db.models import Prefetch
+from collections import defaultdict
 
 
 
@@ -54,10 +55,10 @@ class UserViewSet(viewsets.ViewSet):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = Users.objects.prefetch_related("passwords").get(email=serializer.validated_data["email"])
-        # try:
-        # except:
-        #     return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
+        try:
+            user = Users.objects.prefetch_related("passwords").get(email=serializer.validated_data["email"])
+        except:
+            return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
 
         if user.is_active == False:
             return Response(
@@ -76,7 +77,7 @@ class UserViewSet(viewsets.ViewSet):
                         "email": user.email,
                         "nom": user.nom,
                         "prenom": user.prenom,
-                        "passwords": {password.website: {password.email: password.password} for password in user.passwords.all()},
+                        "passwords": {password.website: {'value': {password.email: {'value': password.password, 'uuid': password.uuid}}, 'uuid': password.website_uuid} for password in user.passwords.all()},
                         "access_token": str(refresh.access_token),
                         "refresh_token": str(refresh),
                     },
@@ -123,6 +124,8 @@ class PasswordViewSet(viewsets.ViewSet):
             password = Password.create_password(
                 # user_id=token_serializer.validated_data,
                 user_id=token['user_id'],
+                website_uuid=serializer.validated_data['website_uuid'],
+                uuid=serializer.validated_data['uuid'],
                 website=serializer.validated_data["website"],
                 email=serializer.validated_data["email"],
                 password_chiffre=serializer.validated_data["password_chiffre"],
