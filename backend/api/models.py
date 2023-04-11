@@ -117,3 +117,14 @@ class Password(models.Model):
             return password_cls
         except IntegrityError as e :
             return e
+
+    def change_password(self, email, password_chiffre):
+
+        self.email = email
+        self.password = password_chiffre
+        
+        try  :
+            self.save()
+            return self
+        except IntegrityError as e :
+            return e

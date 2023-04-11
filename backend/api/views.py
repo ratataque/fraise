@@ -112,8 +112,6 @@ class PasswordViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=["post"])
     def create_password(self, request):
-        # token_serializer = TokenVerifySerializer(data={'token': request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', '')})
-        # token_serializer.is_valid(raise_exception=True)
         token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
 
         for pswd in request.data:
@@ -127,6 +125,52 @@ class PasswordViewSet(viewsets.ViewSet):
                 website_uuid=serializer.validated_data['website_uuid'],
                 uuid=serializer.validated_data['uuid'],
                 website=serializer.validated_data["website"],
+                email=serializer.validated_data["email"],
+                password_chiffre=serializer.validated_data["password_chiffre"],
+            )
+        
+        return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=["post"])
+    def delete_password(self, request):
+        # token_serializer = TokenVerifySerializer(data={'token': request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', '')})
+        # token_serializer.is_valid(raise_exception=True)
+        token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
+
+        serializer = DeletePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        password = Password.objects.get(uuid=serializer.validated_data['uuid'], users_id=token['user_id'])
+
+        password.delete()
+    
+        return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+
+
+    @action(detail=False, methods=["post"])
+    def delete_website(self, request):
+        token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
+
+        serializer = DeleteWebsiteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        password = Password.objects.filter(website_uuid=serializer.validated_data['website_uuid'], users_id=token['user_id'])
+
+        password.delete()
+    
+        return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+
+
+    @action(detail=False, methods=["post"])
+    def change_password(self, request):
+        token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
+
+        for pswd in request.data:
+            serializer = AddPasswordSerializer(data=pswd)
+            serializer.is_valid(raise_exception=True)
+
+            password = Password.objects.get(uuid=serializer.validated_data['uuid'], users_id=token['user_id'])
+            password.change_password(
                 email=serializer.validated_data["email"],
                 password_chiffre=serializer.validated_data["password_chiffre"],
             )

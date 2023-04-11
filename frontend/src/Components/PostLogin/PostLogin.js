@@ -225,7 +225,7 @@ function PostLogin() {
                 // console.log(data);
 
                 if (data['status'] === 'ok') {
-                    website_dict[site] = {'value': {[form_email.current.value]: {'value': form_password.current.value, 'uuid': website_uuid}}, 'uuid': uuid};
+                    website_dict[site] = {'value': {[form_email.current.value]: {'value': form_password.current.value, 'uuid': uuid}}, 'uuid': website_uuid};
                     set_new_website_dict(website_dict);
 
                     toggle_email(true);
@@ -316,21 +316,41 @@ function PostLogin() {
         var site = website_current
         var username = form_change_email.current.value
         var uuid = website_dict[site].value[email_main].uuid 
+        var key = sessionStorage.getItem('front_key')
         if (form_change_password.current.value === form_confirm_change_password.current.value) {
-            // if (username === email_main) {
-            //     website_dict[site].value[username] = {'value': form_new_password.current.value, uuid: uuid};
-            // } else {
-            //     delete Object.assign(website_dict[site].value, {[username]: {'value': form_change_password.current.value, 'uuid': uuid}})[email_main];
-            // }
-            Object.assign(website_dict[site].value, {[username]: {'value': form_change_password.current.value, 'uuid': uuid}});
+            var csrftoken = getCookie('csrftoken');
+            let formField = [{
+                'website_uuid': website_dict[site].uuid,
+                'uuid': uuid,
+                "website": AES256_encode(site, key),
+                "email": AES256_encode(username, key),
+                "password_chiffre": AES256_encode(form_password.current.value, key),
+            }]
+            formField = JSON.stringify(formField)
 
-            if (username !== email_main) {
-                delete website_dict[site].value[email_main]
-            }
-            
-            set_new_website_dict(website_dict);
+            fetch('/api/password/change_password/', {
+                method: 'POST',
+                body: formField,
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'X-CSRFToken': csrftoken,
+                    'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+                }
+            })
+            .then(response => response.json())
+            .then((data) => {
+                if (data['status'] === 'ok') {
+                    Object.assign(website_dict[site].value, { [username]: { 'value': form_change_password.current.value, 'uuid': uuid } });
 
-            display_another_password(site, username)
+                    if (username !== email_main) {
+                        delete website_dict[site].value[email_main]
+                    }
+
+                    set_new_website_dict(website_dict);
+
+                    display_another_password(site, username)
+                }
+            })
         } else {
             alert("Les deux mots passes ne sont pas identique !")
         }
@@ -338,12 +358,12 @@ function PostLogin() {
 
     function delete_password(username) {
         var site = website_dict[website_current].value
-        var uuid = website_dict[website_current].uuid
+        var uuid = site[username].uuid
         var csrftoken = getCookie('csrftoken');
 
-        let formField = [{
+        let formField = {
             'uuid': uuid,
-        }]
+        }
         formField = JSON.stringify(formField)
 
         fetch('/api/password/delete_password/', {
@@ -375,23 +395,46 @@ function PostLogin() {
     }
 
     function delete_website(website) {
-        delete website_dict[website]
-        set_new_website_dict(website_dict)
+        var site = website_dict[website]
+        var website_uuid = site.uuid
+        var csrftoken = getCookie('csrftoken');
 
-        if (Object.keys(website_dict).length === 0) {
-            toggle_email(false);
-            toggle_password(true);
-            toggle("add_password");
-            document.getElementById("email_add_new").value = "";
-            document.getElementById("website_new").value = "";
-        } else {
-            var site = Object.keys(website_dict)[0];
-            set_current_website(site)
-            display_another_password(site, Object.keys(website_dict[site].value)[0])
-            setIsButtonClicked(!isButtonClicked)
+        let formField = {
+            'website_uuid': website_uuid,
         }
+        formField = JSON.stringify(formField)
 
-        console.log(website_dict);
+        fetch('/api/password/delete_website/', {
+            method: 'POST',
+            body: formField,
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': csrftoken,
+                'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+            if (data['status'] === 'ok') {
+                delete website_dict[website]
+                set_new_website_dict(website_dict)
+
+                if (Object.keys(website_dict).length === 0) {
+                    toggle_email(false);
+                    toggle_password(true);
+                    toggle("add_password");
+                    document.getElementById("email_add_new").value = "";
+                    document.getElementById("website_new").value = "";
+                } else {
+                    var site = Object.keys(website_dict)[0];
+                    set_current_website(site)
+                    display_another_password(site, Object.keys(website_dict[site].value)[0])
+                    setIsButtonClicked(!isButtonClicked)
+                    transi_website()
+                }
+            }
+        })
+        // console.log(website_dict);
     }
 
     function cancel_add() {

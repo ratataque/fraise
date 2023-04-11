@@ -28,3 +28,10 @@ class AddPasswordSerializer(serializers.Serializer):
     website = serializers.CharField(max_length=200)
     email = serializers.CharField(max_length=200)
     password_chiffre = serializers.CharField(max_length=200)
+
+
+class DeletePasswordSerializer(serializers.Serializer):
+    uuid = serializers.UUIDField()
+
+class DeleteWebsiteSerializer(serializers.Serializer):
+    website_uuid = serializers.UUIDField()
