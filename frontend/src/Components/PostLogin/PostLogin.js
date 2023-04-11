@@ -17,16 +17,18 @@ function getCookie(name) {
 
 function AES256_encode(password, key) {
     var uuid = uuidv4();
+    var crypt_key = CryptoJS.SHA256(key+uuid).toString(CryptoJS.enc.Base64)
 
-    var encrypted = CryptoJS.AES.encrypt(uuid+password, key+uuid).toString();
+    var encrypted = CryptoJS.AES.encrypt(uuid+password, crypt_key).toString();
 
     return uuid+"$"+encrypted
 }
 
 function AES256_decode(password_chiffre, key) {
     var uuid = password_chiffre.split('$')[0];
+    var decrypt_key = CryptoJS.SHA256(key+uuid).toString(CryptoJS.enc.Base64)
 
-    var decrypted = CryptoJS.AES.decrypt( password_chiffre.split('$')[1], key+uuid).toString(CryptoJS.enc.Utf8);
+    var decrypted = CryptoJS.AES.decrypt(password_chiffre.split('$')[1], decrypt_key).toString(CryptoJS.enc.Utf8);
 
     return {'uuid': decrypted.slice(0, 35), 'password': decrypted.slice(36, decrypted.length)}
     // return decrypted.slice(36, decrypted.length)
@@ -117,16 +119,17 @@ function PostLogin() {
             if (switch_ !== "montre_display") {
                 marg_switch("montre_display");
             }
-
+            var mail
+            var pswd
             if (Object.keys(website_dict[id].value).length === 0) {
                 setIsButtonClicked(!isButtonClicked);
-                var mail = "";
-                var pswd = generated_password_change;
+                mail = "";
+                pswd = generated_password_change;
                 toggle_email(false);
                 marg_switch("montre_add");
             } else {
-                var mail = Object.keys(website_dict[id].value)[0]
-                var pswd = Object.values(website_dict[id].value)[0].value
+                mail = Object.keys(website_dict[id].value)[0]
+                pswd = Object.values(website_dict[id].value)[0].value
             }
             set_current_website(id)
             set_email_main(mail)
