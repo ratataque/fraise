@@ -70,7 +70,7 @@ function Login() {
           body: formField,
           headers: {
             'Content-type': 'application/json; charset=UTF-8',
-            'X-CSRFToken': csrftoken
+            // 'X-CSRFToken': csrftoken
           }
         })
         .then(response=>response.json())

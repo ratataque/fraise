@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import IntegrityError
-from rest_framework_simplejwt.views import TokenVerifyView
+from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenVerifySerializer
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
@@ -117,8 +117,14 @@ class PasswordViewSet(viewsets.ViewSet):
     def create_password(self, request):
         token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
 
-        for pswd in request.data:
+        # jwt = request.META.get('HTTP_AUTHORIZATION').split(' ')
+        
+        # if jwt[0] == 'access_token':
+        #     token = AccessToken(token=jwt[1])
+        # elif jwt[0] == 'refresh_token':
+        #     token = RefreshToken(token=jwt[1])
 
+        for pswd in request.data:
             serializer = AddPasswordSerializer(data=pswd)
             serializer.is_valid(raise_exception=True)
 
@@ -148,7 +154,7 @@ class PasswordViewSet(viewsets.ViewSet):
 
         password.delete()
     
-        return Response(data={"status": "ok"}, status=status.HTTP_205_RESET_CONTENT)
+        return Response(data={"status": "ok"}, status=status.HTTP_200_OK)
 
 
     @action(detail=False, methods=["post"])
@@ -163,7 +169,7 @@ class PasswordViewSet(viewsets.ViewSet):
 
         password.delete()
     
-        return Response(data={"status": "ok"}, status=status.HTTP_205_RESET_CONTENT)
+        return Response(data={"status": "ok"}, status=status.HTTP_200_OK)
 
 
     @action(detail=False, methods=["post"])

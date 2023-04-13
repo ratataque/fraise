@@ -15,6 +15,54 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
+function check_jwt_exp() {
+    var token = sessionStorage.getItem("access_token");
+
+    if (token) {
+        try {
+            var token_data = JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+            return 'ko'
+        }
+
+        if (token_data.exp * 1000 > Date.now()) {
+            // console.log('token exp: '+token_data.exp, 'now : '+Date.now().toString());
+            // return "access_token "+token
+            return false
+        } else {
+            return true
+            // return "refresh_token "+sessionStorage.getItem("refresh_token"); 
+        }
+    }
+}
+
+function refresh_jwt_token() {
+    var csrftoken = getCookie('csrftoken');
+    var token = sessionStorage.getItem('refresh_token')
+
+    let formField = {
+        'refresh': token,
+    }
+    formField = JSON.stringify(formField)
+
+    fetch('/api/token/refresh/', {
+        method: 'POST',
+        body: formField,
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-CSRFToken': csrftoken,
+            'Authorization': 'refresh_token '+token
+        }
+    })
+    .then(response => response.json())
+    .then((data) => {
+        console.log(data);
+
+        if (data['status'] === 'ok') {
+        }
+    })
+}
+
 function AES256_encode(password, key) {
     var uuid = uuidv4();
     var crypt_key = CryptoJS.SHA256(key+uuid).toString(CryptoJS.enc.Base64)
@@ -199,6 +247,13 @@ function PostLogin() {
         var website_uuid = uuidv4();
         var key = sessionStorage.getItem('front_key')
         var site = form_website.current.value
+        // var token = check_jwt_exp()
+
+        if (check_jwt_exp()) {
+            refresh_jwt_token();
+        }
+        // console.log(token);
+        
         if (form_password.current.value === form_confirm_password.current.value) {
             var csrftoken = getCookie('csrftoken');
             let formField = [{
@@ -209,10 +264,6 @@ function PostLogin() {
                 "password_chiffre": AES256_encode(form_password.current.value, key),
             }]
             formField = JSON.stringify(formField)
-            // console.log(formField);
-            // var test = AES256_encode('test', key)
-            // console.log(test);
-            // console.log(AES256_decode(test, key)['password']);
 
             fetch('/api/password/create_password/', {
                 method: 'POST',
@@ -220,7 +271,9 @@ function PostLogin() {
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                     'X-CSRFToken': csrftoken,
+                    // 'X-CSRFToken': 'twgYTe9Ivn1g9idFuGjZXLY3HIFctEgk',
                     'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+                    // 'Authorization': token 
                 }
             })
             .then(response => response.json())
