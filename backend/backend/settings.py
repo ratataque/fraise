@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["backend", "localhost"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "api",
     'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
 ]
+
+AUTH_USER_MODEL = 'api.Users'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -48,6 +51,11 @@ CORS_ALLOWED_ORIGINS = [
 
 REST_FRAMEWORK = {
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=30),
 }
 
 MIDDLEWARE = [

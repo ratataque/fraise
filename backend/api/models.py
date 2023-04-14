@@ -18,6 +18,11 @@ class Users(models.Model):
     last_login = models.DateTimeField(blank=True, null=True)
     date_joined = models.DateTimeField(default=timezone.now)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['MotherPwd']
+    is_anonymous = False
+    is_authenticated = False
+
     @classmethod
     def create_user(cls, nom, prenom, email, clearpwd):
         user = Users()

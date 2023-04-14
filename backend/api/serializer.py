@@ -3,10 +3,10 @@ from .models import Users
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    nom = serializers.CharField(required=False, max_length=30)
-    prenom = serializers.CharField(required=False, max_length=30)
-    email = serializers.EmailField(required=False, max_length=100)
-    MotherPwd = serializers.CharField(required=False)
+    nom = serializers.CharField(required=True, max_length=30)
+    prenom = serializers.CharField(required=True, max_length=30)
+    email = serializers.EmailField(required=True, max_length=100)
+    MotherPwd = serializers.CharField(required=True)
 
     class Meta:
         model = Users
