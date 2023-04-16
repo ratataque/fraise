@@ -8,16 +8,10 @@ from django.utils.decorators import method_decorator
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import IntegrityError
-from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenVerifySerializer
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, BlacklistMixin
 from django.contrib.auth.models import update_last_login
-from django.forms.models import model_to_dict
-from django.db.models import Prefetch
-from collections import defaultdict
-
-
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
+from datetime import datetime
 
 class UserViewSet(viewsets.ViewSet):
 
@@ -67,6 +61,13 @@ class UserViewSet(viewsets.ViewSet):
             )
 
         if user.check_password(serializer.validated_data["clearpwd"]):
+
+            BlacklistedToken.objects.filter(token__expires_at__lt=datetime.now()).delete()
+            OutstandingToken.objects.filter(expires_at__lt=datetime.now()).delete()
+
+            tokens = OutstandingToken.objects.filter(user_id=user.id)
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
 
             refresh = RefreshToken.for_user(user)
             update_last_login(None, user)
