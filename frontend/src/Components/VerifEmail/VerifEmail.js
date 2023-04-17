@@ -58,18 +58,28 @@ function VerifEmail() {
 
     return (
         <div className="VerifEmail">
-            <Navbar/>
-            {/* {verif(uuid)} */}
-            <div id="verif_mail"> <p>{"Compte activé ! vous pouvez vous connecter."}</p></div>
+          <Navbar/>
+          {/* {verif(uuid)} */}
 
-            <div style={{ height: "auto", margin: "0 auto", maxWidth: 64, width: "100%"}}>
-            <QRCode
-            size={256}
-            style={{ height: "auto", maxWidth: "100%", width: "100%"}}
-            value={"otpauth://totp/Fraise?secret="+token_otp}
-            viewBox={'0 0 256 256'}
-            />
+          <div className='contenair'>
+            <div id="verif_mail"> <p>{"Compte activé !"}</p></div>
+
+            <div className='totp_setup'>
+              Vous pouvez maintenant setup une authentification multifacteur
+              grace a une application comme google authanticator en scannant ce qrcode
+
+              <div className='qrcode' >
+                <QRCode
+                  size={256}
+                  style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                  value={"otpauth://totp/Fraise?secret=" + token_otp}
+                  viewBox={'0 0 256 256'}
+                />
+              </div>
+
+
             </div>
+          </div>
         </div>
 
     );

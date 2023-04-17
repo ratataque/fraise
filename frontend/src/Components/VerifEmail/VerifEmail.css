@@ -1,3 +1,11 @@
+.VerifEmail .contenair {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 5rem;
+}
+
 .VerifEmail .nav-links a {
     color: black;
 }
@@ -12,12 +20,32 @@
 }
 
 #verif_mail {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    font-size: 5rem;
     font-weight: 700;
     padding-left: 10%;
     padding-right: 10%;
-}  
+    padding-top: 3vh;
+}
+
+.VerifEmail .totp_setup {
+    position: relative;
+    padding-top: 3vh;
+    padding-left: 2vw;
+    width: 70vw;
+    height: 55vh;
+    margin-top: 4vh;
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
+
+    font-weight: 575;
+    font-size: 4rem;
+}
+
+.VerifEmail .qrcode {
+    position: absolute;
+    height: auto;
+    max-width: 10vw;
+    width: 100%;
+    right: 6vw;
+    top: 23vh;
+}
