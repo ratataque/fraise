@@ -5,6 +5,7 @@ import requests
 import hashlib
 from django.contrib.auth.models import User
 from django.utils import timezone
+from api.config_api import SENDINBLUE_API_KEY
 
 # Create your models here.
 class Users(models.Model):
@@ -71,7 +72,7 @@ class Users(models.Model):
             headers={
                 "accept": "application/json",
                 "Content-type": "application/json; charset=UTF-8",
-                "api-key": "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",
+                "api-key": SENDINBLUE_API_KEY,
             },
         )
 
