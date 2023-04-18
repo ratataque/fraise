@@ -16,12 +16,16 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=100)
     clearpwd = serializers.CharField()
+    totp = serializers.CharField()
 
 
 class VerifMailSerializer(serializers.Serializer):
     uuid = serializers.UUIDField()
 
-    
+class SetTotpSerializer(serializers.Serializer):
+    uuid = serializers.UUIDField()
+    secret_totp = serializers.CharField(max_length=200)
+
 class AddPasswordSerializer(serializers.Serializer):
     website_uuid = serializers.UUIDField()
     uuid = serializers.UUIDField()

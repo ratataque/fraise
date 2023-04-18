@@ -55,6 +55,11 @@ class UserViewSet(viewsets.ViewSet):
         except:
             return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
 
+        if user.verify_otp(serializer.validated_data["totp"]) == False:
+            return Response(
+                data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
         if user.is_active == False:
             return Response(
                 data={"status": "unactive"}, status=status.HTTP_401_UNAUTHORIZED
@@ -106,6 +111,27 @@ class UserViewSet(viewsets.ViewSet):
         user.activate_email()
 
         return Response(data={"status": user.is_active})
+
+
+    # POST /api/user/set_totp/
+    @action(detail=False, methods=["post"])
+    @method_decorator(ensure_csrf_cookie)
+    def set_totp(self, request):
+
+        serializer = SetTotpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = Users.objects.get(uuid=serializer.validated_data["uuid"])
+        except: 
+            return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        req = user.set_totp(serializer.validated_data["secret_totp"])
+
+        if req != 'ok':
+            return Response(data={"status": req}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response(data={"status": 'ok'})
 
 
 #------------------------------------password actions --------------------------------------------------------

@@ -1,3 +1,13 @@
+.VerifEmail {
+    background-image: url("../../assets/verif_mail_wallpaper.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+    transition: transform 400ms ease-in-out;
+    overflow: hidden;
+}
+
 .VerifEmail .contenair {
     align-items: center;
     display: flex;
@@ -20,18 +30,32 @@
 }
 
 #verif_mail {
+    position: relative;
     font-weight: 700;
     padding-left: 10%;
     padding-right: 10%;
     padding-top: 3vh;
+    left: -9.5vw;
+}
+
+.VerifEmail .wheel_cont {
+    position: relative;
+    align-items: center;
+    display: flex;
+    /* justify-content: center; */
+    flex-direction: column;
+    height: 360vh;
+    width: 360vh;
+    transition: transform 0.65s ease;
 }
 
 .VerifEmail .totp_setup {
     position: relative;
     padding-top: 3vh;
     padding-left: 2vw;
+    padding-right: 2vw;
     width: 70vw;
-    height: 55vh;
+    /* height: 55vh; */
     margin-top: 4vh;
     background-color: white;
     border-radius: 50px;
@@ -41,11 +65,103 @@
     font-size: 4rem;
 }
 
-.VerifEmail .qrcode {
+.VerifEmail .totp_verif {
     position: absolute;
+    padding-top: 3vh;
+    padding-left: 2vw;
+    padding-right: calc(13vw + 200px);
+    width: 70vw;
+    min-height: 55vh;
+    margin-top: 4vh;
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
+    transform: translateY(-50%) translateX(50%) rotate(90deg) translateY(50%);
+    top: calc(50% - 4.1vh);
+    right: 4.1vh;
+    
+
+    font-weight: 575;
+    font-size: 4rem;
+}
+
+.VerifEmail .qrcode {
+    position: relative;
     height: auto;
     max-width: 10vw;
     width: 100%;
-    right: 6vw;
-    top: 23vh;
+    right: -29vw;
+    padding-top: 4vh;
+    padding-bottom: 8vh;
+    /* top: 23vh; */
+}
+
+.VerifEmail .input_verif {
+    position: relative;
+    left: 1vw;
+    margin-top: 2vh;
+    height: 5vh;
+    width: 20vw;
+    border: none;
+    border-radius: 18px 40px 40px 18px;
+    padding: 0 30px;
+    font-size: 2.4rem;
+    font-weight: 500;
+    outline-color: orangered;
+    color: #444444;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.VerifEmail .tuto_totp {
+    position: absolute;
+    top: 2vh;
+    right: 8vw;
+}
+
+.VerifEmail .bttn {
+    position: absolute;
+    margin-left: 1.3vw;
+    padding: 6px 0px;
+    outline: none;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+    border-radius: 12px 12px 12px 12px;
+    background: white;
+    border: 3px solid orangered;
+    color: #444444;
+    font-size: 2.6rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease, transform 0.35s ease;
+}
+
+.VerifEmail .bttn.next {
+    bottom: 3vh;
+    right: 4vw;
+}
+
+.VerifEmail .bttn.prev {
+    bottom: 3vh;
+    left: 3vw;
+}
+
+.VerifEmail .bttn.confirm {
+    position: relative;
+    /* top: 23vh; */
+    left: 2vw; 
+    width: 170px;
+}
+
+.VerifEmail .bttn:active {
+    transition: all 0.15s ease 0ms;
+    scale: 0.8;
+}
+
+.VerifEmail .rotate_left {
+    transform: rotate(-90deg);
+}
+
+.VerifEmail .rotate_right {
+    transform: none;
 }
