@@ -1,4 +1,6 @@
 from .models import Users, Password
+from django.conf import settings
+import urllib.parse
 from .serializer import *
 from rest_framework import status
 from rest_framework import viewsets
@@ -38,8 +40,11 @@ class UserViewSet(viewsets.ViewSet):
             return Response(data={"status": "mail_used"}, status=status.HTTP_409_CONFLICT)                                 
             
         else :
-            user.send_verif_mail()
-            return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+            if settings.USE_SENDINBLUE_API:
+                user.send_verif_mail()
+                return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response(data={"status": 'no mail api', "link": "/verifEmail?uuid=" + str(user.uuid) + "&email="+urllib.parse.quote_plus(user.email)}, status=status.HTTP_201_CREATED)
 
 
     # POST /api/user/login/

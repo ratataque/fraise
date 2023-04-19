@@ -149,6 +149,9 @@ function Login() {
             // envoie des données a la page postSignup et redirection
             navigate("/postSignup",{state: data['status']});
 
+          }else if (data['status'] === 'no mail api') {
+            alert("Pas d'API Mail selectionner sur le backend, VOUS ALLER DONC SKIP L'ETAPE DE VERIFICATION DE L'ADRESSE MAIL ET ETRE REDIRIGER VERS LA PAGE DU SET UP OTP")
+            navigate(data["link"]);
           } else if (data['status'] === 'mail_used') {
             alert("Adresse mail deja utilise")
           } else {
