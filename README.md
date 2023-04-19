@@ -31,7 +31,7 @@ Et ensuite lancer le ficher sous (en ayant docker au prealable):
 <br>
 
 
-> ### Une fois que tout est terminé voici l'état du projet: 
+ ### Une fois que tout est terminé voici l'état du projet: 
 <br>
 
 1. le backend run sur [http://localhost:8000](http://localhost:8000)
@@ -42,7 +42,7 @@ Et ensuite lancer le ficher sous (en ayant docker au prealable):
 
 <br>
 
-> ### Si vous voulez accedez au backend ou a la db, executez les fichier correspondant :
+ ### Si vous voulez accedez au backend ou a la db, executez les fichier correspondant :
 
 <pre>
     <code>#pour le backend
@@ -74,18 +74,18 @@ Et ensuite lancer le ficher sous (en ayant docker au prealable):
 <br>
 
 ***
-## Envoie du mail de confirmation avec SendinBlue API
+# Envoie du mail de confirmation avec SendinBlue API
 
 <br>
 
-> Changer le boolen en True de la variable a la ligne 29 du fichier **fraise/backend/backend/setting.py**
+ Changer le boolen en True de la variable a la ligne 29 du fichier **fraise/backend/backend/setting.py**
 <pre>
     <code>29  USE_SENDINBLUE_API = True</code>
 </pre>
 
 <br>
 
-> ensuite il faut avoir un fichier nomé **config_api.py** a cette emplacement **fraise/backend/api/config_api.py** avec ce contenue
+ ensuite il faut avoir un fichier nomé **config_api.py** a cette emplacement **fraise/backend/api/config_api.py** avec ce contenue
 
 <pre>
     <code>
