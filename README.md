@@ -20,7 +20,7 @@ Fraise le gestionnaire de mot de passe
 ![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/add.png)
 ![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/show.png)
 
-# Comment lancer le projet
+# Comment lancer le projet 
 
 Avant de lancer le projet, il faut installer Docker et Git : 
 <br>
