@@ -11,7 +11,7 @@ Fraise le gestionnaire de mot de passe
 - [x] JWT blacklist et rotation 
 - [x] Envoie d'email pour confirmer l'inscription
 - [x] Auth avec TOTP
-- [x] Auth avec TOTP
+- [x] Bouttons copier coller
 - [ ] Verification du mot de passe a l'inscription et prevenir que nous ne pouvons pas recouvrir les mot de passe stocke si le mot de passe mere est perdu
 
 ***
