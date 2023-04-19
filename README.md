@@ -70,6 +70,7 @@ Et ensuite lancer le ficher sous (en ayant docker au prealable):
 - [x] Envoie d'email pour confirmer l'inscription
 - [x] Auth avec TOTP
 - [x] Auth avec TOTP
+- [ ] Verification du mot de passe a l'inscription et prevenir que nous ne pouvons pas recouvrir les mot de passe stocke si le mot de passe mere est perdu
 
 <br>
 
