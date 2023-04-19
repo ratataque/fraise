@@ -105,7 +105,7 @@ function VerifEmail() {
             })
             
         } else {
-            alert("Error: wrong code or an error occured while scanning the qrcode")
+            alert("Erreur: Mauvais code ou alors une erreur est survenu lors du scanne de votre qrcode")
         }
     }
 
@@ -119,10 +119,10 @@ function VerifEmail() {
 
                 <div className={"wheel_cont rotate_" + rotate}>
                     <div className="totp_setup">
-                        Mfa set up :
+                        Configuration MFA :
                         <br />
                         <br />
-                        Scan this QRcode with an MFA app on your phone (google authenticator)
+                        Scaner ce QRcode avec une application MFA sur votre téléphone(google authenticator)
 
                         <div className='qrcode' >
                             <QRCode
@@ -138,10 +138,10 @@ function VerifEmail() {
                     </div>
 
                     <div className="totp_verif">
-                        Verify the code :
+                        Verifier le code :
                         <br />
                         <br />
-                        Enter the code to finish the configuration
+                        Entrer le code pour finir la configuration
                         <br />
                         <br />
 
