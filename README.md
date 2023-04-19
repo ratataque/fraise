@@ -55,29 +55,20 @@ Et ensuite lancer le ficher sous (en ayant docker au prealable):
 </pre>
 
 ***
-
-<br>
 <br>
 
 # Plus d'information sur le projet
+
 <br>
 
 - [x] Mot de passe mère salé poivré, hashé 400k fois
-
 - [x] Les mots de passe stocké par les utilisateurs sont chiffre symetriquement avec un hash du mot de passe mere + une string (sale, poivre)
-
 - [ ] faire que la string present doit dans la cle de dechiffrement soit uniquement present sur le telephone de l'utilisateur 
-
 - [x] Proteger par csrf token 
-
 - [x] Proteger par JWT (access + refresh token) 
-
 - [x] JWT blacklist et rotation 
-
 - [x] Envoie d'email pour confirmer l'inscription
-
 - [x] Auth avec TOTP
-
 - [x] Auth avec TOTP
 
 <br>
