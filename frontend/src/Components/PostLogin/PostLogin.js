@@ -128,7 +128,7 @@ function PostLogin() {
         }
         formField = JSON.stringify(formField)
 
-        await fetch('/api/token/refresh/', {
+        return await fetch('/api/token/refresh/', {
             method: 'POST',
             body: formField,
             headers: {
@@ -138,17 +138,19 @@ function PostLogin() {
             }
         })
             .then(response => response.json())
-            .then((data) => {
+            .then((data)  => {
                 // console.log(data);
 
-                if (data['access']) {
+                if (data['access'] && data['refresh']) {
                     sessionStorage.setItem('access_token', data['access'])
+                    sessionStorage.setItem('refresh_token', data['refresh'])
                     // console.log('ok');
-                    // return 'ok'
+                    return 'ok'
                 } else {
                     alert('session expirer')
                     sessionStorage.clear()
                     navigate("/login");
+                    return 'expired'
                 }
             })
     }
@@ -246,7 +248,9 @@ function PostLogin() {
         // console.log(sessionStorage.getItem("access_token")); 
         
         if (check_jwt_exp()) {
-            await refresh_jwt_token();
+            if (await refresh_jwt_token() !== 'ok') {
+                return;
+            }
         }
         
         if (form_password.current.value === form_confirm_password.current.value) {
@@ -329,7 +333,9 @@ function PostLogin() {
         var username = form_new_email.current.value
 
         if (check_jwt_exp()) {
-            await refresh_jwt_token();
+            if (await refresh_jwt_token() !== 'ok') {
+                return;
+            }
         }
         
         if (form_password.current.value === form_confirm_password.current.value) {
@@ -375,7 +381,9 @@ function PostLogin() {
         var key = sessionStorage.getItem('front_key')
 
         if (check_jwt_exp()) {
-            await refresh_jwt_token();
+            if (await refresh_jwt_token() !== 'ok') {
+                return;
+            }
         }
         
         if (form_change_password.current.value === form_confirm_change_password.current.value) {
@@ -423,7 +431,9 @@ function PostLogin() {
         var csrftoken = getCookie('csrftoken');
 
         if (check_jwt_exp()) {
-            await refresh_jwt_token();
+            if (await refresh_jwt_token() !== 'ok') {
+                return;
+            }
         }
         
         let formField = {
@@ -465,7 +475,9 @@ function PostLogin() {
         var csrftoken = getCookie('csrftoken');
 
         if (check_jwt_exp()) {
-            await refresh_jwt_token();
+            if (await refresh_jwt_token() !== 'ok') {
+                return;
+            }
         }
         
         let formField = {

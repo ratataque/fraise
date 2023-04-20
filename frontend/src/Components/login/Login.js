@@ -26,6 +26,7 @@ async function sha256(input) {
 function Login() {
   const email = useRef(null)
   const pswd = useRef(null)
+  const totp = useRef(null)
 
   const name = useRef(null)
   const forename = useRef(null)
@@ -58,6 +59,7 @@ function Login() {
       let formField = {
         "email": email.current.value,
         "clearpwd": await sha256(pswd.current.value + "back"),
+        "totp": totp.current.value,
       }
       formField = JSON.stringify(formField)
       var front_key = await sha256(pswd.current.value + "front")
@@ -94,7 +96,7 @@ function Login() {
           } else if (data['status'] === "unactive") {
             alert("vous devez activer votre compte avec l'email envoyé");
           } else {
-            alert("mot de passe ou identifiant éronée");
+            alert("mot de passe ou identifiant ou code MFA éronée");
           }
 
         });
@@ -147,6 +149,9 @@ function Login() {
             // envoie des données a la page postSignup et redirection
             navigate("/postSignup",{state: data['status']});
 
+          }else if (data['status'] === 'no mail api') {
+            alert("Pas d'API Mail selectionner sur le backend, VOUS ALLER DONC SKIP L'ETAPE DE VERIFICATION DE L'ADRESSE MAIL ET ETRE REDIRIGER VERS LA PAGE DU SET UP OTP")
+            navigate(data["link"]);
           } else if (data['status'] === 'mail_used') {
             alert("Adresse mail deja utilise")
           } else {
@@ -180,6 +185,7 @@ function Login() {
               <Components.Title>Connection</Components.Title>
               <Components.Input type="email" placeholder="Email" ref={email} required/>
               <Components.Input type="password" placeholder="Mot de passe" ref={pswd} required/>
+              <Components.Input type="number" placeholder="Code MFA" ref={totp} required/>
               <Components.Anchor href="" onClick={() => {alert("Password Forgoten")}}>
                 Mot de passe oublié ?
               </Components.Anchor>

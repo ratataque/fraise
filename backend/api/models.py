@@ -5,6 +5,9 @@ import requests
 import hashlib
 from django.contrib.auth.models import User
 from django.utils import timezone
+import urllib.parse
+import pyotp
+from api.config_api import SENDINBLUE_API_KEY
 
 # Create your models here.
 class Users(models.Model):
@@ -14,6 +17,7 @@ class Users(models.Model):
     prenom = models.CharField(max_length=30)
     email = models.EmailField(max_length=100, unique=True)
     MotherPwd = models.TextField()
+    secret_totp = models.EmailField(max_length=100, unique=True, blank=True, null=True)
     is_active = models.BooleanField(default=False)
     last_login = models.DateTimeField(blank=True, null=True)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -58,7 +62,7 @@ class Users(models.Model):
             "subject": "Mail de confirmation d'inscpition à Fraise",
             "htmlContent": "<html><head></head><body><h1>Bonjour, veuillez cliquer <a href='http://localhost:3000/verifEmail?uuid="
             + str(self.uuid)
-            + "'>Ici</a> afin de pouvoir activer votre compte, merci ! </h1></body></html>",
+            + "&email="+urllib.parse.quote_plus(self.email)+"'>Ici</a> afin de pouvoir activer votre compte, merci ! </h1></body></html>",
             "headers": {
                 "X-Mailin-custom": "custom_header_1:custom_value_1|custom_header_2:custom_value_2|custom_header_3:custom_value_3",
                 "charset": "iso-8859-1",
@@ -71,7 +75,7 @@ class Users(models.Model):
             headers={
                 "accept": "application/json",
                 "Content-type": "application/json; charset=UTF-8",
-                "api-key": "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",
+                "api-key": SENDINBLUE_API_KEY,
             },
         )
 
@@ -93,6 +97,19 @@ class Users(models.Model):
     def activate_email(self):
         self.is_active = True
         self.save()
+
+    def set_totp(self, secret_totp):
+        if (self.secret_totp == None):
+            self.secret_totp = secret_totp
+            self.save()
+            return 'ok'
+        else:
+            return 'totp already set'
+
+    def verify_otp(self, totp):
+        otp_cls = pyotp.TOTP(self.secret_totp)
+        return otp_cls.verify(totp)
+            
 
 
 class Password(models.Model):

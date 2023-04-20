@@ -1,4 +1,6 @@
 from .models import Users, Password
+from django.conf import settings
+import urllib.parse
 from .serializer import *
 from rest_framework import status
 from rest_framework import viewsets
@@ -8,16 +10,10 @@ from django.utils.decorators import method_decorator
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import IntegrityError
-from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenVerifySerializer
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, BlacklistMixin
 from django.contrib.auth.models import update_last_login
-from django.forms.models import model_to_dict
-from django.db.models import Prefetch
-from collections import defaultdict
-
-
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
+from datetime import datetime
 
 class UserViewSet(viewsets.ViewSet):
 
@@ -44,8 +40,11 @@ class UserViewSet(viewsets.ViewSet):
             return Response(data={"status": "mail_used"}, status=status.HTTP_409_CONFLICT)                                 
             
         else :
-            user.send_verif_mail()
-            return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+            if settings.USE_SENDINBLUE_API:
+                user.send_verif_mail()
+                return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response(data={"status": 'no mail api', "link": "/verifEmail?uuid=" + str(user.uuid) + "&email="+urllib.parse.quote_plus(user.email)}, status=status.HTTP_201_CREATED)
 
 
     # POST /api/user/login/
@@ -61,12 +60,24 @@ class UserViewSet(viewsets.ViewSet):
         except:
             return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
 
+        if user.verify_otp(serializer.validated_data["totp"]) == False:
+            return Response(
+                data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
         if user.is_active == False:
             return Response(
                 data={"status": "unactive"}, status=status.HTTP_401_UNAUTHORIZED
             )
 
         if user.check_password(serializer.validated_data["clearpwd"]):
+
+            BlacklistedToken.objects.filter(token__expires_at__lt=datetime.now()).delete()
+            OutstandingToken.objects.filter(expires_at__lt=datetime.now()).delete()
+
+            tokens = OutstandingToken.objects.filter(user_id=user.id)
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
 
             refresh = RefreshToken.for_user(user)
             update_last_login(None, user)
@@ -105,6 +116,27 @@ class UserViewSet(viewsets.ViewSet):
         user.activate_email()
 
         return Response(data={"status": user.is_active})
+
+
+    # POST /api/user/set_totp/
+    @action(detail=False, methods=["post"])
+    @method_decorator(ensure_csrf_cookie)
+    def set_totp(self, request):
+
+        serializer = SetTotpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = Users.objects.get(uuid=serializer.validated_data["uuid"])
+        except: 
+            return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        req = user.set_totp(serializer.validated_data["secret_totp"])
+
+        if req != 'ok':
+            return Response(data={"status": req}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response(data={"status": 'ok'})
 
 
 #------------------------------------password actions --------------------------------------------------------
