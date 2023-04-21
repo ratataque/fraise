@@ -536,7 +536,7 @@ function PostLogin() {
 
     return (
         <div className="postLogin">
-            <Navbar />
+            <Navbar deco="True"/>
             <div id="presentation">{"Bonjour " + state["nom"] + " " + state["prenom"]}</div>
 
             <div className="website_container">

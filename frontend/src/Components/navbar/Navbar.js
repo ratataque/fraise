@@ -9,7 +9,7 @@ import Button from '../UI/button/Button'
 
 import "./Navbar.css";
 
-const Navbar = () => {
+const Navbar = (props) => {
   const [showMenu, setShowMenu] = useState(false);
 
   let navigate = useNavigate(); 
@@ -50,7 +50,7 @@ const Navbar = () => {
           </li> */}
           <li className="nav-btn">
             {/* Utiliser un component dans le dossier UI, ici c'est Button */}
-            <Button text={"Nous Rejoindre"} btnClass={"btn-dark"} href={"/login"} />
+            <Button text={props.deco? "Deconnexion":"Nous Rejoindre"} btnClass={"btn-dark"} href={"/login"} />
           </li>
         </ul>
       </menu>
