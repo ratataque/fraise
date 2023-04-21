@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "api",
+    # "api.serializer",
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
 ]
@@ -60,6 +61,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=15),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    "TOKEN_REFRESH_SERIALIZER": "api.serializer.TokenRefreshSerializerCustom",
 }
 
 MIDDLEWARE = [
