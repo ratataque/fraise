@@ -120,7 +120,7 @@ class UserViewSet(viewsets.ViewSet):
 
     # POST /api/user/set_totp/
     @action(detail=False, methods=["post"])
-    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def set_totp(self, request):
 
         serializer = SetTotpSerializer(data=request.data)
@@ -139,6 +139,18 @@ class UserViewSet(viewsets.ViewSet):
         return Response(data={"status": 'ok'})
 
 
+    @action(detail=False, methods=["get"])
+    def disconnect(self, request):
+        try:
+            token = RefreshToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
+
+            tokens = OutstandingToken.objects.filter(user_id=token["user_id"])
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
+
+            return Response(data={"status": 'ok'})
+        except:
+            return Response(data={"status": 'ko'})
 #------------------------------------password actions --------------------------------------------------------
 
 

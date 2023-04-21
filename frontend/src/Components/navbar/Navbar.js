@@ -9,7 +9,7 @@ import Button from '../UI/button/Button'
 
 import "./Navbar.css";
 
-const Navbar = (props) => {
+const Navbar = ({deco, disconnect}) => {
   const [showMenu, setShowMenu] = useState(false);
 
   let navigate = useNavigate(); 
@@ -20,6 +20,7 @@ const Navbar = (props) => {
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
+
   return (
     <nav className="navbar container">
       <div className="logo" onClick={accueil}>
@@ -50,7 +51,7 @@ const Navbar = (props) => {
           </li> */}
           <li className="nav-btn">
             {/* Utiliser un component dans le dossier UI, ici c'est Button */}
-            <Button text={props.deco? "Deconnexion":"Nous Rejoindre"} btnClass={"btn-dark"} href={"/login"} />
+            <Button onClick={disconnect} text={deco? "Deconnexion":"Nous Rejoindre"} btnClass={"btn-dark"} href={deco?null:"/login"} />
           </li>
         </ul>
       </menu>

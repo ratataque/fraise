@@ -534,9 +534,33 @@ function PostLogin() {
         document.getElementById("website_new").value = "";
     }
 
+    function disconnect() {
+        var csrftoken = getCookie('csrftoken');
+
+        fetch('/api/user/disconnect/', {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': csrftoken,
+                'Authorization': "Bearer "+sessionStorage.getItem("refresh_token")
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+            if (data['status'] === 'ok') {
+                sessionStorage.clear()
+                navigate("/login")
+            } else if (data['status'] === 'ko') {
+                alert('session expire')
+                sessionStorage.clear()
+                navigate("/login")
+            }
+        })
+    }
+
     return (
         <div className="postLogin">
-            <Navbar deco="True"/>
+          <Navbar deco="True" disconnect={() => disconnect()}/>
             <div id="presentation">{"Bonjour " + state["nom"] + " " + state["prenom"]}</div>
 
             <div className="website_container">
