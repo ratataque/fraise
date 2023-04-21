@@ -1,5 +1,6 @@
 from django.db import models
 from django.db import models, IntegrityError
+from django.conf import settings
 import uuid
 import requests
 import hashlib
