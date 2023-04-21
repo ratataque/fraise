@@ -7,7 +7,8 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import urllib.parse
 import pyotp
-from api.config_api import SENDINBLUE_API_KEY
+if settings.USE_SENDINBLUE_API:
+    from api.config_api import SENDINBLUE_API_KEY
 
 # Create your models here.
 class Users(models.Model):
