@@ -16,10 +16,10 @@ Fraise le gestionnaire de mot de passe
 - [ ] Verification du mot de passe a l'inscription et prevenir que nous ne pouvons pas recouvrir les mot de passe stocke si le mot de passe mere est perdu
 
 ***
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/auth.png)
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/totp.png)
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/add.png)
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/show.png)
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/auth.png)
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/totp.png)
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/add.png)
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/show.png)
 
 # Comment lancer le projet 
 
@@ -72,8 +72,6 @@ Et ensuite lancer le ficher sous (en ayant docker de lancé):
     fraise/bat/acces_db.bat</code</code>
 </pre>
 
-***
-<br>
 
 ***
 # Envoie du mail de confirmation avec SendinBlue API
@@ -99,12 +97,12 @@ Et ensuite lancer le ficher sous (en ayant docker de lancé):
 
 # Zoom sur le fontionnement
 
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/fonctionnement.png)
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/fonctionnement.png)
 
 # Zoom sur le JWT
 
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/zoom_jwt.png)
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/zoom_jwt.png)
 
 # Zoom sur la securisation des mdp dans la db
 
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/zoom_password.png)
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/zoom_password.png)
