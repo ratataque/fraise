@@ -560,7 +560,7 @@ function PostLogin() {
 
     return (
         <div className="postLogin">
-          <Navbar deco="True" disconnect={() => disconnect()}/>
+            <Navbar deco="True" disconnect={() => disconnect()}/>
             <div id="presentation">{"Bonjour " + state["nom"] + " " + state["prenom"]}</div>
 
             <div className="website_container">

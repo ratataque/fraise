@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Type, TypeVar
 from rest_framework import serializers
 from .models import Users
+from rest_framework_simplejwt.exceptions import TokenError, DetailDictMixin
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
@@ -56,9 +57,22 @@ class TokenRefreshSerializerCustom(serializers.Serializer):
     refresh = serializers.CharField()
     access = serializers.CharField(read_only=True)
     token_class = RefreshToken
+
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, str]:
-        refresh = self.token_class(attrs["refresh"])
+        try:
+            refresh = self.token_class(attrs["refresh"])
+        except TokenError as e:
+            refresh = self.token_class(attrs["refresh"], verify=False)
+            tokens = OutstandingToken.objects.filter( user_id=refresh['user_id'])
+
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
+            
+            data = {"status": 'ko'}
+            return data
+            
         data = {"access": str(refresh.access_token)}
+        
         if api_settings.ROTATE_REFRESH_TOKENS:
             if api_settings.BLACKLIST_AFTER_ROTATION:
                 try:

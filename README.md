@@ -4,11 +4,12 @@
 Fraise le gestionnaire de mot de passe
 
 - [x] Mot de passe mère salé poivré, hashé 400k fois
-- [x] Les mots de passe stocké par les utilisateurs sont chiffre symetriquement avec un hash du mot de passe mere + une string (sale, poivre)
+- [x] Les mots de passe stocké par les utilisateurs sont chiffré symetriquement avec un hash du mot de passe mere + une string + (salé, poivré)
 - [ ] faire que la string present doit dans la cle de dechiffrement soit uniquement present sur le telephone de l'utilisateur 
 - [x] Proteger par csrf token 
 - [x] Proteger par JWT (access + refresh token) 
 - [x] JWT blacklist et rotation 
+- [x] JWT blacklist tout les token d'un user si tentative de refresh avec un refresh token deja refresh 
 - [x] Envoie d'email pour confirmer l'inscription
 - [x] Auth avec TOTP
 - [x] Bouttons copier coller
@@ -37,7 +38,7 @@ Lancer un cmd depuis ce dossier puis rentrez cette commande pour clone le repo:
     <code>git clone https://github.com/ratataque/fraise.git</code>
 </pre>
 
-Et ensuite lancer le ficher sous (en ayant docker au prealable):
+Et ensuite lancer le ficher sous (en ayant docker de lancé):
 
 <pre>
     <code>fraise/bat/fullLanch.bat</code>
