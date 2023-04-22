@@ -1,7 +1,7 @@
 FROM python:3.10
 
 
-RUN python -m pip install django djangorestframework psycopg2-binary requests djangorestframework-simplejwt
+RUN python -m pip install django djangorestframework psycopg2-binary requests djangorestframework-simplejwt pyotp
 
 RUN mkdir /fraise
 COPY backend /fraise/backend

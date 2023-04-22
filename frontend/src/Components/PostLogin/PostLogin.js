@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./PostLogin.css"
 import { Navbar } from "../../Components";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { BsClipboardPlus } from "react-icons/bs" //React-logo d'une fraise
 import { AiOutlineEdit } from "react-icons/ai" //React-logo d'une fraise
 import strawberry_guy from "../../assets/strawberry_guy.png" //React-logo d'une fraise
@@ -14,6 +14,28 @@ function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
+function check_jwt_exp() {
+    var token = sessionStorage.getItem("access_token");
+
+    if (token) {
+        try {
+            var token_data = JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+            return 'ko'
+        }
+
+        if (token_data.exp * 1000 > Date.now()) {
+            // console.log('token exp: '+token_data.exp, 'now : '+Date.now().toString());
+            // return "access_token "+token
+            return false
+        } else {
+            return true
+            // return "refresh_token "+sessionStorage.getItem("refresh_token"); 
+        }
+    }
+}
+
 
 function AES256_encode(password, key) {
     var uuid = uuidv4();
@@ -57,6 +79,7 @@ function dechiffre_les_mdp(passwords_chiffre) {
 
 function PostLogin() {
     const { state } = useLocation();
+    const navigate = useNavigate();
 
     // var test = AES256_encode("test", '123')
     // console.log(AES256_decode(test, '123').password, AES256_decode(test, '123').uuid);
@@ -93,25 +116,44 @@ function PostLogin() {
     var active_email = !edit_email ? "active" : ""
     var active_password = !edit_password ? "active" : ""
 
-    // const test_data = {
-    //                     "Site test 1": {"test1@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 2": {"test2@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 3": {"test3@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 4": {"test4@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 5": {"test5@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 6": {"test6@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 7": {"test7@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 8": {"test8@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 9": {"test9@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 10": {"test10@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 11": {"test11@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 12": {"test12@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 13": {"test13@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 14": {"test14@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                     "Site test 15": {"test15@test.com": "A9DC&d20H74ub1v99WF€?/Pwm717FtCypf81G1E116A7$"},
-    //                 }
     const [website_dict, set_new_website_dict] = useState(dechiffre_les_mdp(state["passwords"]));
     const [website_current, set_current_website] = useState(Object.keys(website_dict)[0]);
+
+    async function refresh_jwt_token() {
+        var csrftoken = getCookie('csrftoken');
+        var token = sessionStorage.getItem('refresh_token')
+
+        let formField = {
+            'refresh': token,
+        }
+        formField = JSON.stringify(formField)
+
+        return await fetch('/api/token/refresh/', {
+            method: 'POST',
+            body: formField,
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': csrftoken,
+                'Authorization': 'refresh_token ' + token
+            }
+        })
+            .then(response => response.json())
+            .then((data)  => {
+                // console.log(data);
+
+                if (data['access'] && data['refresh']) {
+                    sessionStorage.setItem('access_token', data['access'])
+                    sessionStorage.setItem('refresh_token', data['refresh'])
+                    // console.log('ok');
+                    return 'ok'
+                } else {
+                    alert('session expirer')
+                    sessionStorage.clear()
+                    navigate("/login");
+                    return 'expired'
+                }
+            })
+    }
 
     function set_current_website_props(e) {
         var id = e.target.getAttribute("id")
@@ -192,13 +234,25 @@ function PostLogin() {
         change_generated_password_confirm(event.target.value)
     }
 
-    const submit_new_website = async event => {
+    async function submit_new_website(event) {
         event.preventDefault();
 
         var uuid = uuidv4();
         var website_uuid = uuidv4();
         var key = sessionStorage.getItem('front_key')
         var site = form_website.current.value
+
+        // console.log(sessionStorage.getItem("access_token")); 
+        // const test = await refresh_jwt_token()
+        // console.log(test);
+        // console.log(sessionStorage.getItem("access_token")); 
+        
+        if (check_jwt_exp()) {
+            if (await refresh_jwt_token() !== 'ok') {
+                return;
+            }
+        }
+        
         if (form_password.current.value === form_confirm_password.current.value) {
             var csrftoken = getCookie('csrftoken');
             let formField = [{
@@ -209,10 +263,6 @@ function PostLogin() {
                 "password_chiffre": AES256_encode(form_password.current.value, key),
             }]
             formField = JSON.stringify(formField)
-            // console.log(formField);
-            // var test = AES256_encode('test', key)
-            // console.log(test);
-            // console.log(AES256_decode(test, key)['password']);
 
             fetch('/api/password/create_password/', {
                 method: 'POST',
@@ -220,7 +270,9 @@ function PostLogin() {
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                     'X-CSRFToken': csrftoken,
+                    // 'X-CSRFToken': 'twgYTe9Ivn1g9idFuGjZXLY3HIFctEgk',
                     'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+                    // 'Authorization': token 
                 }
             })
             .then(response => response.json())
@@ -271,7 +323,7 @@ function PostLogin() {
         change_generated_password_confirm(pswd);
     }
 
-    function submit_new_password(event) {
+    async function submit_new_password(event) {
         event.preventDefault();
 
         var uuid = uuidv4();
@@ -279,6 +331,13 @@ function PostLogin() {
         var website_uuid = website_dict[site].uuid;
         var key = sessionStorage.getItem('front_key')
         var username = form_new_email.current.value
+
+        if (check_jwt_exp()) {
+            if (await refresh_jwt_token() !== 'ok') {
+                return;
+            }
+        }
+        
         if (form_password.current.value === form_confirm_password.current.value) {
             var csrftoken = getCookie('csrftoken');
             let formField = [{
@@ -313,25 +372,125 @@ function PostLogin() {
         }
     }
 
-    function submit_change_password(event) {
+    async function submit_change_password(event) {
         event.preventDefault();
 
         var site = website_current
         var username = form_change_email.current.value
         var uuid = website_dict[site].value[email_main].uuid 
         var key = sessionStorage.getItem('front_key')
-        if (form_change_password.current.value === form_confirm_change_password.current.value) {
-            var csrftoken = getCookie('csrftoken');
-            let formField = [{
-                'website_uuid': website_dict[site].uuid,
+
+        if (window.confirm("Etes vous sur de vouloir modifier "+username+" qui apartient a "+website_current)) {
+            if (check_jwt_exp()) {
+                if (await refresh_jwt_token() !== 'ok') {
+                    return;
+                }
+            }
+            
+            if (form_change_password.current.value === form_confirm_change_password.current.value) {
+                var csrftoken = getCookie('csrftoken');
+                let formField = [{
+                    'website_uuid': website_dict[site].uuid,
+                    'uuid': uuid,
+                    "website": AES256_encode(site, key),
+                    "email": AES256_encode(username, key),
+                    "password_chiffre": AES256_encode(form_password.current.value, key),
+                }]
+                formField = JSON.stringify(formField)
+
+                fetch('/api/password/change_password/', {
+                    method: 'POST',
+                    body: formField,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'X-CSRFToken': csrftoken,
+                        'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+                    }
+                })
+                .then(response => response.json())
+                .then((data) => {
+                    if (data['status'] === 'ok') {
+                        Object.assign(website_dict[site].value, { [username]: { 'value': form_change_password.current.value, 'uuid': uuid } });
+
+                        if (username !== email_main) {
+                            delete website_dict[site].value[email_main]
+                        }
+
+                        set_new_website_dict(website_dict);
+
+                        display_another_password(site, username)
+                    }
+                })
+            } else {
+                alert("Les deux mots passes ne sont pas identique !")
+            }
+        }
+    }
+
+    async function delete_password(username) {
+        var site = website_dict[website_current].value
+        var uuid = site[username].uuid
+        var csrftoken = getCookie('csrftoken');
+
+        if (window.confirm("Etes vous sur de vouloir supprimer "+username+" qui apartient a "+website_current)) {
+            if (check_jwt_exp()) {
+                if (await refresh_jwt_token() !== 'ok') {
+                    return;
+                }
+            }
+
+            let formField = {
                 'uuid': uuid,
-                "website": AES256_encode(site, key),
-                "email": AES256_encode(username, key),
-                "password_chiffre": AES256_encode(form_password.current.value, key),
-            }]
+            }
             formField = JSON.stringify(formField)
 
-            fetch('/api/password/change_password/', {
+            fetch('/api/password/delete_password/', {
+                method: 'POST',
+                body: formField,
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'X-CSRFToken': csrftoken,
+                    'Authorization': "Bearer " + sessionStorage.getItem("access_token")
+                }
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    if (data['status'] === 'ok') {
+                        delete site[username]
+                        set_new_website_dict(website_dict)
+
+                        if (Object.keys(site).length === 0) {
+                            toggle_email(false);
+                            toggle_password(true);
+                            toggle("");
+                            document.getElementById("email_add").value = "";
+                            marg_switch("montre_add");
+                        } else {
+                            display_another_password(website_current, Object.keys(site)[0])
+                        }
+                    }
+                })
+        }
+    }
+
+    async function delete_website(website) {
+        var site = website_dict[website]
+        var website_uuid = site.uuid
+        var csrftoken = getCookie('csrftoken');
+
+        if (window.confirm("Etes vous sur de vouloir supprimer "+website_current+", ainsi que tout ses mots de passes ?")) {
+            if (check_jwt_exp()) {
+                if (await refresh_jwt_token() !== 'ok') {
+                    return;
+                }
+            }
+            
+            let formField = {
+                'website_uuid': website_uuid,
+            }
+            formField = JSON.stringify(formField)
+
+            fetch('/api/password/delete_website/', {
                 method: 'POST',
                 body: formField,
                 headers: {
@@ -343,101 +502,26 @@ function PostLogin() {
             .then(response => response.json())
             .then((data) => {
                 if (data['status'] === 'ok') {
-                    Object.assign(website_dict[site].value, { [username]: { 'value': form_change_password.current.value, 'uuid': uuid } });
+                    delete website_dict[website]
+                    set_new_website_dict(website_dict)
 
-                    if (username !== email_main) {
-                        delete website_dict[site].value[email_main]
+                    if (Object.keys(website_dict).length === 0) {
+                        toggle_email(false);
+                        toggle_password(true);
+                        toggle("add_password");
+                        document.getElementById("email_add_new").value = "";
+                        document.getElementById("website_new").value = "";
+                    } else {
+                        var site = Object.keys(website_dict)[0];
+                        set_current_website(site)
+                        display_another_password(site, Object.keys(website_dict[site].value)[0])
+                        setIsButtonClicked(!isButtonClicked)
+                        transi_website()
                     }
-
-                    set_new_website_dict(website_dict);
-
-                    display_another_password(site, username)
                 }
             })
-        } else {
-            alert("Les deux mots passes ne sont pas identique !")
+            // console.log(website_dict);
         }
-    }
-
-    function delete_password(username) {
-        var site = website_dict[website_current].value
-        var uuid = site[username].uuid
-        var csrftoken = getCookie('csrftoken');
-
-        let formField = {
-            'uuid': uuid,
-        }
-        formField = JSON.stringify(formField)
-
-        fetch('/api/password/delete_password/', {
-            method: 'POST',
-            body: formField,
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-CSRFToken': csrftoken,
-                'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
-            }
-        })
-        .then(response => response.json())
-        .then((data) => {
-            if (data['status'] === 'ok') {
-                delete site[username]
-                set_new_website_dict(website_dict)
-
-                if (Object.keys(site).length === 0) {
-                    toggle_email(false);
-                    toggle_password(true);
-                    toggle("");
-                    document.getElementById("email_add").value = "";
-                    marg_switch("montre_add");
-                } else {
-                    display_another_password(website_current, Object.keys(site)[0])
-                }
-            }
-        })
-    }
-
-    function delete_website(website) {
-        var site = website_dict[website]
-        var website_uuid = site.uuid
-        var csrftoken = getCookie('csrftoken');
-
-        let formField = {
-            'website_uuid': website_uuid,
-        }
-        formField = JSON.stringify(formField)
-
-        fetch('/api/password/delete_website/', {
-            method: 'POST',
-            body: formField,
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-CSRFToken': csrftoken,
-                'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
-            }
-        })
-        .then(response => response.json())
-        .then((data) => {
-            if (data['status'] === 'ok') {
-                delete website_dict[website]
-                set_new_website_dict(website_dict)
-
-                if (Object.keys(website_dict).length === 0) {
-                    toggle_email(false);
-                    toggle_password(true);
-                    toggle("add_password");
-                    document.getElementById("email_add_new").value = "";
-                    document.getElementById("website_new").value = "";
-                } else {
-                    var site = Object.keys(website_dict)[0];
-                    set_current_website(site)
-                    display_another_password(site, Object.keys(website_dict[site].value)[0])
-                    setIsButtonClicked(!isButtonClicked)
-                    transi_website()
-                }
-            }
-        })
-        // console.log(website_dict);
     }
 
     function cancel_add() {
@@ -456,9 +540,33 @@ function PostLogin() {
         document.getElementById("website_new").value = "";
     }
 
+    function disconnect() {
+        var csrftoken = getCookie('csrftoken');
+
+        fetch('/api/user/disconnect/', {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': csrftoken,
+                'Authorization': "Bearer "+sessionStorage.getItem("refresh_token")
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+            if (data['status'] === 'ok') {
+                sessionStorage.clear()
+                navigate("/login")
+            } else if (data['status'] === 'ko') {
+                alert('session expire')
+                sessionStorage.clear()
+                navigate("/login")
+            }
+        })
+    }
+
     return (
         <div className="postLogin">
-            <Navbar />
+            <Navbar deco="True" disconnect={() => disconnect()}/>
             <div id="presentation">{"Bonjour " + state["nom"] + " " + state["prenom"]}</div>
 
             <div className="website_container">

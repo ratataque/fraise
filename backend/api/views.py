@@ -1,23 +1,19 @@
 from .models import Users, Password
+from django.conf import settings
+import urllib.parse
 from .serializer import *
 from rest_framework import status
 from rest_framework import viewsets
-from django.views.decorators.csrf import csrf_protect 
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import IntegrityError
-from rest_framework_simplejwt.views import TokenVerifyView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenVerifySerializer
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, BlacklistMixin
 from django.contrib.auth.models import update_last_login
-from django.forms.models import model_to_dict
-from django.db.models import Prefetch
-from collections import defaultdict
-
-
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
+from datetime import datetime
 
 class UserViewSet(viewsets.ViewSet):
 
@@ -27,6 +23,7 @@ class UserViewSet(viewsets.ViewSet):
     # override de la fonction post pour ajouter la méthode post au methode authoriser sur l'api register
     # POST /api/user/register/
     @action(detail=False, methods=["post"])
+    @method_decorator(ensure_csrf_cookie)
     def register(self, request):
 
         serializer = RegisterSerializer(data=request.data)
@@ -43,13 +40,16 @@ class UserViewSet(viewsets.ViewSet):
             return Response(data={"status": "mail_used"}, status=status.HTTP_409_CONFLICT)                                 
             
         else :
-            user.send_verif_mail()
-            return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+            if settings.USE_SENDINBLUE_API:
+                user.send_verif_mail()
+                return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response(data={"status": 'no mail api', "link": "/verifEmail?uuid=" + str(user.uuid) + "&email="+urllib.parse.quote_plus(user.email)}, status=status.HTTP_201_CREATED)
 
 
     # POST /api/user/login/
     @action(detail=False, methods=["post"])
-    @method_decorator(csrf_protect)
+    @method_decorator(ensure_csrf_cookie)
     def login(self, request):
 
         serializer = LoginSerializer(data=request.data)
@@ -60,12 +60,24 @@ class UserViewSet(viewsets.ViewSet):
         except:
             return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)                                 
 
+        if user.verify_otp(serializer.validated_data["totp"]) == False:
+            return Response(
+                data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
         if user.is_active == False:
             return Response(
                 data={"status": "unactive"}, status=status.HTTP_401_UNAUTHORIZED
             )
 
         if user.check_password(serializer.validated_data["clearpwd"]):
+
+            BlacklistedToken.objects.filter(token__expires_at__lt=datetime.now()).delete()
+            OutstandingToken.objects.filter(expires_at__lt=datetime.now()).delete()
+
+            tokens = OutstandingToken.objects.filter(user_id=user.id)
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
 
             refresh = RefreshToken.for_user(user)
             update_last_login(None, user)
@@ -89,6 +101,7 @@ class UserViewSet(viewsets.ViewSet):
 
     # GET /api/user/{XXXX}/verif_mail/
     @action(detail=True, methods=["get"])
+    @method_decorator(csrf_protect)
     def verif_mail(self, request, pk=None):
         data = {"uuid": pk}
 
@@ -105,17 +118,57 @@ class UserViewSet(viewsets.ViewSet):
         return Response(data={"status": user.is_active})
 
 
+    # POST /api/user/set_totp/
+    @action(detail=False, methods=["post"])
+    @method_decorator(csrf_protect)
+    def set_totp(self, request):
+
+        serializer = SetTotpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = Users.objects.get(uuid=serializer.validated_data["uuid"])
+        except: 
+            return Response(data={"status": "ko"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        req = user.set_totp(serializer.validated_data["secret_totp"])
+
+        if req != 'ok':
+            return Response(data={"status": req}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response(data={"status": 'ok'})
+
+
+    @action(detail=False, methods=["get"])
+    def disconnect(self, request):
+        try:
+            token = RefreshToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
+
+            tokens = OutstandingToken.objects.filter(user_id=token["user_id"])
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
+
+            return Response(data={"status": 'ok'})
+        except:
+            return Response(data={"status": 'ko'})
 #------------------------------------password actions --------------------------------------------------------
 
 
 class PasswordViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=["post"])
+    @method_decorator(csrf_protect)
     def create_password(self, request):
         token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
 
-        for pswd in request.data:
+        # jwt = request.META.get('HTTP_AUTHORIZATION').split(' ')
+        
+        # if jwt[0] == 'access_token':
+        #     token = AccessToken(token=jwt[1])
+        # elif jwt[0] == 'refresh_token':
+        #     token = RefreshToken(token=jwt[1])
 
+        for pswd in request.data:
             serializer = AddPasswordSerializer(data=pswd)
             serializer.is_valid(raise_exception=True)
 
@@ -132,6 +185,7 @@ class PasswordViewSet(viewsets.ViewSet):
         return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=["post"])
+    @method_decorator(csrf_protect)
     def delete_password(self, request):
         # token_serializer = TokenVerifySerializer(data={'token': request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', '')})
         # token_serializer.is_valid(raise_exception=True)
@@ -144,10 +198,11 @@ class PasswordViewSet(viewsets.ViewSet):
 
         password.delete()
     
-        return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+        return Response(data={"status": "ok"}, status=status.HTTP_200_OK)
 
 
     @action(detail=False, methods=["post"])
+    @method_decorator(csrf_protect)
     def delete_website(self, request):
         token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
 
@@ -158,10 +213,11 @@ class PasswordViewSet(viewsets.ViewSet):
 
         password.delete()
     
-        return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
+        return Response(data={"status": "ok"}, status=status.HTTP_200_OK)
 
 
     @action(detail=False, methods=["post"])
+    @method_decorator(csrf_protect)
     def change_password(self, request):
         token = AccessToken(token=request.META.get('HTTP_AUTHORIZATION').replace('Bearer ', ''))
 
