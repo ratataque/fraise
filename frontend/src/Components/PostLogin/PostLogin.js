@@ -380,24 +380,117 @@ function PostLogin() {
         var uuid = website_dict[site].value[email_main].uuid 
         var key = sessionStorage.getItem('front_key')
 
-        if (check_jwt_exp()) {
-            if (await refresh_jwt_token() !== 'ok') {
-                return;
+        if (window.confirm("Etes vous sur de vouloir modifier "+username+" qui apartient a "+website_current)) {
+            if (check_jwt_exp()) {
+                if (await refresh_jwt_token() !== 'ok') {
+                    return;
+                }
+            }
+            
+            if (form_change_password.current.value === form_confirm_change_password.current.value) {
+                var csrftoken = getCookie('csrftoken');
+                let formField = [{
+                    'website_uuid': website_dict[site].uuid,
+                    'uuid': uuid,
+                    "website": AES256_encode(site, key),
+                    "email": AES256_encode(username, key),
+                    "password_chiffre": AES256_encode(form_password.current.value, key),
+                }]
+                formField = JSON.stringify(formField)
+
+                fetch('/api/password/change_password/', {
+                    method: 'POST',
+                    body: formField,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'X-CSRFToken': csrftoken,
+                        'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
+                    }
+                })
+                .then(response => response.json())
+                .then((data) => {
+                    if (data['status'] === 'ok') {
+                        Object.assign(website_dict[site].value, { [username]: { 'value': form_change_password.current.value, 'uuid': uuid } });
+
+                        if (username !== email_main) {
+                            delete website_dict[site].value[email_main]
+                        }
+
+                        set_new_website_dict(website_dict);
+
+                        display_another_password(site, username)
+                    }
+                })
+            } else {
+                alert("Les deux mots passes ne sont pas identique !")
             }
         }
-        
-        if (form_change_password.current.value === form_confirm_change_password.current.value) {
-            var csrftoken = getCookie('csrftoken');
-            let formField = [{
-                'website_uuid': website_dict[site].uuid,
+    }
+
+    async function delete_password(username) {
+        var site = website_dict[website_current].value
+        var uuid = site[username].uuid
+        var csrftoken = getCookie('csrftoken');
+
+        if (window.confirm("Etes vous sur de vouloir supprimer "+username+" qui apartient a "+website_current)) {
+            if (check_jwt_exp()) {
+                if (await refresh_jwt_token() !== 'ok') {
+                    return;
+                }
+            }
+
+            let formField = {
                 'uuid': uuid,
-                "website": AES256_encode(site, key),
-                "email": AES256_encode(username, key),
-                "password_chiffre": AES256_encode(form_password.current.value, key),
-            }]
+            }
             formField = JSON.stringify(formField)
 
-            fetch('/api/password/change_password/', {
+            fetch('/api/password/delete_password/', {
+                method: 'POST',
+                body: formField,
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'X-CSRFToken': csrftoken,
+                    'Authorization': "Bearer " + sessionStorage.getItem("access_token")
+                }
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    if (data['status'] === 'ok') {
+                        delete site[username]
+                        set_new_website_dict(website_dict)
+
+                        if (Object.keys(site).length === 0) {
+                            toggle_email(false);
+                            toggle_password(true);
+                            toggle("");
+                            document.getElementById("email_add").value = "";
+                            marg_switch("montre_add");
+                        } else {
+                            display_another_password(website_current, Object.keys(site)[0])
+                        }
+                    }
+                })
+        }
+    }
+
+    async function delete_website(website) {
+        var site = website_dict[website]
+        var website_uuid = site.uuid
+        var csrftoken = getCookie('csrftoken');
+
+        if (window.confirm("Etes vous sur de vouloir supprimer "+website_current+", ainsi que tout ses mots de passes ?")) {
+            if (check_jwt_exp()) {
+                if (await refresh_jwt_token() !== 'ok') {
+                    return;
+                }
+            }
+            
+            let formField = {
+                'website_uuid': website_uuid,
+            }
+            formField = JSON.stringify(formField)
+
+            fetch('/api/password/delete_website/', {
                 method: 'POST',
                 body: formField,
                 headers: {
@@ -409,113 +502,26 @@ function PostLogin() {
             .then(response => response.json())
             .then((data) => {
                 if (data['status'] === 'ok') {
-                    Object.assign(website_dict[site].value, { [username]: { 'value': form_change_password.current.value, 'uuid': uuid } });
+                    delete website_dict[website]
+                    set_new_website_dict(website_dict)
 
-                    if (username !== email_main) {
-                        delete website_dict[site].value[email_main]
+                    if (Object.keys(website_dict).length === 0) {
+                        toggle_email(false);
+                        toggle_password(true);
+                        toggle("add_password");
+                        document.getElementById("email_add_new").value = "";
+                        document.getElementById("website_new").value = "";
+                    } else {
+                        var site = Object.keys(website_dict)[0];
+                        set_current_website(site)
+                        display_another_password(site, Object.keys(website_dict[site].value)[0])
+                        setIsButtonClicked(!isButtonClicked)
+                        transi_website()
                     }
-
-                    set_new_website_dict(website_dict);
-
-                    display_another_password(site, username)
                 }
             })
-        } else {
-            alert("Les deux mots passes ne sont pas identique !")
+            // console.log(website_dict);
         }
-    }
-
-    async function delete_password(username) {
-        var site = website_dict[website_current].value
-        var uuid = site[username].uuid
-        var csrftoken = getCookie('csrftoken');
-
-        if (check_jwt_exp()) {
-            if (await refresh_jwt_token() !== 'ok') {
-                return;
-            }
-        }
-        
-        let formField = {
-            'uuid': uuid,
-        }
-        formField = JSON.stringify(formField)
-
-        fetch('/api/password/delete_password/', {
-            method: 'POST',
-            body: formField,
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-CSRFToken': csrftoken,
-                'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
-            }
-        })
-        .then(response => response.json())
-        .then((data) => {
-            if (data['status'] === 'ok') {
-                delete site[username]
-                set_new_website_dict(website_dict)
-
-                if (Object.keys(site).length === 0) {
-                    toggle_email(false);
-                    toggle_password(true);
-                    toggle("");
-                    document.getElementById("email_add").value = "";
-                    marg_switch("montre_add");
-                } else {
-                    display_another_password(website_current, Object.keys(site)[0])
-                }
-            }
-        })
-    }
-
-    async function delete_website(website) {
-        var site = website_dict[website]
-        var website_uuid = site.uuid
-        var csrftoken = getCookie('csrftoken');
-
-        if (check_jwt_exp()) {
-            if (await refresh_jwt_token() !== 'ok') {
-                return;
-            }
-        }
-        
-        let formField = {
-            'website_uuid': website_uuid,
-        }
-        formField = JSON.stringify(formField)
-
-        fetch('/api/password/delete_website/', {
-            method: 'POST',
-            body: formField,
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-CSRFToken': csrftoken,
-                'Authorization': "Bearer "+sessionStorage.getItem("access_token") 
-            }
-        })
-        .then(response => response.json())
-        .then((data) => {
-            if (data['status'] === 'ok') {
-                delete website_dict[website]
-                set_new_website_dict(website_dict)
-
-                if (Object.keys(website_dict).length === 0) {
-                    toggle_email(false);
-                    toggle_password(true);
-                    toggle("add_password");
-                    document.getElementById("email_add_new").value = "";
-                    document.getElementById("website_new").value = "";
-                } else {
-                    var site = Object.keys(website_dict)[0];
-                    set_current_website(site)
-                    display_another_password(site, Object.keys(website_dict[site].value)[0])
-                    setIsButtonClicked(!isButtonClicked)
-                    transi_website()
-                }
-            }
-        })
-        // console.log(website_dict);
     }
 
     function cancel_add() {
