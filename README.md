@@ -96,3 +96,15 @@ Et ensuite lancer le ficher sous (en ayant docker de lancé):
         SENDINBLUE_API_KEY = "YOUR API KEY"
     </code>
 </pre>
+
+# Zoom sur le fontionnement
+
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/fonctionnement.png)
+
+# Zoom sur le JWT
+
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/zoom_jwt.png)
+
+# Zoom sur la securisation des mdp dans la db
+
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/to-login/images_git/zoom_password.png)
