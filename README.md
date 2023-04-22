@@ -4,7 +4,7 @@
 Fraise le gestionnaire de mot de passe
 
 - [x] Mot de passe mère salé poivré, hashé 400k fois
-- [x] Les mots de passe stocké par les utilisateurs sont chiffré symetriquement avec un hash du mot de passe mere + une string + (salé, poivré)
+- [x] Les mots de passe stocké par les utilisateurs sont chiffré symetriquement avec un hash du mot de passe mère + une string + (salé, poivré)
 - [ ] faire que la string present doit dans la cle de dechiffrement soit uniquement present sur le telephone de l'utilisateur 
 - [x] Proteger par csrf token 
 - [x] Proteger par JWT (access + refresh token) 
