@@ -106,3 +106,7 @@ Et ensuite lancer le ficher sous (en ayant docker de lancé):
 # Zoom sur la securisation des mdp dans la db
 
 ![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/zoom_password.png)
+
+# Base de donnée
+
+![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/db.png)
