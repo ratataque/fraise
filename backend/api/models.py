@@ -62,7 +62,7 @@ class Users(models.Model):
             "sender": {"name": "Fraise le gestionnaire", "email": "fraise@fraise.com"},
             "to": [{"email": self.email, "name": (self.nom + " " + self.prenom)}],
             "subject": "Mail de confirmation d'inscpition à Fraise",
-            "htmlContent": "<html><head></head><body><h1>Bonjour, veuillez cliquer <a href='http://localhost:3000/verifEmail?uuid="
+            "htmlContent": "<html><head></head><body><h1>Bonjour, veuillez cliquer <a href='https://fraise.kwer.fr/verifEmail?uuid="
             + str(self.uuid)
             + "&email="+urllib.parse.quote_plus(self.email)+"'>Ici</a> afin de pouvoir activer votre compte, merci ! </h1></body></html>",
             "headers": {
