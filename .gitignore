@@ -1,3 +1,4 @@
 backend/postgres_data
 .idea/
 backend/api/config_api.py
+backend/api/poivre.txt
