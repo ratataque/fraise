@@ -7,4 +7,7 @@ COPY frontend /fraise/frontend
 RUN rm -rf /fraise/fronted/node_modules
 RUN npm ci
 
-CMD [ "npm", "start" ]
+RUN npm run build
+RUN npm install -g serve
+
+CMD [ "serve", "-s", "build" ]

@@ -83,7 +83,7 @@ function Login() {
           // test si la réponse de l'api confirme l'authentification de l'utilisateur
           // ********************************************************************************************************************************************
           if (data['status'] === 'ok') {
-            alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
+            // alert("Signin: " + signIn + "\nemail: " + email.current.value + "\npassword: " + pswd.current.value);
 
             sessionStorage.clear()
             sessionStorage.setItem("access_token", data['donnes']["access_token"])
@@ -144,7 +144,7 @@ function Login() {
           // console.log(response.status);
 
           if (data['status'] === 'ok') {
-            alert("Signin: " + signIn + "\nName: " + name.current.value + "\nforename: " + forename.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
+            // alert("Signin: " + signIn + "\nName: " + name.current.value + "\nforename: " + forename.current.value + "\nemail: " + emailUp.current.value + "\npassword: " + pswdUp.current.value)
             
             // envoie des données a la page postSignup et redirection
             navigate("/postSignup",{state: data['status']});
@@ -185,7 +185,7 @@ function Login() {
               <Components.Title>Connection</Components.Title>
               <Components.Input type="email" placeholder="Email" ref={email} required/>
               <Components.Input type="password" placeholder="Mot de passe" ref={pswd} required/>
-              <Components.Input type="number" placeholder="Code MFA" ref={totp} required/>
+              <Components.Input type="text" placeholder="Code MFA" ref={totp} required/>
               <Components.Anchor href="" onClick={() => {alert("Password Forgoten")}}>
                 Mot de passe oublié ?
               </Components.Anchor>
