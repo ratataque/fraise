@@ -101,7 +101,7 @@ class UserViewSet(viewsets.ViewSet):
 
     # GET /api/user/{XXXX}/verif_mail/
     @action(detail=True, methods=["get"])
-    # @method_decorator(csrf_protect)
+    @method_decorator(csrf_protect)
     def verif_mail(self, request, pk=None):
         data = {"uuid": pk}
 
@@ -120,7 +120,7 @@ class UserViewSet(viewsets.ViewSet):
 
     # POST /api/user/set_totp/
     @action(detail=False, methods=["post"])
-    # @method_decorator(csrf_protect)
+    @method_decorator(csrf_protect)
     def set_totp(self, request):
 
         serializer = SetTotpSerializer(data=request.data)
