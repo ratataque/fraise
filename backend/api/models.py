@@ -41,7 +41,7 @@ class Users(models.Model):
         mdp = clearpwd
         securisation = sel + mdp + poivre
         securise = hashlib.sha256(securisation.encode("utf-8")).hexdigest()
-        for i in range(0, 439874):
+        for i in range(0, 2001):
             securise = hashlib.sha256(securise.encode("utf-8")).hexdigest()
         mdpSecuriser = sel + securise
 
@@ -90,7 +90,7 @@ class Users(models.Model):
         mdp = clearpwd
         securisation = sel + mdp + poivre
         securise = hashlib.sha256(securisation.encode("utf-8")).hexdigest()
-        for i in range(0, 439874):
+        for i in range(0, 2001):
             securise = hashlib.sha256(securise.encode("utf-8")).hexdigest()
         mdpSecuriser = sel + securise
 
