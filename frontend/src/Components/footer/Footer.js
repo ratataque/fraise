@@ -1,6 +1,6 @@
 import React from "react";
 import "./Footer.css";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo2.png";
 import {
   FaMapMarkerAlt,
   FaPhoneAlt,

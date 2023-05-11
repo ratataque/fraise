@@ -38,12 +38,6 @@ const Navbar = ({deco, disconnect}) => {
           <li>
             <a href="/">Accueil</a>
           </li>
-          <li>
-            <a href="##">Fonctionnalités</a>
-          </li>
-          <li>
-            <a href="##">A Propos De Nous</a>
-          </li>
           {/* <li>
             <a href="#" className="btn btn-dark">
               Nous Rejoindre
@@ -51,7 +45,7 @@ const Navbar = ({deco, disconnect}) => {
           </li> */}
           <li className="nav-btn">
             {/* Utiliser un component dans le dossier UI, ici c'est Button */}
-            <Button onClick={disconnect} text={deco? "Deconnexion":"Nous Rejoindre"} btnClass={"btn-dark"} href={deco?null:"/login"} />
+            <Button onClick={disconnect} text={deco? "Deconnexion":"Connexion"} btnClass={"btn-dark"} href={deco?null:"/login"} />
           </li>
         </ul>
       </menu>

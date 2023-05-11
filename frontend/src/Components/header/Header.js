@@ -1,5 +1,5 @@
 import "./Header.css";
-import image1 from "../../assets/image1.png";
+import image1 from "../../assets/lock.jpg";
 import "../UI/button/Button.css"
 import Button from '../UI/button/Button'
 
@@ -12,17 +12,16 @@ const Header = () => {
       <div className="container header">
         <div className="header-left">
           <h1>
-            <span>Une phrase courte</span>
-            <span>Web & Mobile</span>
-            <span>Une phrase courte</span>
+            <span>Fraise est un gestionnaire</span>
+            <span> de mot de passe</span>
+            <span> en ligne</span>
           </h1>
           <p className="u-text-small">
-            Fraise est un Lorem ipsum dolor sit amet, consectetur adipisicing
-            elit. Obcaecati ea aliquam sit nemo nisi! Nesciunt quis illum id qui
-            et!
+            Uniquement vous, pouvez déchiffrer vos mots de passes, il est donc important
+            de choisir un mot de passe mère dont vous pouvez vous souvenir car si vous
+            l'oubliez, vos mot de passes stocké sur fraise le seront aussi !
           </p>
           <div className="header-cta">
-            <Button text={"Nous Rejoindre"} btnClass={"btn-dark"} href={"#"} />
             <Button text={"Nous Rejoindre"} btnClass={"btn-dark"} href={"#"} />
           </div>
         </div>

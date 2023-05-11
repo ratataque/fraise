@@ -15,8 +15,6 @@ function Accueil() {
         <Header/>
       </header>
       <body>
-        <AboutUs/>
-        <Features/>
       </body>
         <Footer/>
     </main>

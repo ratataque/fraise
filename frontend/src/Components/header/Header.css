@@ -46,7 +46,8 @@
   }
   
   .header-right img {
-    width: 90%;
+    width: 20vw;
+    border-radius: 30px;
   }
   
 
