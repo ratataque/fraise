@@ -100,7 +100,6 @@ function VerifEmail() {
             .then(response => response.json())
             .then((data) => {
                 if (data['status'] === 'ok') {
-                    alert("success");
                     navigate("/Login");
                 }
             })
@@ -147,7 +146,7 @@ function VerifEmail() {
                         <br />
 
                         <form id="totp_verif" onSubmit={(event)=> submit_verif_totp(event)}>
-                            <input type="text" className="input_verif" ref={form_totp} placeholder="Code" required></input>
+                            <input type="number" className="input_verif" ref={form_totp} placeholder="Code" required></input>
 
                             <button className={"bttn confirm"} onClick={() => { set_rotate('left') }}> Confirm </button>
                         </form>
