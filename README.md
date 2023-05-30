@@ -110,7 +110,3 @@ Et ensuite lancer le ficher sous (en ayant docker de lancé):
 # Base de donnée
 
 ![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/db.png)
-
-# Point d'entrée API
-
-![alt text](https://raw.githubusercontent.com/ratataque/fraise/main/images_git/api.png)

@@ -17,6 +17,10 @@ from datetime import datetime
 
 class UserViewSet(viewsets.ViewSet):
 
+    # initialise le serializer pour permettre a la fonction create de CreateModelMixin de serializer les donnée en fonction des models
+    # serializer_class = RegisterSerializer
+
+    # override de la fonction post pour ajouter la méthode post au methode authoriser sur l'api register
     # POST /api/user/register/
     @action(detail=False, methods=["post"])
     @method_decorator(ensure_csrf_cookie)
@@ -135,7 +139,6 @@ class UserViewSet(viewsets.ViewSet):
         return Response(data={"status": 'ok'})
 
 
-    # GET /api/user/disconnect/
     @action(detail=False, methods=["get"])
     def disconnect(self, request):
         try:
@@ -153,7 +156,6 @@ class UserViewSet(viewsets.ViewSet):
 
 class PasswordViewSet(viewsets.ViewSet):
 
-    # POST /api/password/create_password/
     @action(detail=False, methods=["post"])
     @method_decorator(csrf_protect)
     def create_password(self, request):
@@ -182,7 +184,6 @@ class PasswordViewSet(viewsets.ViewSet):
         
         return Response(data={"status": "ok"}, status=status.HTTP_201_CREATED)
 
-    # POST /api/password/delte_password/
     @action(detail=False, methods=["post"])
     @method_decorator(csrf_protect)
     def delete_password(self, request):
@@ -200,7 +201,6 @@ class PasswordViewSet(viewsets.ViewSet):
         return Response(data={"status": "ok"}, status=status.HTTP_200_OK)
 
 
-    # POST /api/password/delete_website/
     @action(detail=False, methods=["post"])
     @method_decorator(csrf_protect)
     def delete_website(self, request):
@@ -216,7 +216,6 @@ class PasswordViewSet(viewsets.ViewSet):
         return Response(data={"status": "ok"}, status=status.HTTP_200_OK)
 
 
-    # POST /api/password/change_password/
     @action(detail=False, methods=["post"])
     @method_decorator(csrf_protect)
     def change_password(self, request):
