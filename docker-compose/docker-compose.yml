@@ -29,7 +29,7 @@ services:
     command: sh migration.sh
         
   db:
-    image: postgres:13
+    image: postgres:13prod
     volumes:
         - ../backend/postgres_data:/var/lib/postgresql/data/
     environment:
