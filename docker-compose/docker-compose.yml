@@ -16,8 +16,6 @@ services:
       
   backend:
     image: fraisebackprod
-    environment:
-        - SECRET_KEY=${SECRET_KEY}
     depends_on:
         - db
     restart: on-failure:10
